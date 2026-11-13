@@ -36,6 +36,11 @@ export const assignedTasksQuery = z.object({
     description:
       "Return only the total, with an empty tasks array, without loading task rows or labels.",
   }),
+  status: z.enum(["to-do", "in-progress", "in-review", "done"]).optional(),
+  priority: z
+    .enum(["no-priority", "low", "medium", "high", "urgent"])
+    .optional(),
+  labelId: z.string().min(1).optional(),
 });
 
 const priority = z.enum(VALID_PRIORITIES);
@@ -45,6 +50,7 @@ export const listTasksQuery = z.object({
   status: z.string().optional(),
   priority: z.string().optional(),
   assigneeId: z.string().optional(),
+  assigneeIds: z.array(z.string()).optional(),
   // Number("abc") is NaN, which used to reach the limit/offset clause unchecked.
   page: pagingNumber(1, 1_000_000).optional(),
   relatedPage: pagingNumber(1, 1_000_000).optional(),
@@ -82,6 +88,12 @@ export const createTaskBody = z.object({
   priority,
   status: z.string().openapi({ description: "The target column's slug." }),
   userId: z.string().optional().openapi({ description: "Assignee, if any." }),
+  shareType: z.enum(["public", "private"]).default("public").optional(),
+  groupId: z.string().nullable().optional(),
+  sharedGroupId: z.string().nullable().optional(),
+  sharedGroupIds: z.array(z.string()).default([]).optional(),
+  sharedUserIds: z.array(z.string()).default([]).optional(),
+  assigneeIds: z.array(z.string()).optional(),
   recurrence: taskRecurrenceSchema
     .optional()
     .openapi({ description: "Omit to create a task that does not repeat." }),
@@ -104,6 +116,20 @@ export const updateTaskBody = z.object({
   projectId: z.string(),
   position: z.number().int().min(0).max(MAX_TASK_POSITION),
   userId: z.string().optional(),
+  shareType: z.enum(["public", "private"]).optional(),
+  groupId: z.string().nullable().optional(),
+  sharedGroupId: z.string().nullable().optional(),
+  sharedGroupIds: z.array(z.string()).optional(),
+  sharedUserIds: z.array(z.string()).optional(),
+  assigneeIds: z.array(z.string()).optional(),
+});
+
+export const updateTaskShareBody = z.object({
+  shareType: z.enum(["public", "private"]),
+  groupId: z.string().nullable().optional(),
+  sharedGroupId: z.string().nullable().optional(),
+  sharedGroupIds: z.array(z.string()).default([]).optional(),
+  sharedUserIds: z.array(z.string()).default([]).optional(),
 });
 
 export const moveTaskBody = z.object({
@@ -136,7 +162,15 @@ export const importTasksBody = z.object({
 export const updateStatusBody = z.object({ status: z.string() });
 export const updatePriorityBody = z.object({ priority });
 export const updateAssigneeBody = z.object({
-  userId: z.string().nullable().openapi({ description: "Null unassigns." }),
+  userId: z
+    .string()
+    .nullable()
+    .optional()
+    .openapi({ description: "Legacy single assignee; null unassigns." }),
+  assigneeIds: z
+    .array(z.string())
+    .optional()
+    .openapi({ description: "Replace the task's assignee list." }),
 });
 export const updateDueDateBody = z.object({ dueDate: z.string().optional() });
 export const updateRecurrenceBody = z.object({

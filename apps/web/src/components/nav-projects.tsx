@@ -21,17 +21,19 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useParams } from "@tanstack/react-router";
+import { useLocation, useNavigate, useParams } from "@tanstack/react-router";
 import {
   ChevronRight,
+  CalendarClock,
+  CornerDownRight,
   Folder,
+  ListTodo,
   Forward,
   MoreHorizontal,
   Plus,
   Settings,
   Trash2,
   Trash2Icon,
-  LinkIcon,
 } from "lucide-react";
 import { type CSSProperties, type ReactNode, useState } from "react";
 import { createPortal } from "react-dom";
@@ -64,12 +66,18 @@ import useDeleteProject from "@/hooks/mutations/project/use-delete-project";
 import useReorderProjects from "@/hooks/mutations/project/use-reorder-projects";
 import useGetProjects from "@/hooks/queries/project/use-get-projects";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
+import useGetAssignedTasks from "@/hooks/queries/task/use-get-assigned-tasks";
+import type { AssignedTask } from "@/fetchers/task/get-assigned-tasks";
 import { useBoardHoverPrefetch } from "@/hooks/use-board-hover-prefetch";
 import { useWorkspacePermission } from "@/hooks/use-workspace-permission";
+import { formatDateTime, formatRelativeTime } from "@/lib/format";
+import { getPriorityLabel } from "@/lib/i18n/domain";
 import { EASE_OUT_CSS } from "@/lib/motion";
+import { getPriorityIcon } from "@/lib/priority";
 import { toast } from "@/lib/toast";
 import type { ProjectWithTasks } from "@/types/project";
 import CreateProjectModal from "./shared/modals/create-project-modal";
+import ProjectShareModal from "./project-share/project-share-modal";
 import {
   AlertDialog,
   AlertDialogClose,
@@ -121,10 +129,45 @@ function SortableProjectItem({
   );
 }
 
+function flattenTaskTree(tasks: AssignedTask[]) {
+  const tasksById = new Map(tasks.map((task) => [task.id, task]));
+  const childrenByParent = new Map<string, AssignedTask[]>();
+
+  for (const task of tasks) {
+    if (!task.parentTaskId || !tasksById.has(task.parentTaskId)) continue;
+    const children = childrenByParent.get(task.parentTaskId) ?? [];
+    children.push(task);
+    childrenByParent.set(task.parentTaskId, children);
+  }
+
+  const flattened: Array<{ task: AssignedTask; depth: number }> = [];
+  const visited = new Set<string>();
+  const append = (task: AssignedTask, depth: number) => {
+    if (visited.has(task.id)) return;
+    visited.add(task.id);
+    flattened.push({ task, depth });
+    for (const child of childrenByParent.get(task.id) ?? []) {
+      append(child, depth + 1);
+    }
+  };
+
+  for (const task of tasks) {
+    if (!task.parentTaskId || !tasksById.has(task.parentTaskId))
+      append(task, 0);
+  }
+  for (const task of tasks) append(task, 0);
+
+  return flattened;
+}
+
 export function NavProjects() {
   const { t } = useTranslation();
   const { isMobile } = useSidebar();
   const { data: workspace } = useActiveWorkspace();
+  const { data: relatedTasks } = useGetAssignedTasks(workspace?.id);
+  const pathname = useLocation({
+    select: (location) => location.pathname.replace(/\/+$/, ""),
+  });
   const { data: projects } = useGetProjects(
     {
       workspaceId: workspace?.id || "",
@@ -139,7 +182,7 @@ export function NavProjects() {
   const canCreate = canCreateProjects();
   const canDeleteProject = canDeleteProjects();
   // Matches the API, which gates /project/reorder on `project: ["update"]`
-  // alone — not the create+update+delete bundle.
+  // alone—not the create+update+delete bundle.
   const canReorder = canUpdateProjects();
   const navigate = useNavigate();
   const boardHoverPrefetch = useBoardHoverPrefetch(workspace?.id ?? "");
@@ -147,11 +190,15 @@ export function NavProjects() {
     useParams({
       strict: false,
     });
+  const { taskId: currentTaskId } = useParams({ strict: false });
 
   const [isCreateProjectModalOpen, setIsCreateProjectModalOpen] =
     useState(false);
   const [isDeleteProjectModalOpen, setIsDeleteProjectModalOpen] =
     useState(false);
+  const [projectToShare, setProjectToShare] = useState<ProjectWithTasks | null>(
+    null,
+  );
   const [projectToDeleteId, setProjectToDeleteID] = useState<string | null>(
     null,
   );
@@ -162,6 +209,7 @@ export function NavProjects() {
   const draggingProject = projects?.find(
     (project) => project.id === draggingProjectId,
   );
+  const sidebarTasks = flattenTaskTree(relatedTasks?.tasks ?? []);
 
   const isCurrentProject = (projectId: string) => {
     return (
@@ -225,7 +273,7 @@ export function NavProjects() {
 
   return (
     <>
-      <Collapsible defaultOpen className="group/collapsible">
+      <Collapsible defaultOpen>
         <SidebarGroup className="group-data-[collapsible=icon]:hidden gap-1 p-2 pt-1">
           <CollapsibleTrigger
             className="data-panel-open:[&_svg]:rotate-90"
@@ -233,7 +281,7 @@ export function NavProjects() {
               <SidebarGroupLabel className="h-7 cursor-pointer justify-start gap-1 px-0 text-sidebar-accent-foreground" />
             }
           >
-            <span>{t("navigation:sidebar.projects")}</span>
+            <span>Tasks</span>
             <ChevronRight className="h-3.5 w-3.5 text-sidebar-foreground/60 transition-transform duration-200" />
           </CollapsibleTrigger>
           {canCreate && (
@@ -333,13 +381,7 @@ export function NavProjects() {
                               <DropdownMenuItem
                                 className="h-7 items-start cursor-pointer text-sm"
                                 onClick={() => {
-                                  navigator.clipboard.writeText(
-                                    `${window.location.origin}/dashboard/workspace/${workspace?.id}/project/${project.id}`,
-                                  );
-                                  toast.success(
-                                    t("navigation:projectList.linkCopied"),
-                                    { icon: LinkIcon },
-                                  );
+                                  setProjectToShare(project);
                                 }}
                               >
                                 <Forward className="text-muted-foreground" />
@@ -404,6 +446,91 @@ export function NavProjects() {
           </CollapsiblePanel>
         </SidebarGroup>
       </Collapsible>
+      <SidebarGroup className="group-data-[collapsible=icon]:hidden gap-1 p-2 pt-1">
+        <SidebarGroupLabel className="h-7 px-2 text-sidebar-foreground/70">
+          All tasks
+        </SidebarGroupLabel>
+        <SidebarGroupContent>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip="All tasks"
+                isActive={pathname.endsWith("/my-tasks")}
+                size="sm"
+                onClick={() =>
+                  navigate({
+                    to: "/dashboard/workspace/$workspaceId/my-tasks",
+                    params: { workspaceId: workspace.id },
+                  })
+                }
+              >
+                <ListTodo aria-hidden="true" />
+                <span>All tasks</span>
+                {relatedTasks?.total ? (
+                  <span className="ml-auto text-xs tabular-nums text-muted-foreground">
+                    {relatedTasks.total > 99 ? "99+" : relatedTasks.total}
+                  </span>
+                ) : null}
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            {sidebarTasks.map(({ task, depth }) => (
+              <SidebarMenuItem key={task.id}>
+                <SidebarMenuButton
+                  tooltip={task.title}
+                  isActive={currentTaskId === task.id}
+                  aria-level={depth + 1}
+                  size="sm"
+                  className="h-auto min-h-12 items-start py-1.5"
+                  style={{
+                    paddingInlineStart: `${8 + depth * 12}px`,
+                  }}
+                  onClick={() =>
+                    navigate({
+                      to: "/dashboard/workspace/$workspaceId/project/$projectId/task/$taskId",
+                      params: {
+                        workspaceId: workspace.id,
+                        projectId: task.projectId,
+                        taskId: task.id,
+                      },
+                    })
+                  }
+                >
+                  {depth > 0 && (
+                    <CornerDownRight
+                      aria-hidden="true"
+                      className="size-3 text-muted-foreground"
+                    />
+                  )}
+                  <span className="flex min-w-0 flex-1 flex-col gap-1">
+                    <span className="truncate text-xs font-medium">
+                      {task.title}
+                    </span>
+                    <span className="flex min-w-0 items-center gap-1 text-[10px] font-normal text-muted-foreground">
+                      <time
+                        dateTime={task.createdAt}
+                        title={formatDateTime(task.createdAt)}
+                        className="flex shrink-0 items-center gap-1"
+                      >
+                        <CalendarClock className="size-3" />
+                        {formatRelativeTime(task.createdAt)}
+                      </time>
+                      <span aria-hidden="true">·</span>
+                      <span className="min-w-0 truncate">
+                        {task.creatorName || "Unknown creator"}
+                      </span>
+                      <span aria-hidden="true">·</span>
+                      <span className="flex shrink-0 items-center gap-0.5">
+                        {getPriorityIcon(task.priority)}
+                        {getPriorityLabel(task.priority)}
+                      </span>
+                    </span>
+                  </span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
 
       <CreateProjectModal
         open={isCreateProjectModalOpen}
@@ -457,6 +584,13 @@ export function NavProjects() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <ProjectShareModal
+        open={Boolean(projectToShare)}
+        onClose={() => setProjectToShare(null)}
+        projectId={projectToShare?.id || ""}
+        projectName={projectToShare?.name}
+      />
     </>
   );
 }

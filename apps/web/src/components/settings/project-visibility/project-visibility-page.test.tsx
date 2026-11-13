@@ -25,6 +25,9 @@ vi.mock("@tanstack/react-router", () => ({
   useParams: () => ({ projectId: "p1" }),
 }));
 vi.mock("@/components/page-title", () => ({ default: () => null }));
+vi.mock("@/components/project-share/project-share-panel", () => ({
+  ProjectSharePanel: () => null,
+}));
 vi.mock("@/hooks/queries/workspace/use-active-workspace", () => ({
   default: () => ({ data: { id: "w1", name: "Studio" } }),
 }));

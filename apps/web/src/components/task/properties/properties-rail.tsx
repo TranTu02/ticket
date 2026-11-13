@@ -20,6 +20,7 @@ import { dueDateTextClass } from "./due-date-text-class";
 import { LabelsValue } from "./labels-value";
 import { PropertyRow } from "./property-row";
 import { PropertyValue } from "./property-value";
+import { TaskShareProperty } from "./task-share-property";
 import { useTaskProperties } from "./use-task-properties";
 
 type PropertiesRailProps = {
@@ -36,8 +37,16 @@ export function PropertiesRail({
   className,
 }: PropertiesRailProps) {
   const { t } = useTranslation();
-  const { task, project, labels, status, assignee, dueStatus, canMoveTask } =
-    useTaskProperties(taskId, projectId, workspaceId);
+  const {
+    task,
+    project,
+    labels,
+    status,
+    assignee,
+    assignees,
+    dueStatus,
+    canMoveTask,
+  } = useTaskProperties(taskId, projectId, workspaceId);
 
   if (!task) return null;
 
@@ -79,27 +88,55 @@ export function PropertiesRail({
           </TaskPriorityPopover>
         </PropertyRow>
 
-        <PropertyRow label={t("tasks:assignee.label")}>
+        <PropertyRow label={t("tasks:assignee.label")} align="start">
           <TaskAssigneePopover task={task} workspaceId={workspaceId}>
-            <PropertyValue data-task-action="assignee" shortcutId="assignTask">
-              <AssigneeAvatar
-                name={assignee?.user?.name || task.assigneeName}
-                image={assignee?.user?.image}
-                assigned={Boolean(task.userId)}
-              />
-              <span
-                className={cn(
-                  "truncate",
-                  !task.userId && "text-muted-foreground",
-                )}
-              >
-                {assignee?.user?.name ||
-                  task.assigneeName ||
-                  t("tasks:popover.assignee.unassigned")}
-              </span>
+            <PropertyValue
+              data-task-action="assignee"
+              shortcutId="assignTask"
+              className="h-auto min-h-7.5 items-start py-1.25"
+            >
+              {assignees.length > 0 ? (
+                <span className="flex min-w-0 flex-col gap-1">
+                  {assignees.map((member) => (
+                    <span
+                      key={member.userId}
+                      className="flex min-w-0 items-center gap-1.5"
+                    >
+                      <AssigneeAvatar
+                        name={member.user?.name}
+                        image={member.user?.image}
+                        assigned
+                      />
+                      <span className="truncate">
+                        {member.user?.name || member.user?.email}
+                      </span>
+                    </span>
+                  ))}
+                </span>
+              ) : (
+                <>
+                  <AssigneeAvatar
+                    name={assignee?.user?.name || task.assigneeName}
+                    image={assignee?.user?.image}
+                    assigned={Boolean(task.userId)}
+                  />
+                  <span
+                    className={cn(
+                      "truncate",
+                      !task.userId && "text-muted-foreground",
+                    )}
+                  >
+                    {assignee?.user?.name ||
+                      task.assigneeName ||
+                      t("tasks:popover.assignee.unassigned")}
+                  </span>
+                </>
+              )}
             </PropertyValue>
           </TaskAssigneePopover>
         </PropertyRow>
+
+        <TaskShareProperty taskId={task.id} taskTitle={task.title} />
 
         <PropertyRow label={t("tasks:properties.labels")} align="start">
           <TaskLabelsPopover task={task} workspaceId={workspaceId}>

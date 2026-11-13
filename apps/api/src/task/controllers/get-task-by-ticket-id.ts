@@ -1,4 +1,4 @@
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray, or, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db from "../../database";
 import { projectTable, taskTable, workspaceTable } from "../../database/schema";
@@ -10,6 +10,7 @@ import { projectAccessCondition } from "../../project-access/project-access-cond
 import type { PermissionMap } from "../../utils/role-permissions";
 import { workspacePermissionGrants } from "../../utils/workspace-permission-grants";
 import { workspaceIsActive } from "../../workspace/archive/active-workspace-sql";
+import { taskAccessCondition } from "../task-access-condition";
 import { TICKET_ID_PATTERN } from "../ticket-id";
 import getTask from "./get-task";
 
@@ -86,7 +87,10 @@ export default async function getTaskByTicketId(
         grants.isInstanceAdmin
           ? undefined
           : inArray(projectTable.workspaceId, readableWorkspaceIds),
-        projectAccessCondition(userId, projectTable.id),
+        or(
+          projectAccessCondition(userId, projectTable.id),
+          taskAccessCondition(userId),
+        ),
       ),
     );
 
@@ -106,7 +110,7 @@ export default async function getTaskByTicketId(
   }
 
   return {
-    ...(await getTask(matchedTask.id)),
+    ...(await getTask(matchedTask.id, false, userId)),
     workspaceId: matchedTask.workspaceId,
   };
 }

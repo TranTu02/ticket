@@ -2870,6 +2870,7 @@
 			"home": "Home",
 			"inbox": "Inbox",
 			"myTasks": "My tasks",
+			"aiChat": "AI chat",
 			"invitePeople": "Invite people"
 		},
 		"projectList": {
@@ -5187,5 +5188,38 @@
 		"permissions": {
 			"photos": "Kaneo uses your photos to attach images to tasks and comments, and for your profile photo."
 		}
+	},
+	"devAuth": {
+		"pageTitle": "Dev sign-in",
+		"title": "Choose a user",
+		"subtitle": "Dev mode: pick an identity from LIMS-DEV and enter without going through sign-in.",
+		"searchPlaceholder": "Search by name or email",
+		"loading": "Loading users…",
+		"empty": "No matching users.",
+		"loadError": "Could not load users.",
+		"loginError": "Dev sign-in failed.",
+		"inactive": "Inactive",
+		"footerHint": "A dev session is created automatically; no password screen.",
+		"signInInstead": "Use sign-in instead"
+	},
+	"ai": {
+		"pageTitle": "AI assistant",
+		"newChat": "New chat",
+		"newChatTitle": "New chat",
+		"noConversations": "No conversations yet.",
+		"untitled": "Untitled",
+		"defaultAgent": "Assistant",
+		"loadError": "Could not load the AI chat.",
+		"createError": "Could not create a conversation.",
+		"sendError": "Could not send the message.",
+		"loading": "Loading…",
+		"emptyTitle": "Ask the AI platform agents",
+		"emptyDescription": "The chat runs on the AI platform (Mastra) and is saved to the service schema for operations and audit.",
+		"you": "You",
+		"thinking": "Thinking…",
+		"placeholder": "Message the assistant… (Enter to send, Shift+Enter for a new line)",
+		"send": "Send",
+		"stop": "Stop",
+		"footerHint": "Runs on AI platform :4111 · conversations are stored in schema service"
 	}
 }

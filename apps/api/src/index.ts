@@ -2,6 +2,8 @@ import { startWebhookWorker } from "./admin/webhooks/start-webhook-worker";
 import integrationSync from "./integration-sync";
 import { syncWorkspaceAccess } from "./ws/workspace-access";
 import { drainPasswordResetDeliveries } from "./utils/password-reset-delivery";
+import { aiRoutes } from "./ai";
+import { devRoutes } from "./dev";
 import "./instrument";
 
 import { dirname } from "node:path";
@@ -70,6 +72,7 @@ import { createRoute, errorResponse, jsonResponse, z } from "./openapi";
 import { initializePlugins, integrationPlugins } from "./plugins";
 import { migrateGitHubIntegration } from "./plugins/github/migration";
 import project from "./project";
+import projectAccessRoutes from "./project-access";
 import { assertProjectAccess } from "./project-access/assert-project-access";
 import { getPublicProject } from "./project/controllers/get-public-project";
 import { initializeScheduler, shutdownScheduler } from "./scheduler";
@@ -102,6 +105,7 @@ import { clientIpMiddleware } from "./utils/client-ip";
 import { runCustomOAuthCallback } from "./utils/custom-oauth-sign-in";
 import { migrateApiKeyReferenceId } from "./utils/migrate-apikey-reference-id";
 import { migrateNotificationPreferencesSchema } from "./utils/migrate-notification-preferences-schema";
+import { migrateProjectSharingColumns } from "./utils/migrate-project-sharing";
 import { migrateSessionColumn } from "./utils/migrate-session-column";
 import { migrateWorkspaceUserEmail } from "./utils/migrate-workspace-user-email";
 import { normalizeApiServerUrl } from "./utils/openapi-spec";
@@ -814,6 +818,7 @@ export function createApp() {
 
   const billingApi = api.route("/billing", billing);
   const projectApi = api.route("/project", project);
+  api.route("/project-access", projectAccessRoutes);
   const calendarFeedApi = api.route("/calendar-feed", calendarFeed);
   const taskApi = api.route("/task", task);
   const columnApi = api.route("/column", column);
@@ -874,6 +879,7 @@ export function createApp() {
   const customFieldApi = api.route("/custom-field", customField);
   const importApi = api.route("/import", importRoutes);
   const userApi = api.route("/user", user);
+  api.route("/ai", aiRoutes);
   const adminApi = api.route("/admin", admin);
 
   app.route(
@@ -976,6 +982,9 @@ export function createApp() {
     }),
   );
 
+  // Dev auth: chọn user rồi vào luôn (không qua màn hình đăng nhập).
+  app.route("/api/dev", devRoutes);
+
   app.route("/api", api);
 
   return {
@@ -1047,6 +1056,7 @@ export async function runStartupTasks() {
   await migrateApiKeyReferenceId();
 
   await migrateNotificationPreferencesSchema();
+  await migrateProjectSharingColumns();
   await migrateGitHubIntegration();
   await migrateColumns();
   await seedDefaultWorkspaceRoles();

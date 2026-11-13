@@ -18,6 +18,13 @@ async function updateProject(
   workspaceId: string,
   canShare: boolean,
   includeSubtasks?: boolean,
+  sharing?: {
+    shareType?: "all" | "group" | "user";
+    groupId?: string | null;
+    sharedGroupId?: string | null;
+    sharedGroupIds?: string[];
+    sharedUserIds?: string[];
+  },
 ) {
   return db.transaction(async (tx) => {
     await tx.execute(
@@ -57,18 +64,68 @@ async function updateProject(
       }
     }
 
+    const effectiveGroupId =
+      sharing?.sharedGroupId !== undefined
+        ? sharing.sharedGroupId
+        : sharing?.groupId !== undefined
+          ? sharing.groupId
+          : sharing?.sharedGroupIds?.[0];
+
+    const effectiveGroupIds =
+      sharing?.sharedGroupIds !== undefined
+        ? sharing.sharedGroupIds
+        : effectiveGroupId
+          ? [effectiveGroupId]
+          : undefined;
+
+    const effectiveUserIds = sharing?.sharedUserIds;
+
+    const setPayload: Record<string, unknown> = {
+      name,
+      icon,
+      slug,
+      description,
+      isPublic,
+      ...(includeSubtasks === undefined ? {} : { includeSubtasks }),
+    };
+
+    if (sharing?.shareType !== undefined) {
+      setPayload.shareType = sharing.shareType;
+    }
+    if (effectiveGroupId !== undefined) {
+      setPayload.groupId = effectiveGroupId;
+      setPayload.sharedGroupId = effectiveGroupId;
+    }
+    if (effectiveGroupIds !== undefined) {
+      setPayload.sharedGroupIds = effectiveGroupIds;
+    }
+    if (effectiveUserIds !== undefined) {
+      setPayload.sharedUserIds = effectiveUserIds;
+    }
+
     const [updatedProject] = await tx
       .update(projectTable)
-      .set({
-        name,
-        icon,
-        slug,
-        description,
-        isPublic,
-        ...(includeSubtasks === undefined ? {} : { includeSubtasks }),
-      })
+      .set(setPayload)
       .where(eq(projectTable.id, id))
       .returning();
+
+    if (effectiveGroupId) {
+      await tx.execute(
+        sql`INSERT INTO public.project_group (id, workspace_id, project_id, group_id)
+            VALUES (${`pg_${id}_${effectiveGroupId}`}, ${workspaceId}, ${id}, ${effectiveGroupId})
+            ON CONFLICT (project_id, group_id) DO NOTHING`,
+      );
+    }
+
+    if (sharing?.shareType === "user" && effectiveUserIds && effectiveUserIds.length > 0) {
+      for (const uid of effectiveUserIds) {
+        await tx.execute(
+          sql`INSERT INTO workspace_member_project (id, workspace_id, user_id, project_id)
+              VALUES (${`wmp_${id}_${uid}`}, ${workspaceId}, ${uid}, ${id})
+              ON CONFLICT DO NOTHING`,
+        );
+      }
+    }
 
     return updatedProject;
   });

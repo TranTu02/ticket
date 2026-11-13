@@ -17,6 +17,7 @@ export const taskSchema = z
       .string()
       .nullable()
       .openapi({ description: "The assignee, if any." }),
+    assigneeIds: z.array(z.string()).optional(),
     title: z.string(),
     description: z.string().nullable(),
     descriptionDeferred: z.boolean().optional().openapi({
@@ -30,6 +31,14 @@ export const taskSchema = z
     startDate: nullableResponseTimestamp,
     dueDate: nullableResponseTimestamp,
     recurrence: z.union([taskRecurrenceSchema, z.null()]).optional(),
+    creatorId: z.string().nullable().optional(),
+    creatorName: z.string().nullable().optional(),
+    createdBy: z.string().nullable().optional(),
+    shareType: z.string().nullable().optional(),
+    groupId: z.string().nullable().optional(),
+    sharedGroupId: z.string().nullable().optional(),
+    sharedGroupIds: z.array(z.string()).nullable().optional(),
+    sharedUserIds: z.array(z.string()).nullable().optional(),
     createdAt: responseTimestamp,
     customFields: z
       .array(z.object({ fieldId: z.string(), value: z.string() }))
@@ -72,6 +81,47 @@ export const taskByTicketIdSchema = taskWithAssigneeSchema
     }),
   })
   .openapi("TaskByTicketId");
+
+export const taskShareSchema = z
+  .object({
+    taskId: z.string(),
+    creatorId: z.string().nullable().optional(),
+    creatorName: z.string().nullable().optional(),
+    shareType: z.enum(["public", "private"]),
+    groupId: z.string().nullable().optional(),
+    sharedGroupId: z.string().nullable().optional(),
+    sharedGroupIds: z.array(z.string()),
+    sharedUserIds: z.array(z.string()),
+    assigneeIds: z.array(z.string()).optional(),
+    creator: z
+      .object({
+        id: z.string(),
+        name: z.string().nullable(),
+        email: z.string(),
+      })
+      .nullable()
+      .optional(),
+    group: z
+      .object({
+        id: z.string(),
+        name: z.string(),
+        memberCount: z.number().optional(),
+      })
+      .nullable()
+      .optional(),
+    users: z
+      .array(
+        z.object({
+          id: z.string(),
+          userId: z.string().optional(),
+          name: z.string().nullable(),
+          email: z.string(),
+          groupName: z.string().nullable().optional(),
+        }),
+      )
+      .optional(),
+  })
+  .openapi("TaskShare");
 
 const taskLabelSchema = z
   .object({ id: z.string(), name: z.string(), color: z.string() })
@@ -295,6 +345,7 @@ export const assignedTasksSchema = z
       z
         .object({
           id: z.string(),
+          parentTaskId: z.string().nullable(),
           projectId: z.string(),
           number: z.number().nullable(),
           title: z.string(),
@@ -307,6 +358,13 @@ export const assignedTasksSchema = z
           }),
           statusIcon: z.string().nullable(),
           priority: z.string().openapi({ description: priorityDescription }),
+          creatorId: z.string().nullable().optional(),
+          creatorName: z.string().nullable().optional(),
+          createdAt: responseTimestamp,
+          updatedAt: responseTimestamp.optional(),
+          createdByMe: z.boolean().optional(),
+          assignedToMe: z.boolean().optional(),
+          sharedWithMe: z.boolean().optional(),
           dueDate: nullableResponseTimestamp,
           projectName: z.string(),
           projectSlug: z.string(),

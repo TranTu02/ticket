@@ -41,6 +41,10 @@ import deleteTask from "./controllers/delete-task";
 import duplicateTask from "./controllers/duplicate-task";
 import exportTasks from "./controllers/export-tasks";
 import getAssignedTasks from "./controllers/get-assigned-tasks";
+import {
+  requireTaskCreatorOrAssignee,
+  requireTaskManagerPermission,
+} from "./controllers/require-task-permission";
 import getTaskByTicketId from "./controllers/get-task-by-ticket-id";
 import getTask from "./controllers/get-task";
 import getTasks from "./controllers/get-tasks";
@@ -57,7 +61,10 @@ import {
   requireTaskAssigneePermission,
   requireTaskRecurrencePermission,
 } from "./controllers/require-task-permission";
-import updateTask from "./controllers/update-task";
+import updateTask, {
+  getTaskShare,
+  updateTaskShare,
+} from "./controllers/update-task";
 import updateTaskAssignee from "./controllers/update-task-assignee";
 import updateTaskDescription from "./controllers/update-task-description";
 import updateTaskDueDate from "./controllers/update-task-due-date";
@@ -83,6 +90,7 @@ import {
   taskExportSchema,
   taskImportResultSchema,
   taskSchema,
+  taskShareSchema,
   taskWithAssigneeSchema,
 } from "./response";
 import {
@@ -111,6 +119,7 @@ import {
   updateRecurrenceBody,
   updateStatusBody,
   updateTaskBody,
+  updateTaskShareBody,
   updateTitleBody,
 } from "./schema";
 
@@ -119,16 +128,16 @@ const listAssignedTasksRoute = createRoute({
   operationId: "listAssignedTasks",
   path: "/assigned",
   tags: ["Tasks"],
-  summary: "List my assigned tasks",
+  summary: "List tasks related to the caller",
   description:
-    "Get the open tasks assigned to the caller across a workspace's active projects. Completed and archived tasks are excluded. Ordered by due date (undated last), then priority. At most 100 tasks are returned; total counts all of them. Set countOnly=true to return just that total without loading task rows or labels.",
+    "Get tickets created by, assigned to, or explicitly shared with the caller. Filter by workflow status, priority, or label. Results are ordered by latest modification.",
   middleware: [
     workspaceAccess.fromQuery(),
     requireWorkspacePermission({ project: ["read"], task: ["read"] }),
   ] as const,
   request: { query: assignedTasksQuery },
   responses: {
-    200: jsonResponse("Open tasks assigned to the caller", assignedTasksSchema),
+    200: jsonResponse("Tasks related to the caller", assignedTasksSchema),
     400: errorResponse("Invalid workspace ID or query parameters"),
     403: errorResponse("Missing project:read or task:read permission"),
     404: errorResponse("Workspace not found"),
@@ -355,7 +364,6 @@ const getTaskRoute = createRoute({
     "Get a single task by ID, with its assignee name. The board view omits descriptions above 64 KiB and includes task and same-project parent subtask progress.",
   middleware: [
     workspaceAccess.fromTask(),
-    requireWorkspacePermission({ task: ["read"] }),
   ] as const,
   request: {
     params: taskParam,
@@ -364,6 +372,53 @@ const getTaskRoute = createRoute({
   responses: {
     200: jsonResponse("Task details", taskWithAssigneeSchema),
     403: errorResponse("No access to the project, or missing read permission"),
+    404: errorResponse("Task not found"),
+  },
+});
+
+const getTaskShareRoute = createRoute({
+  method: "get",
+  operationId: "getTaskShare",
+  path: "/{id}/share",
+  tags: ["Tasks"],
+  summary: "Get task share configuration",
+  description:
+    "Get creator, shareType, sharedGroupId, sharedGroupIds, and sharedUserIds for a task.",
+  middleware: [workspaceAccess.fromTask()] as const,
+  request: { params: taskParam },
+  responses: {
+    200: jsonResponse("Task share details", taskShareSchema),
+    403: errorResponse("No access to the project, or missing read permission"),
+    404: errorResponse("Task not found"),
+  },
+});
+
+const updateTaskShareRoute = createRoute({
+  method: "put",
+  operationId: "updateTaskShare",
+  path: "/{id}/share",
+  tags: ["Tasks"],
+  summary: "Update task share configuration",
+  description: "Update task visibility and its selected user and group shares.",
+  middleware: [
+    workspaceAccess.fromTask(),
+    requireTaskCreatorOrAssignee,
+  ] as const,
+  request: {
+    params: taskParam,
+    body: {
+      content: {
+        "application/json": {
+          schema: updateTaskShareBody,
+        },
+      },
+    },
+  },
+  responses: {
+    200: jsonResponse("Updated task share details", taskShareSchema),
+    403: errorResponse(
+      "No access to the project, or missing update permission",
+    ),
     404: errorResponse("Task not found"),
   },
 });
@@ -532,7 +587,7 @@ const updateTaskStatusRoute = createRoute({
   description: "Move a task to another column in the same project.",
   middleware: [
     workspaceAccess.fromTask(),
-    requireWorkspacePermission({ task: ["update"] }),
+    requireTaskManagerPermission,
     requireEntitlement,
   ] as const,
   request: {
@@ -856,12 +911,14 @@ const task = apiRouter<BaseVariables & { workspaceId: string }>()
   })
   // Registered ahead of the `/{id}` routes, which would otherwise claim it.
   .openapi(listAssignedTasksRoute, async (c) => {
-    const { workspaceId, countOnly } = c.req.valid("query");
+    const { workspaceId, countOnly, status, priority, labelId } =
+      c.req.valid("query");
     return c.json(
       await getAssignedTasks(
         workspaceId,
         c.get("userId"),
         countOnly === "true",
+        { status, priority, labelId },
       ),
       200,
     );
@@ -939,6 +996,12 @@ const task = apiRouter<BaseVariables & { workspaceId: string }>()
       priority,
       status,
       userId,
+      shareType,
+      groupId,
+      sharedGroupId,
+      sharedGroupIds,
+      sharedUserIds,
+      assigneeIds,
       recurrence,
       customFields,
       draftAssetIds,
@@ -959,6 +1022,12 @@ const task = apiRouter<BaseVariables & { workspaceId: string }>()
       projectId,
       currentUserId: c.get("userId"),
       userId: userId,
+      assigneeIds,
+      shareType,
+      groupId,
+      sharedGroupId,
+      sharedGroupIds,
+      sharedUserIds,
       title,
       description,
       startDate: parsedStartDate,
@@ -1034,6 +1103,12 @@ const task = apiRouter<BaseVariables & { workspaceId: string }>()
       projectId,
       position,
       userId,
+      shareType,
+      groupId,
+      sharedGroupId,
+      sharedGroupIds,
+      sharedUserIds,
+      assigneeIds,
     } = c.req.valid("json");
 
     const currentUserId = c.get("userId");
@@ -1061,9 +1136,28 @@ const task = apiRouter<BaseVariables & { workspaceId: string }>()
       position,
       userId,
       currentUserId,
+      {
+        shareType,
+        groupId,
+        sharedGroupId,
+        sharedGroupIds,
+        sharedUserIds,
+        assigneeIds,
+      },
     );
 
     return c.json(task, 200);
+  })
+  .openapi(getTaskShareRoute, async (c) => {
+    const { id } = c.req.valid("param");
+    const share = await getTaskShare(id);
+    return c.json(share, 200);
+  })
+  .openapi(updateTaskShareRoute, async (c) => {
+    const { id } = c.req.valid("param");
+    const body = c.req.valid("json");
+    const share = await updateTaskShare(id, body);
+    return c.json(share, 200);
   })
   .openapi(exportTasksRoute, async (c) => {
     const { projectId } = c.req.valid("param");
@@ -1109,10 +1203,15 @@ const task = apiRouter<BaseVariables & { workspaceId: string }>()
   })
   .openapi(updateTaskAssigneeRoute, async (c) => {
     const { id } = c.req.valid("param");
-    const { userId } = c.req.valid("json");
+    const { userId, assigneeIds } = c.req.valid("json");
     const currentUserId = c.get("userId");
 
-    const task = await updateTaskAssignee({ id, userId, currentUserId });
+    const task = await updateTaskAssignee({
+      id,
+      userId: userId ?? null,
+      assigneeIds,
+      currentUserId,
+    });
 
     return c.json(task, 200);
   })

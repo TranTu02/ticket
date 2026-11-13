@@ -16,6 +16,11 @@ export const createProjectBody = z.object({
   workspaceId: z.string(),
   icon: z.string(),
   slug: z.string(),
+  shareType: z.enum(["all", "group", "user"]).optional(),
+  groupId: z.string().nullable().optional(),
+  sharedGroupId: z.string().nullable().optional(),
+  sharedGroupIds: z.array(z.string()).optional(),
+  sharedUserIds: z.array(z.string()).optional(),
 });
 
 export const updateProjectBody = z.object({
@@ -25,6 +30,58 @@ export const updateProjectBody = z.object({
   description: z.string(),
   isPublic: z.boolean(),
   includeSubtasks: z.boolean().optional(),
+  shareType: z.enum(["all", "group", "user"]).optional(),
+  groupId: z.string().nullable().optional(),
+  sharedGroupId: z.string().nullable().optional(),
+  sharedGroupIds: z.array(z.string()).optional(),
+  sharedUserIds: z.array(z.string()).optional(),
+});
+
+export const updateProjectShareBody = z.object({
+  shareType: z.enum(["all", "group", "user"]).default("all"),
+  groupId: z.string().nullable().optional(),
+  sharedGroupId: z.string().nullable().optional(),
+  sharedGroupIds: z.array(z.string()).optional(),
+  sharedUserIds: z.array(z.string()).optional(),
+});
+
+export const activeGroupSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  alias: z.string().nullable().optional(),
+  description: z.string().nullable().optional(),
+  memberCount: z.number(),
+  memberIds: z.array(z.string()),
+  members: z
+    .array(
+      z.object({
+        id: z.string(),
+        userId: z.string().optional(),
+        name: z.string().nullable(),
+        email: z.string(),
+      }),
+    )
+    .optional(),
+});
+
+export const activeGroupsResponseSchema = z.object({
+  groups: z.array(activeGroupSchema),
+});
+
+export const activeUserSchema = z.object({
+  id: z.string(),
+  userId: z.string().optional(),
+  name: z.string().nullable(),
+  email: z.string(),
+  groupId: z.string().nullable().optional(),
+  groupName: z.string().nullable().optional(),
+  groupIds: z.array(z.string()).optional(),
+  roles: z.array(z.string()).optional(),
+  status: z.string(),
+});
+
+export const activeUsersResponseSchema = z.object({
+  users: z.array(activeUserSchema),
 });
 
 export const reorderProjectsBody = z.object({

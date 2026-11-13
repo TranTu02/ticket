@@ -1,7 +1,14 @@
-import { and, eq, getTableColumns, sql } from "drizzle-orm";
+import { and, asc, eq, getTableColumns, inArray, or, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db from "../../database";
-import { columnTable, projectTable, taskTable } from "../../database/schema";
+import {
+  columnTable,
+  projectTable,
+  taskTable,
+  taskGroupTable,
+  teamTable,
+  userTable,
+} from "../../database/schema";
 import { publishEvent } from "../../events";
 import {
   publishTaskMutation,
@@ -27,6 +34,14 @@ async function updateTask(
   position: number,
   userId?: string,
   currentUserId?: string,
+  options?: {
+    shareType?: "public" | "private";
+    groupId?: string | null;
+    sharedGroupId?: string | null;
+    sharedGroupIds?: string[];
+    sharedUserIds?: string[];
+    assigneeIds?: string[];
+  },
 ) {
   assertTaskPosition(position);
 
@@ -61,14 +76,16 @@ async function updateTask(
 
   await assertValidTaskStatus(status, projectId);
 
-  const normalizedUserId = userId?.trim() || undefined;
-
-  if (normalizedUserId && normalizedUserId !== existingTask.userId) {
-    await assertAssignableUser(
-      normalizedUserId,
-      await getProjectWorkspaceId(projectId),
-      projectId,
-    );
+  const normalizedAssigneeIds =
+    options?.assigneeIds !== undefined
+      ? [...new Set(options.assigneeIds.map((id) => id.trim()).filter(Boolean))]
+      : userId?.trim()
+        ? [userId.trim()]
+        : [];
+  const normalizedUserId = normalizedAssigneeIds[0];
+  const assignableWorkspaceId = await getProjectWorkspaceId(projectId);
+  for (const assigneeId of normalizedAssigneeIds) {
+    await assertAssignableUser(assigneeId, assignableWorkspaceId, projectId);
   }
 
   const column = await db.query.columnTable.findFirst({
@@ -115,6 +132,24 @@ async function updateTask(
       });
     existingTask = locked;
 
+    const shareFields: Record<string, unknown> = {};
+    if (options?.shareType !== undefined) {
+      shareFields.shareType = options.shareType;
+    }
+    if (
+      options?.sharedGroupId !== undefined ||
+      options?.groupId !== undefined
+    ) {
+      const gid = options?.sharedGroupId ?? options?.groupId ?? null;
+      shareFields.sharedGroupId = gid;
+    }
+    if (options?.sharedGroupIds !== undefined) {
+      shareFields.sharedGroupIds = options.sharedGroupIds;
+    }
+    if (options?.sharedUserIds !== undefined) {
+      shareFields.sharedUserIds = options.sharedUserIds;
+    }
+
     const [task] = await tx
       .update(taskTable)
       .set({
@@ -128,6 +163,8 @@ async function updateTask(
         priority,
         position,
         userId: normalizedUserId ?? null,
+        assigneeIds: normalizedAssigneeIds,
+        ...shareFields,
       })
       .where(and(eq(taskTable.id, id), eq(taskTable.projectId, projectId)))
       .returning({
@@ -135,6 +172,26 @@ async function updateTask(
         description: boardDescription,
         descriptionDeferred,
       });
+
+    if (task && options?.sharedGroupIds !== undefined) {
+      try {
+        await tx.delete(taskGroupTable).where(eq(taskGroupTable.taskId, id));
+        if (options.sharedGroupIds.length > 0) {
+          await tx
+            .insert(taskGroupTable)
+            .values(
+              options.sharedGroupIds.map((gid) => ({
+                id: `tg_${id}_${gid}`,
+                taskId: id,
+                groupId: gid,
+              })),
+            )
+            .onConflictDoNothing();
+        }
+      } catch {
+        // ignore
+      }
+    }
     if (task)
       await recordTaskMutation(
         tx,
@@ -170,6 +227,163 @@ async function updateTask(
   });
 
   return updatedTask;
+}
+
+export async function getTaskShare(taskId: string) {
+  // One query for the task plus its creator: `creator_id` is the explicit
+  // owner, `created_by` is the legacy audit column, so either may hold the id.
+  const [task] = await db
+    .select({
+      taskId: taskTable.id,
+      creatorId: taskTable.creatorId,
+      createdBy: taskTable.createdBy,
+      shareType: taskTable.shareType,
+      sharedGroupId: taskTable.sharedGroupId,
+      sharedGroupIds: taskTable.sharedGroupIds,
+      sharedUserIds: taskTable.sharedUserIds,
+      assigneeIds: taskTable.assigneeIds,
+      creatorUserId: userTable.id,
+      creatorUserName: userTable.name,
+      creatorUserEmail: userTable.email,
+    })
+    .from(taskTable)
+    .leftJoin(
+      userTable,
+      sql`${userTable.id} = coalesce(${taskTable.creatorId}, ${taskTable.createdBy})`,
+    )
+    .where(eq(taskTable.id, taskId));
+
+  if (!task) {
+    throw new HTTPException(404, { message: "Task not found" });
+  }
+
+  const cid = task.creatorId || task.createdBy || null;
+  const effectiveGroupId =
+    task.sharedGroupId || task.sharedGroupIds?.[0] || null;
+  const effectiveGroupIds =
+    task.sharedGroupIds && task.sharedGroupIds.length > 0
+      ? task.sharedGroupIds
+      : effectiveGroupId
+        ? [effectiveGroupId]
+        : [];
+  const effectiveUserIds = task.sharedUserIds || [];
+
+  const [groupRows, sharedUsers] = await Promise.all([
+    effectiveGroupIds.length > 0
+      ? db
+          .select({
+            id: teamTable.id,
+            name: teamTable.name,
+            memberCount: teamTable.memberCount,
+          })
+          .from(teamTable)
+          .where(inArray(teamTable.id, effectiveGroupIds))
+      : Promise.resolve([]),
+    effectiveUserIds.length > 0
+      ? db
+          .select({
+            id: userTable.id,
+            userId: userTable.id,
+            name: userTable.name,
+            email: userTable.email,
+          })
+          .from(userTable)
+          .where(
+            or(
+              inArray(userTable.id, effectiveUserIds),
+              inArray(userTable.email, effectiveUserIds),
+            ),
+          )
+          .orderBy(asc(userTable.name))
+      : Promise.resolve([]),
+  ]);
+
+  const group =
+    groupRows.find((candidate) => candidate.id === effectiveGroupId) ?? null;
+
+  const creator =
+    task.creatorUserId && task.creatorUserEmail
+      ? {
+          id: task.creatorUserId,
+          name: task.creatorUserName ?? null,
+          email: task.creatorUserEmail,
+        }
+      : null;
+
+  return {
+    taskId: task.taskId,
+    creatorId: cid,
+    creatorName: creator?.name ?? null,
+    shareType: (task.shareType === "public" || task.shareType === "all"
+      ? "public"
+      : "private") as "public" | "private",
+    groupId: effectiveGroupId,
+    sharedGroupId: effectiveGroupId,
+    sharedGroupIds: effectiveGroupIds,
+    sharedUserIds: effectiveUserIds,
+    assigneeIds: task.assigneeIds ?? [],
+    creator,
+    group,
+    users: sharedUsers,
+  };
+}
+
+export async function updateTaskShare(
+  taskId: string,
+  options: {
+    shareType?: "public" | "private" | "all" | "group" | "user";
+    groupId?: string | null;
+    sharedGroupId?: string | null;
+    sharedGroupIds?: string[];
+    sharedUserIds?: string[];
+  },
+) {
+  const [existing] = await db
+    .select({ id: taskTable.id, projectId: taskTable.projectId })
+    .from(taskTable)
+    .where(eq(taskTable.id, taskId));
+
+  if (!existing) {
+    throw new HTTPException(404, { message: "Task not found" });
+  }
+
+  const gid = options.sharedGroupId ?? options.groupId ?? null;
+  const groupIds = options.sharedGroupIds ?? (gid ? [gid] : []);
+
+  await db
+    .update(taskTable)
+    .set({
+      shareType:
+        options.shareType === "all"
+          ? "public"
+          : options.shareType === "group" || options.shareType === "user"
+            ? "private"
+            : options.shareType || "public",
+      sharedGroupId: gid,
+      sharedGroupIds: groupIds,
+      sharedUserIds: options.sharedUserIds || [],
+    })
+    .where(eq(taskTable.id, taskId));
+
+  try {
+    await db.delete(taskGroupTable).where(eq(taskGroupTable.taskId, taskId));
+    if (groupIds.length > 0) {
+      await db
+        .insert(taskGroupTable)
+        .values(
+          groupIds.map((g) => ({
+            id: `tg_${taskId}_${g}`,
+            taskId,
+            groupId: g,
+          })),
+        )
+        .onConflictDoNothing();
+    }
+  } catch {
+    // ignore
+  }
+
+  return getTaskShare(taskId);
 }
 
 export default updateTask;

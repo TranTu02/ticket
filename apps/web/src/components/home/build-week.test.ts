@@ -8,6 +8,8 @@ const now = new Date(2026, 9, 2, 15, 0);
 function task(id: string, dueDate: Date | null): AssignedTask {
   return {
     id,
+    parentTaskId: null,
+    createdAt: "2026-01-01T00:00:00.000Z",
     projectId: "project-1",
     number: 1,
     title: id,

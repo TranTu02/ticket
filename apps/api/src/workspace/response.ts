@@ -22,9 +22,18 @@ export const workspaceSchema = z
 
 export const workspaceListSchema = z.array(workspaceSchema);
 
+export const workspaceMemberGroupSchema = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    isLeader: z.boolean().optional(),
+  })
+  .openapi("WorkspaceMemberGroup");
+
 export const workspaceMemberSchema = z
   .object({
     id: z.string(),
+    userId: z.string().optional(),
     name: z.string(),
     email: z.string(),
     image: z.string().nullable(),
@@ -32,10 +41,25 @@ export const workspaceMemberSchema = z
       description:
         "The member's workspace role: a built-in role (owner, admin, member, viewer) or the name of a custom role defined in the workspace. Several roles are comma-separated, for example owner,viewer.",
     }),
+    groups: z.array(workspaceMemberGroupSchema).default([]).openapi({
+      description: "Groups or teams assigned to this member.",
+    }),
+    groupIds: z.array(z.string()).default([]).openapi({
+      description: "Array of group IDs the member belongs to.",
+    }),
+    groupNames: z.string().default("").openapi({
+      description: "Comma-separated string of group names.",
+    }),
   })
   .openapi("WorkspaceMember");
 
 export const workspaceMemberListSchema = z.array(workspaceMemberSchema);
+
+export const workspaceMembersWithGroupsResponseSchema = z
+  .object({
+    members: workspaceMemberListSchema,
+  })
+  .openapi("WorkspaceMembersWithGroupsResponse");
 
 export const memberProjectAccessSchema = z
   .object({

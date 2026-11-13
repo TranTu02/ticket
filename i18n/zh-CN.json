@@ -2821,7 +2821,8 @@
 			"home": "首页",
 			"inbox": "收件箱",
 			"invitePeople": "邀请成员",
-			"myTasks": "我的任务"
+			"myTasks": "我的任务",
+			"aiChat": "AI chat"
 		},
 		"projectList": {
 			"viewProject": "查看项目",
@@ -5095,5 +5096,38 @@
 		"permissions": {
 			"photos": "Kaneo 使用你的照片为任务和评论添加图片，以及设置你的头像。"
 		}
+	},
+	"ai": {
+		"createError": "Could not create a conversation.",
+		"defaultAgent": "Assistant",
+		"emptyDescription": "The chat runs on the AI platform (Mastra) and is saved to the service schema for operations and audit.",
+		"emptyTitle": "Ask the AI platform agents",
+		"footerHint": "Runs on AI platform :4111 · conversations are stored in schema service",
+		"loadError": "Could not load the AI chat.",
+		"loading": "Loading…",
+		"newChat": "New chat",
+		"newChatTitle": "New chat",
+		"noConversations": "No conversations yet.",
+		"pageTitle": "AI assistant",
+		"placeholder": "Message the assistant… (Enter to send, Shift+Enter for a new line)",
+		"send": "Send",
+		"sendError": "Could not send the message.",
+		"stop": "Stop",
+		"thinking": "Thinking…",
+		"untitled": "Untitled",
+		"you": "You"
+	},
+	"devAuth": {
+		"empty": "No matching users.",
+		"footerHint": "A dev session is created automatically; no password screen.",
+		"inactive": "Inactive",
+		"loadError": "Could not load users.",
+		"loading": "Loading users…",
+		"loginError": "Dev sign-in failed.",
+		"pageTitle": "Dev sign-in",
+		"searchPlaceholder": "Search by name or email",
+		"signInInstead": "Use sign-in instead",
+		"subtitle": "Dev mode: pick an identity from LIMS-DEV and enter without going through sign-in.",
+		"title": "Choose a user"
 	}
 }

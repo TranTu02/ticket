@@ -9,9 +9,19 @@ export type AssignedTasks = InferResponseType<
 
 export type AssignedTask = AssignedTasks["tasks"][number];
 
-async function getAssignedTasks(workspaceId: string, countOnly = false) {
+export type RelatedTaskFilters = {
+  status?: "to-do" | "in-progress" | "in-review" | "done";
+  priority?: "no-priority" | "low" | "medium" | "high" | "urgent";
+  labelId?: string;
+};
+
+async function getAssignedTasks(
+  workspaceId: string,
+  countOnly = false,
+  filters: RelatedTaskFilters = {},
+) {
   const response = await client.task.assigned.$get({
-    query: { workspaceId, countOnly: countOnly ? "true" : "false" },
+    query: { workspaceId, countOnly: countOnly ? "true" : "false", ...filters },
   });
 
   if (!response.ok) {

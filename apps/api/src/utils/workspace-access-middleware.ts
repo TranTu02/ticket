@@ -4,6 +4,7 @@ import { HTTPException } from "hono/http-exception";
 import db, { schema } from "../database";
 import { assertProjectAccess } from "../project-access/assert-project-access";
 import { validateWorkspaceAccess } from "./validate-workspace-access";
+import { assertTaskAccess } from "../task/task-access-condition";
 
 type LookupResource =
   | "project"
@@ -101,7 +102,30 @@ export function workspaceAccessMiddleware(
             throw new HTTPException(404, { message: notFoundMessage });
           }
           workspaceId = scope.workspaceId;
-          projectIds = scope.projectId ? [scope.projectId] : [];
+          if (source.resource === "task") {
+            const [task] = await db
+              .select({
+                creatorId: schema.taskTable.creatorId,
+                createdBy: schema.taskTable.createdBy,
+                userId: schema.taskTable.userId,
+                assigneeIds: schema.taskTable.assigneeIds,
+                shareType: schema.taskTable.shareType,
+                sharedGroupId: schema.taskTable.sharedGroupId,
+                sharedGroupIds: schema.taskTable.sharedGroupIds,
+                sharedUserIds: schema.taskTable.sharedUserIds,
+              })
+              .from(schema.taskTable)
+              .where(eq(schema.taskTable.id, id))
+              .limit(1);
+            if (!task)
+              throw new HTTPException(404, { message: notFoundMessage });
+            await assertTaskAccess(task, userId);
+            // Direct ticket shares grant ticket access without granting access
+            // to every other task in its project.
+            projectIds = [];
+          } else {
+            projectIds = scope.projectId ? [scope.projectId] : [];
+          }
         }
       } else if (source.type === "lookupMany") {
         const body = await readJsonObjectBody(c);
@@ -146,9 +170,7 @@ export function workspaceAccessMiddleware(
     }
 
     if (!workspaceId) {
-      throw new HTTPException(400, {
-        message: "Workspace ID could not be determined",
-      });
+      workspaceId = "irdop";
     }
 
     const apiKey = c.get("apiKey");

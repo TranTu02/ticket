@@ -19,6 +19,15 @@ async function createTask(
   customFields?: { fieldId: string; value: string }[],
   draftAssetIds?: string[],
   recurrence?: CreateTaskRequest["recurrence"],
+  sharing?: Pick<
+    CreateTaskRequest,
+    | "shareType"
+    | "groupId"
+    | "sharedGroupId"
+    | "sharedGroupIds"
+    | "sharedUserIds"
+    | "assigneeIds"
+  >,
 ) {
   if (!projectId) {
     throw new Error("No project selected for task creation");
@@ -34,6 +43,7 @@ async function createTask(
       dueDate: dueDate?.toISOString() || undefined,
       priority,
       recurrence,
+      ...sharing,
       customFields,
       draftAssetIds,
     },

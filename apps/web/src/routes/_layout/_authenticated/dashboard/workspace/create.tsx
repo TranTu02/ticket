@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Building2, SquarePlusIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,9 @@ import { toast } from "@/lib/toast";
 export const Route = createFileRoute(
   "/_layout/_authenticated/dashboard/workspace/create",
 )({
+  beforeLoad: () => {
+    throw redirect({ to: "/dashboard" });
+  },
   component: RouteComponent,
 });
 

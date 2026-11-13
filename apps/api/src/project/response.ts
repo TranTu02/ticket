@@ -28,8 +28,42 @@ export const projectSchema = z
       description:
         "Highest task number issued in this project; the next task gets this plus one.",
     }),
+    shareType: z.string().nullable().optional(),
+    groupId: z.string().nullable().optional(),
+    sharedGroupId: z.string().nullable().optional(),
+    sharedGroupIds: z.array(z.string()).nullable().optional(),
+    sharedUserIds: z.array(z.string()).nullable().optional(),
   })
   .openapi("Project");
+
+export const projectShareSchema = z
+  .object({
+    projectId: z.string(),
+    shareType: z.string(),
+    groupId: z.string().nullable().optional(),
+    sharedGroupId: z.string().nullable().optional(),
+    sharedGroupIds: z.array(z.string()).nullable().optional(),
+    sharedUserIds: z.array(z.string()).nullable().optional(),
+    group: z
+      .object({
+        id: z.string(),
+        name: z.string(),
+        memberCount: z.number().optional(),
+      })
+      .nullable()
+      .optional(),
+    users: z
+      .array(
+        z.object({
+          id: z.string(),
+          userId: z.string().optional(),
+          name: z.string().nullable(),
+          email: z.string(),
+        }),
+      )
+      .optional(),
+  })
+  .openapi("ProjectShare");
 
 export const projectStatisticsSchema = z
   .object({

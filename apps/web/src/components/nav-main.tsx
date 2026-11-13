@@ -1,12 +1,5 @@
 import { useLocation, useNavigate } from "@tanstack/react-router";
-import {
-  CircleCheck,
-  House,
-  Inbox,
-  type LucideIcon,
-  Mail,
-  Users,
-} from "lucide-react";
+import { Bot, House, Inbox, type LucideIcon, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   SidebarGroup,
@@ -15,9 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { usePendingInvitations } from "@/hooks/queries/invitation/use-pending-invitations";
 import useGetNotifications from "@/hooks/queries/notification/use-get-notifications";
-import useGetAssignedTasks from "@/hooks/queries/task/use-get-assigned-tasks";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 import { cn } from "@/lib/cn";
 
@@ -36,9 +27,7 @@ export function NavMain() {
   const pathname = useLocation({
     select: (location) => location.pathname.replace(/\/+$/, ""),
   });
-  const { data: invitations = [] } = usePendingInvitations();
   const { data: notifications = [] } = useGetNotifications(workspace?.id);
-  const { data: assignedTasks } = useGetAssignedTasks(workspace?.id, true);
 
   if (!workspace) return null;
 
@@ -57,10 +46,9 @@ export function NavMain() {
       emphasizeCount: true,
     },
     {
-      title: t("navigation:sidebar.myTasks"),
-      icon: CircleCheck,
-      url: `${homeUrl}/my-tasks`,
-      count: assignedTasks?.total,
+      title: t("navigation:sidebar.aiChat"),
+      icon: Bot,
+      url: `${homeUrl}/chat`,
     },
     {
       title: t("navigation:sidebar.members"),
@@ -68,17 +56,6 @@ export function NavMain() {
       url: `${homeUrl}/members`,
     },
   ];
-
-  // Invitations to other workspaces only matter while one is waiting.
-  if (invitations.length > 0) {
-    navItems.push({
-      title: t("navigation:sidebar.invitations"),
-      icon: Mail,
-      url: "/dashboard/invitations",
-      count: invitations.length,
-      emphasizeCount: true,
-    });
-  }
 
   return (
     <SidebarGroup className="gap-1 p-2">

@@ -60,10 +60,7 @@ const getActivitiesRoute = createRoute({
   summary: "Get task activity",
   description:
     "Get a task's activity feed, newest first: comments alongside system events such as status and assignee changes. Set limit to request a bounded preview; omit it for the full feed.",
-  middleware: [
-    workspaceAccess.fromTaskId(),
-    requireWorkspacePermission({ task: ["read"] }),
-  ] as const,
+  middleware: [workspaceAccess.fromTaskId()] as const,
   request: { params: taskIdParam, query: activitiesQuery },
   responses: {
     200: jsonResponse("List of activities for the task", activityListSchema),

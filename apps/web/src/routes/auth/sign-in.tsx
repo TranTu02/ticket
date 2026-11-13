@@ -68,6 +68,7 @@ function SignIn() {
   const lastUsed = authClient.getLastUsedLoginMethod();
 
   const invitationId = search.invitationId;
+  const isDev = import.meta.env.DEV;
   const redirectPath = getSafeRedirectPath(search.redirect);
   const destination =
     redirectPath ??
@@ -91,10 +92,10 @@ function SignIn() {
     !autoLoginFailed;
 
   useEffect(() => {
-    if (instanceStatus?.hasUsers === false) {
+    if (!isDev && instanceStatus?.hasUsers === false) {
       navigate({ to: "/auth/sign-up", replace: true });
     }
-  }, [instanceStatus, navigate]);
+  }, [instanceStatus, isDev, navigate]);
 
   useEffect(() => {
     if (isInstanceStatusError) {
@@ -120,7 +121,7 @@ function SignIn() {
   if (
     isConfigLoading ||
     isInstanceStatusLoading ||
-    instanceStatus?.hasUsers === false
+    (!isDev && instanceStatus?.hasUsers === false)
   ) {
     return (
       <>
@@ -225,14 +226,24 @@ function SignIn() {
             invitationId={invitationId}
             email={search.email}
           />
-          {config?.hasGuestAccess && !invitationId ? (
+          {(isDev || config?.hasGuestAccess) && !invitationId ? (
             <p>
               {t("auth:signIn.footer.justLooking")}{" "}
               <button
                 type="button"
                 className={authLinkClassName}
                 disabled={captcha.pending || busy}
-                onClick={guest.signIn}
+                onClick={() => {
+                  if (isDev) {
+                    void navigate({
+                      to: "/dev-login",
+                      search: { redirect: destination },
+                    });
+                    return;
+                  }
+
+                  guest.signIn();
+                }}
               >
                 {t("auth:signUp.continueAsGuest")}
               </button>

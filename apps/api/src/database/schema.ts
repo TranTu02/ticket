@@ -524,6 +524,15 @@ export const projectTable = pgTable(
     backgroundObjectKey: text("background_object_key"),
     backgroundMimeType: text("background_mime_type"),
     backgroundVersion: text("background_version"),
+    shareType: text("share_type").notNull().default("public"),
+    groupId: text("group_id"),
+    sharedGroupId: text("shared_group_id"),
+    sharedGroupIds: text("shared_group_ids")
+      .array()
+      .default(sql`'{}'::text[]`),
+    sharedUserIds: text("shared_user_ids")
+      .array()
+      .default(sql`'{}'::text[]`),
   },
   (table) => [
     index("project_background_object_key_idx")
@@ -534,6 +543,33 @@ export const projectTable = pgTable(
       table.workspaceId,
       table.position,
     ),
+    index("project_groupId_idx").on(table.groupId),
+    index("project_shareType_idx").on(table.shareType),
+  ],
+);
+
+export const projectGroupTable = pgTable(
+  "project_group",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    workspaceId: text("workspace_id")
+      .notNull()
+      .references(() => workspaceTable.id, { onDelete: "cascade" }),
+    projectId: text("project_id").notNull(),
+    groupId: text("group_id").notNull(),
+    createdAt: timestamp("created_at", { mode: "date" })
+      .default(utcNow)
+      .notNull(),
+  },
+  (table) => [
+    unique("project_group_project_id_group_id_unique").on(
+      table.projectId,
+      table.groupId,
+    ),
+    index("project_group_projectId_idx").on(table.projectId),
+    index("project_group_groupId_idx").on(table.groupId),
   ],
 );
 
@@ -701,6 +737,10 @@ export const taskTable = pgTable(
       onDelete: "set null",
       onUpdate: "cascade",
     }),
+    assigneeIds: text("assignee_ids")
+      .array()
+      .default(sql`'{}'::text[]`)
+      .notNull(),
     title: text("title").notNull(),
     description: text("description"),
     status: text("status").notNull().default("to-do"),
@@ -712,13 +752,26 @@ export const taskTable = pgTable(
     startDate: timestamp("start_date", { mode: "date" }),
     dueDate: timestamp("due_date", { mode: "date" }),
     recurrence: jsonb("recurrence").$type<TaskRecurrence>(),
+    creatorId: text("creator_id").references(() => userTable.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    createdBy: text("created_by"),
+    shareType: text("share_type").notNull().default("all"),
+    sharedGroupId: text("shared_group_id"),
+    sharedGroupIds: text("shared_group_ids")
+      .array()
+      .default(sql`'{}'::text[]`),
+    sharedUserIds: text("shared_user_ids")
+      .array()
+      .default(sql`'{}'::text[]`),
     createdAt: timestamp("created_at", { mode: "date" })
       .default(utcNow)
       .notNull(),
     updatedAt: timestamp("updated_at", { mode: "date" })
       .default(utcNow)
-      .$onUpdate(() => new Date())
-      .notNull(),
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("task_projectId_idx").on(table.projectId),
@@ -729,8 +782,31 @@ export const taskTable = pgTable(
       ),
     index("task_dueDate_idx").on(table.dueDate),
     index("task_assigneeId_idx").on(table.userId),
+    index("task_creatorId_idx").on(table.creatorId),
+    index("task_shareType_idx").on(table.shareType),
+    index("task_sharedGroupId_idx").on(table.sharedGroupId),
     index("task_columnId_idx").on(table.columnId),
     unique("task_project_number_unique").on(table.projectId, table.number),
+  ],
+);
+
+export const taskGroupTable = pgTable(
+  "task_group",
+  {
+    id: text("id").primaryKey(),
+    taskId: text("task_id")
+      .notNull()
+      .references(() => taskTable.id, { onDelete: "cascade" }),
+    groupId: text("group_id").notNull(),
+    createdAt: timestamp("created_at").default(utcNow).notNull(),
+  },
+  (table) => [
+    unique("task_group_task_id_group_id_unique").on(
+      table.taskId,
+      table.groupId,
+    ),
+    index("task_group_taskId_idx").on(table.taskId),
+    index("task_group_groupId_idx").on(table.groupId),
   ],
 );
 
@@ -1490,6 +1566,10 @@ export const invitation = invitationTable;
 export const organizationRole = workspaceRoleTable;
 export const apikey = apikeyTable;
 export const deviceCode = deviceCodeTable;
+export const project = projectTable;
+export const projectGroup = projectGroupTable;
+export const task = taskTable;
+export const taskGroup = taskGroupTable;
 
 // Auth-schema compatible relation exports in schema.ts
 export const userRelations = relations(user, ({ many }) => ({

@@ -33,6 +33,7 @@ import {
 import { taskIsCompleted } from "../task-is-completed";
 import { isSubtask } from "../is-subtask";
 import { getSubtaskCounts } from "../get-subtask-counts";
+import { taskAccessCondition } from "../task-access-condition";
 
 export type GetTasksOptions = {
   publicOnly?: boolean;
@@ -141,6 +142,10 @@ async function getTasksPage(
     conditions.push(gte(taskTable.dueDate, new Date(options.dueAfter)));
   }
 
+  if (userId && !options.publicOnly) {
+    conditions.push(taskAccessCondition(userId));
+  }
+
   const whereClause = and(...conditions);
   const page = options.page && options.page > 0 ? options.page : 1;
   const pageSize =
@@ -190,9 +195,18 @@ async function getTasksPage(
     startDate: taskTable.startDate,
     dueDate: taskTable.dueDate,
     recurrence: taskTable.recurrence,
+    creatorId: taskTable.creatorId,
+    createdBy: taskTable.createdBy,
+    creatorName: sql<string | null>`(SELECT name FROM public."user" WHERE id = ${taskTable.creatorId} OR id = ${taskTable.createdBy} LIMIT 1)`,
+    shareType: taskTable.shareType,
+    groupId: taskTable.sharedGroupId,
+    sharedGroupId: taskTable.sharedGroupId,
+    sharedGroupIds: taskTable.sharedGroupIds,
+    sharedUserIds: taskTable.sharedUserIds,
     position: taskTable.position,
     createdAt: taskTable.createdAt,
     userId: taskTable.userId,
+    assigneeIds: taskTable.assigneeIds,
     assigneeName: userTable.name,
     assigneeId: userTable.id,
     assigneeImage: userTable.image,

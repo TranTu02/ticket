@@ -31,9 +31,15 @@ export const Route = createFileRoute("/_layout/_authenticated/dashboard/")({
     const activeWorkspaceId = session?.data?.session?.activeOrganizationId;
 
     if (workspaces && workspaces.length > 0) {
+      const targetWorkspace =
+        workspaces.find(
+          (ws) => ws.slug === "irdop" || ws.name.toLowerCase() === "irdop",
+        ) || workspaces[0];
+
       if (
         activeWorkspaceId &&
-        workspaces.some((ws) => ws.id === activeWorkspaceId)
+        workspaces.some((ws) => ws.id === activeWorkspaceId) &&
+        activeWorkspaceId === targetWorkspace.id
       ) {
         throw redirect({
           to: "/dashboard/workspace/$workspaceId",
@@ -41,15 +47,13 @@ export const Route = createFileRoute("/_layout/_authenticated/dashboard/")({
         });
       }
 
-      const firstWorkspace = workspaces[0];
-
       authClient.organization.setActive({
-        organizationId: firstWorkspace.id,
+        organizationId: targetWorkspace.id,
       });
 
       throw redirect({
         to: "/dashboard/workspace/$workspaceId",
-        params: { workspaceId: firstWorkspace.id },
+        params: { workspaceId: targetWorkspace.id },
       });
     }
     throw redirect({ to: "/onboarding" });

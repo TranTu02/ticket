@@ -8,6 +8,7 @@ import {
   customFieldDefinitionTable,
   customFieldValueTable,
   taskTable,
+  taskGroupTable,
   projectTable,
   userTable,
 } from "../../database/schema";
@@ -56,6 +57,12 @@ async function createTask({
   projectId,
   currentUserId,
   userId,
+  shareType,
+  groupId,
+  sharedGroupId,
+  sharedGroupIds,
+  sharedUserIds,
+  assigneeIds,
   title,
   status,
   startDate,
@@ -69,6 +76,12 @@ async function createTask({
   projectId: string;
   currentUserId: string;
   userId?: string;
+  shareType?: "public" | "private";
+  groupId?: string | null;
+  sharedGroupId?: string | null;
+  sharedGroupIds?: string[];
+  sharedUserIds?: string[];
+  assigneeIds?: string[];
   title: string;
   status: string;
   startDate?: Date;
@@ -83,7 +96,14 @@ async function createTask({
   const resolvedPriority = priority || "no-priority";
   const normalizedCustomFields = deduplicateCustomFields(customFields);
 
-  const normalizedUserId = userId?.trim() || undefined;
+  const normalizedAssigneeIds = [
+    ...new Set(
+      (assigneeIds ?? (userId ? [userId] : []))
+        .map((id) => id.trim())
+        .filter(Boolean),
+    ),
+  ];
+  const normalizedUserId = normalizedAssigneeIds[0];
 
   await assertValidTaskStatus(resolvedStatus, projectId);
 
@@ -133,20 +153,16 @@ async function createTask({
 
   await assertRequiredCustomFields(projectId, mergedCustomFields);
 
-  let assignee: { name: string } | undefined;
-
-  if (normalizedUserId) {
-    await assertAssignableUser(
-      normalizedUserId,
-      await getProjectWorkspaceId(projectId),
-      projectId,
-    );
-
-    [assignee] = await db
-      .select({ name: userTable.name })
-      .from(userTable)
-      .where(eq(userTable.id, normalizedUserId));
+  const workspaceId = await getProjectWorkspaceId(projectId);
+  for (const assigneeId of normalizedAssigneeIds) {
+    await assertAssignableUser(assigneeId, workspaceId, projectId);
   }
+  const assigneeRows = normalizedAssigneeIds.length
+    ? await db
+        .select({ id: userTable.id, name: userTable.name })
+        .from(userTable)
+        .where(inArray(userTable.id, normalizedAssigneeIds))
+    : [];
 
   const column = await db.query.columnTable.findFirst({
     where: and(
@@ -169,11 +185,29 @@ async function createTask({
       column?.id ?? null,
     );
 
+    const resolvedCreatorId = currentUserId;
+    const resolvedShareType = shareType || "public";
+    const resolvedSharedGroupId = sharedGroupId || groupId || null;
+    const resolvedSharedGroupIds =
+      sharedGroupIds && sharedGroupIds.length > 0
+        ? sharedGroupIds
+        : resolvedSharedGroupId
+          ? [resolvedSharedGroupId]
+          : [];
+    const resolvedSharedUserIds = sharedUserIds || [];
+
     const [task] = await tx
       .insert(taskTable)
       .values({
         projectId,
         userId: normalizedUserId ?? null,
+        assigneeIds: normalizedAssigneeIds,
+        creatorId: resolvedCreatorId,
+        createdBy: resolvedCreatorId,
+        shareType: resolvedShareType,
+        sharedGroupId: resolvedSharedGroupId,
+        sharedGroupIds: resolvedSharedGroupIds,
+        sharedUserIds: resolvedSharedUserIds,
         title: title || "",
         status: resolvedStatus,
         columnId: column?.id ?? null,
@@ -186,6 +220,23 @@ async function createTask({
         position: nextPosition,
       })
       .returning();
+
+    if (task && resolvedSharedGroupIds.length) {
+      try {
+        await tx
+          .insert(taskGroupTable)
+          .values(
+            resolvedSharedGroupIds.map((gid) => ({
+              id: `tg_${task.id}_${gid}`,
+              taskId: task.id,
+              groupId: gid,
+            })),
+          )
+          .onConflictDoNothing();
+      } catch {
+        // ignore
+      }
+    }
 
     if (task && draftAssetIds?.length) {
       const referenced = extractAssetIds(description);
@@ -255,7 +306,8 @@ async function createTask({
 
   return {
     ...createdTask,
-    assigneeName: assignee?.name,
+    assigneeName: assigneeRows[0]?.name,
+    assigneeIds: normalizedAssigneeIds,
   };
 }
 

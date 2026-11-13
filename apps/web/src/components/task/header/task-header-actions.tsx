@@ -39,7 +39,11 @@ export function TaskHeaderActions({
       >
         <GitBranch />
       </HeaderIconButton>
-      <TaskMoreMenu actions={actions} deleteHandle={deleteHandle} />
+      <TaskMoreMenu
+        taskId={taskId}
+        actions={actions}
+        deleteHandle={deleteHandle}
+      />
     </div>
   );
 }

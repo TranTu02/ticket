@@ -21,6 +21,12 @@ function useCreateTask() {
       customFields,
       draftAssetIds,
       recurrence,
+      shareType,
+      groupId,
+      sharedGroupId,
+      sharedGroupIds,
+      sharedUserIds,
+      assigneeIds,
     }: CreateTaskRequest) =>
       createTask(
         title,
@@ -34,6 +40,14 @@ function useCreateTask() {
         customFields,
         draftAssetIds,
         recurrence,
+        {
+          shareType,
+          groupId,
+          sharedGroupId,
+          sharedGroupIds,
+          sharedUserIds,
+          assigneeIds,
+        },
       ),
     onSuccess: (_data, variables) => {
       invalidateMyWork(queryClient);

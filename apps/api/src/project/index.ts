@@ -38,11 +38,18 @@ import reorderProjectsCtrl from "./controllers/reorder-projects";
 import unarchiveProjectCtrl from "./controllers/unarchive-project";
 import updateProjectCtrl from "./controllers/update-project";
 import {
+  listActiveGroups,
+  listActiveUsers,
+  getProjectShare,
+  updateProjectShare,
+} from "../project-access/controllers/project-sharing";
+import {
   movedProjectSchema,
   projectBackgroundFinalizeSchema,
   projectBackgroundUploadSchema,
   projectListSchema,
   projectSchema,
+  projectShareSchema,
   toPublicProject,
 } from "./response";
 import {
@@ -53,6 +60,9 @@ import {
   projectParam,
   reorderProjectsBody,
   updateProjectBody,
+  updateProjectShareBody,
+  activeGroupsResponseSchema,
+  activeUsersResponseSchema,
   uploadProjectBackgroundBody,
   workspaceIdQuery,
 } from "./schema";
@@ -402,6 +412,112 @@ const deleteProjectBackgroundRoute = createRoute({
   },
 });
 
+const listSharingGroupsRoute = createRoute({
+  method: "get",
+  operationId: "listSharingGroups",
+  path: "/sharing/groups",
+  tags: ["Projects"],
+  summary: "List active identity groups for project sharing",
+  responses: {
+    200: jsonResponse("List of active groups", activeGroupsResponseSchema),
+  },
+});
+
+const listSharingUsersRoute = createRoute({
+  method: "get",
+  operationId: "listSharingUsers",
+  path: "/sharing/users",
+  tags: ["Projects"],
+  summary: "List active users for project sharing",
+  responses: {
+    200: jsonResponse("List of active users", activeUsersResponseSchema),
+  },
+});
+
+const getProjectShareRoute = createRoute({
+  method: "get",
+  operationId: "getProjectShare",
+  path: "/{id}/share",
+  tags: ["Projects"],
+  summary: "Get project sharing configuration",
+  middleware: [
+    workspaceAccess.fromProject(),
+    requireWorkspacePermission({ project: ["read"] }),
+  ] as const,
+  request: { params: projectParam },
+  responses: {
+    200: jsonResponse("Project share configuration", projectShareSchema),
+    403: errorResponse("No access to the project"),
+    404: errorResponse("Project not found"),
+  },
+});
+
+const updateProjectShareRoute = createRoute({
+  method: "put",
+  operationId: "updateProjectShare",
+  path: "/{id}/share",
+  tags: ["Projects"],
+  summary: "Update project sharing configuration",
+  middleware: [
+    workspaceAccess.fromProject(),
+    requireWorkspacePermission({ project: ["share", "update"] }),
+  ] as const,
+  request: {
+    params: projectParam,
+    body: {
+      required: true,
+      content: { "application/json": { schema: updateProjectShareBody } },
+    },
+  },
+  responses: {
+    200: jsonResponse("Updated project share configuration", z.any()),
+    403: errorResponse("Missing share permission or no access to project"),
+    404: errorResponse("Project not found"),
+  },
+});
+
+const getProjectAccessRoute = createRoute({
+  method: "get",
+  operationId: "getProjectAccess",
+  path: "/{id}/access",
+  tags: ["Projects"],
+  summary: "Get project access configuration (alias)",
+  middleware: [
+    workspaceAccess.fromProject(),
+    requireWorkspacePermission({ project: ["read"] }),
+  ] as const,
+  request: { params: projectParam },
+  responses: {
+    200: jsonResponse("Project share configuration", projectShareSchema),
+    403: errorResponse("No access to the project"),
+    404: errorResponse("Project not found"),
+  },
+});
+
+const updateProjectAccessRoute = createRoute({
+  method: "put",
+  operationId: "updateProjectAccess",
+  path: "/{id}/access",
+  tags: ["Projects"],
+  summary: "Update project access configuration (alias)",
+  middleware: [
+    workspaceAccess.fromProject(),
+    requireWorkspacePermission({ project: ["share", "update"] }),
+  ] as const,
+  request: {
+    params: projectParam,
+    body: {
+      required: true,
+      content: { "application/json": { schema: updateProjectShareBody } },
+    },
+  },
+  responses: {
+    200: jsonResponse("Updated project share configuration", z.any()),
+    403: errorResponse("Missing share permission or no access to project"),
+    404: errorResponse("Project not found"),
+  },
+});
+
 const project = apiRouter<BaseVariables & { workspaceId: string }>()
   .openapi(moveProjectRoute, async (c) => {
     const { id } = c.req.valid("param");
@@ -442,8 +558,25 @@ const project = apiRouter<BaseVariables & { workspaceId: string }>()
     );
     return c.json(projects.map(toPublicProject), 200);
   })
+  .openapi(listSharingGroupsRoute, async (c) => {
+    const groups = await listActiveGroups();
+    return c.json({ groups }, 200);
+  })
+  .openapi(listSharingUsersRoute, async (c) => {
+    const users = await listActiveUsers();
+    return c.json({ users }, 200);
+  })
   .openapi(createProjectRoute, async (c) => {
-    const { name, icon, slug } = c.req.valid("json");
+    const {
+      name,
+      icon,
+      slug,
+      shareType,
+      groupId,
+      sharedGroupId,
+      sharedGroupIds,
+      sharedUserIds,
+    } = c.req.valid("json");
     const workspaceId = c.get("workspaceId");
     const newProject = await createProjectCtrl(
       workspaceId,
@@ -451,6 +584,7 @@ const project = apiRouter<BaseVariables & { workspaceId: string }>()
       icon,
       slug,
       c.get("userId"),
+      { shareType, groupId, sharedGroupId, sharedGroupIds, sharedUserIds },
     );
     return c.json(toPublicProject(newProject), 200);
   })
@@ -537,8 +671,19 @@ const project = apiRouter<BaseVariables & { workspaceId: string }>()
   })
   .openapi(updateProjectRoute, async (c) => {
     const { id } = c.req.valid("param");
-    const { name, icon, slug, description, isPublic, includeSubtasks } =
-      c.req.valid("json");
+    const {
+      name,
+      icon,
+      slug,
+      description,
+      isPublic,
+      includeSubtasks,
+      shareType,
+      groupId,
+      sharedGroupId,
+      sharedGroupIds,
+      sharedUserIds,
+    } = c.req.valid("json");
     const workspaceId = c.get("workspaceId");
     const updatedProject = await updateProjectCtrl(
       id,
@@ -550,9 +695,36 @@ const project = apiRouter<BaseVariables & { workspaceId: string }>()
       workspaceId,
       await hasWorkspacePermission(c, { project: ["share"] }),
       includeSubtasks,
+      { shareType, groupId, sharedGroupId, sharedGroupIds, sharedUserIds },
     );
     await publishEvent("project.updated", { projectId: id });
     return c.json(toPublicProject(updatedProject), 200);
+  })
+  .openapi(getProjectShareRoute, async (c) => {
+    const { id } = c.req.valid("param");
+    const workspaceId = c.get("workspaceId");
+    const share = await getProjectShare(id, workspaceId);
+    return c.json(share, 200);
+  })
+  .openapi(updateProjectShareRoute, async (c) => {
+    const { id } = c.req.valid("param");
+    const workspaceId = c.get("workspaceId");
+    const body = c.req.valid("json");
+    const updated = await updateProjectShare(id, workspaceId, body);
+    return c.json(updated, 200);
+  })
+  .openapi(getProjectAccessRoute, async (c) => {
+    const { id } = c.req.valid("param");
+    const workspaceId = c.get("workspaceId");
+    const share = await getProjectShare(id, workspaceId);
+    return c.json(share, 200);
+  })
+  .openapi(updateProjectAccessRoute, async (c) => {
+    const { id } = c.req.valid("param");
+    const workspaceId = c.get("workspaceId");
+    const body = c.req.valid("json");
+    const updated = await updateProjectShare(id, workspaceId, body);
+    return c.json(updated, 200);
   })
   .openapi(deleteProjectRoute, async (c) => {
     const { id } = c.req.valid("param");

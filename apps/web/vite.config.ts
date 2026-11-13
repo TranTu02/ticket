@@ -70,7 +70,7 @@ export default defineConfig({
   server: {
     host: true,
     hmr: true,
-    port: 5173,
+    port: Number(process.env.WEB_PORT) || 5173,
   },
   optimizeDeps: {
     exclude: ["better-auth"],

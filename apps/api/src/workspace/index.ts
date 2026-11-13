@@ -24,6 +24,7 @@ import {
   workspaceCapabilitiesSchema,
   workspaceListSchema,
   workspaceMemberListSchema,
+  workspaceMembersWithGroupsResponseSchema,
   workspaceSchema,
 } from "./response";
 import {
@@ -76,7 +77,7 @@ const getWorkspaceMembersRoute = createRoute({
   tags: ["Workspaces"],
   summary: "Get workspace members",
   description:
-    "Get all members of a workspace, with their role. Pass projectId to get only the members who can access that project.",
+    "Get all members of a workspace, with their role and assigned groups/teams. Pass projectId to get only the members who can access that project.",
   middleware: [
     workspaceAccess.fromParam("workspaceId"),
     requireWorkspacePermission({ workspace: ["read"] }),
@@ -84,6 +85,31 @@ const getWorkspaceMembersRoute = createRoute({
   request: { params: workspaceIdParam, query: workspaceMembersQuery },
   responses: {
     200: jsonResponse("List of workspace members", workspaceMemberListSchema),
+    403: errorResponse("No access to the project, or missing read permission"),
+    404: errorResponse(
+      "Workspace not found, or project not found in this workspace",
+    ),
+  },
+});
+
+const getWorkspaceMembersWithGroupsRoute = createRoute({
+  method: "get",
+  operationId: "getWorkspaceMembersWithGroups",
+  path: "/{workspaceId}/members-with-groups",
+  tags: ["Workspaces"],
+  summary: "Get workspace members with groups",
+  description:
+    "Get all members of a workspace enriched with their assigned groups/teams.",
+  middleware: [
+    workspaceAccess.fromParam("workspaceId"),
+    requireWorkspacePermission({ workspace: ["read"] }),
+  ] as const,
+  request: { params: workspaceIdParam, query: workspaceMembersQuery },
+  responses: {
+    200: jsonResponse(
+      "List of workspace members with groups",
+      workspaceMembersWithGroupsResponseSchema,
+    ),
     403: errorResponse("No access to the project, or missing read permission"),
     404: errorResponse(
       "Workspace not found, or project not found in this workspace",
@@ -199,6 +225,18 @@ const workspace = apiRouter<BaseVariables & { workspaceId: string }>()
         userId: c.get("userId"),
         projectId: c.req.valid("query").projectId,
       }),
+      200,
+    ),
+  )
+  .openapi(getWorkspaceMembersWithGroupsRoute, async (c) =>
+    c.json(
+      {
+        members: await getWorkspaceMembersCtrl({
+          workspaceId: c.get("workspaceId"),
+          userId: c.get("userId"),
+          projectId: c.req.valid("query").projectId,
+        }),
+      },
       200,
     ),
   )

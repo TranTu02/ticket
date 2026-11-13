@@ -2,6 +2,7 @@ import { useParams } from "@tanstack/react-router";
 import { Globe, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PageTitle from "@/components/page-title";
+import { ProjectSharePanel } from "@/components/project-share/project-share-panel";
 import { PublicLinkUrlRow } from "@/components/settings/project-visibility/public-link-url-row";
 import { useCanShareProject } from "@/components/settings/project-visibility/use-can-share-project";
 import { useToggleProjectPublic } from "@/components/settings/project-visibility/use-toggle-project-public";
@@ -46,6 +47,18 @@ export function ProjectVisibilityPage() {
             : undefined
         }
       >
+        <SettingsSection title="Chia sẻ theo Nhóm & Người dùng">
+          <SettingsCard className="p-6">
+            {projectId ? (
+              <ProjectSharePanel projectId={projectId} />
+            ) : (
+              <div className="text-sm text-muted-foreground">
+                Không tìm thấy thông tin dự án.
+              </div>
+            )}
+          </SettingsCard>
+        </SettingsSection>
+
         <SettingsSection title={t("settings:projectVisibility.sectionTitle")}>
           <SettingsCard>
             <SettingsRow
@@ -53,10 +66,10 @@ export function ProjectVisibilityPage() {
               title={t("settings:projectVisibility.membersTitle", {
                 workspace: workspaceName,
               })}
-              description={t("settings:projectVisibility.membersDescription")}
+              description="Quyền truy cập dự án được quản trị linh hoạt theo cấu hình chia sẻ bên trên."
             >
               <span className="text-xs text-muted-foreground">
-                {t("settings:projectVisibility.always")}
+                Được quản lý
               </span>
             </SettingsRow>
             <SettingsRow

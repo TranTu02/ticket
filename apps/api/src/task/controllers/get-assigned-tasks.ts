@@ -7,46 +7,73 @@ import {
   inArray,
   isNull,
   ne,
+  or,
+  exists,
   sql,
 } from "drizzle-orm";
 import db from "../../database";
 import {
   columnTable,
+  activityTable,
+  commentTable,
   labelTable,
   projectTable,
   taskTable,
+  teamMemberTable,
 } from "../../database/schema";
-import { projectAccessCondition } from "../../project-access/project-access-condition";
-import { taskIsCompleted } from "../task-is-completed";
 
 // Home and My tasks render this list whole, so it stays one bounded page.
 export const ASSIGNED_TASKS_LIMIT = 100;
-
-const priorityRank = sql<number>`CASE
-  WHEN ${taskTable.priority} = 'urgent' THEN 4
-  WHEN ${taskTable.priority} = 'high' THEN 3
-  WHEN ${taskTable.priority} = 'medium' THEN 2
-  WHEN ${taskTable.priority} = 'low' THEN 1
-  ELSE 0
-END`;
 
 async function getAssignedTasks(
   workspaceId: string,
   userId: string,
   countOnly = false,
+  filters: { status?: string; priority?: string; labelId?: string } = {},
 ) {
-  const openAndMine = and(
+  const relatedToMe = or(
+    eq(taskTable.creatorId, userId),
+    eq(taskTable.createdBy, userId),
+    eq(taskTable.userId, userId),
+    sql`${userId} = ANY(COALESCE(${taskTable.assigneeIds}, '{}'))`,
+    sql`${userId} = ANY(COALESCE(${taskTable.sharedUserIds}, '{}'))`,
+    exists(
+      db
+        .select({ one: sql`1` })
+        .from(teamMemberTable)
+        .where(
+          and(
+            eq(teamMemberTable.userId, userId),
+            sql`(${teamMemberTable.teamId} = ${taskTable.sharedGroupId} OR ${teamMemberTable.teamId} = ANY(COALESCE(${taskTable.sharedGroupIds}, '{}')))`,
+          ),
+        ),
+    ),
+  );
+  const queryConditions = [
     eq(projectTable.workspaceId, workspaceId),
     isNull(projectTable.archivedAt),
-    eq(taskTable.userId, userId),
     ne(taskTable.status, "archived"),
-    sql`not coalesce((
-      select ${columnTable.isFinal} from ${columnTable}
-      where ${columnTable.id} = ${taskTable.columnId}
-        and ${columnTable.projectId} = ${taskTable.projectId}
-    ), ${taskIsCompleted})`,
-    projectAccessCondition(userId, projectTable.id),
-  );
+    relatedToMe,
+  ];
+  if (filters.status)
+    queryConditions.push(eq(taskTable.status, filters.status));
+  if (filters.priority)
+    queryConditions.push(eq(taskTable.priority, filters.priority));
+  if (filters.labelId)
+    queryConditions.push(
+      exists(
+        db
+          .select({ one: sql`1` })
+          .from(labelTable)
+          .where(
+            and(
+              eq(labelTable.taskId, taskTable.id),
+              eq(labelTable.id, filters.labelId),
+            ),
+          ),
+      ),
+    );
+  const openAndMine = and(...queryConditions);
 
   const totalsQuery = db
     .select({ total: count() })
@@ -79,10 +106,19 @@ async function getAssignedTasks(
     .limit(1)
     .as("assigned_status_column");
 
+  const lastModified = sql<Date>`greatest(
+    ${taskTable.updatedAt},
+    coalesce((select max(${activityTable.updatedAt}) from ${activityTable} where ${activityTable.taskId} = ${taskTable.id}), ${taskTable.createdAt}),
+    coalesce((select max(${commentTable.updatedAt}) from ${commentTable} where ${commentTable.taskId} = ${taskTable.id}), ${taskTable.createdAt})
+  )`;
+
   const [tasks, [totals]] = await Promise.all([
     db
       .select({
         id: taskTable.id,
+        parentTaskId: sql<
+          string | null
+        >`(SELECT source_task_id FROM public.task_relation WHERE target_task_id = ${taskTable.id} AND relation_type = 'subtask' ORDER BY created_at LIMIT 1)`,
         projectId: taskTable.projectId,
         number: taskTable.number,
         title: taskTable.title,
@@ -90,6 +126,15 @@ async function getAssignedTasks(
         statusName: statusColumn.name,
         statusIcon: statusColumn.icon,
         priority: taskTable.priority,
+        creatorId: taskTable.creatorId,
+        creatorName: sql<
+          string | null
+        >`(SELECT name FROM public."user" WHERE id = ${taskTable.creatorId} OR id = ${taskTable.createdBy} LIMIT 1)`,
+        createdAt: taskTable.createdAt,
+        updatedAt: lastModified,
+        createdByMe: sql<boolean>`coalesce(${taskTable.creatorId} = ${userId} OR ${taskTable.createdBy} = ${userId}, false)`,
+        assignedToMe: sql<boolean>`coalesce(${taskTable.userId} = ${userId} OR ${userId} = ANY(COALESCE(${taskTable.assigneeIds}, '{}')), false)`,
+        sharedWithMe: sql<boolean>`(${userId} = ANY(COALESCE(${taskTable.sharedUserIds}, '{}')) OR EXISTS (SELECT 1 FROM public.team_member rel_tm WHERE rel_tm.user_id = ${userId} AND (rel_tm.team_id = ${taskTable.sharedGroupId} OR rel_tm.team_id = ANY(COALESCE(${taskTable.sharedGroupIds}, '{}')))))`,
         dueDate: taskTable.dueDate,
         projectName: projectTable.name,
         projectSlug: projectTable.slug,
@@ -99,12 +144,7 @@ async function getAssignedTasks(
       .innerJoin(projectTable, eq(taskTable.projectId, projectTable.id))
       .leftJoinLateral(statusColumn, sql`true`)
       .where(openAndMine)
-      .orderBy(
-        sql`${taskTable.dueDate} asc nulls last`,
-        desc(priorityRank),
-        asc(taskTable.createdAt),
-        asc(taskTable.id),
-      )
+      .orderBy(desc(lastModified), asc(taskTable.id))
       .limit(ASSIGNED_TASKS_LIMIT),
     totalsQuery,
   ]);

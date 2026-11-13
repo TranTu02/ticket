@@ -32,7 +32,8 @@ export const Route = createFileRoute("/_layout/_authenticated")({
     }
     if (!session && !sessionError) {
       throw redirect({
-        to: "/auth/sign-in",
+        // DEV: bỏ qua màn hình đăng nhập, chọn user ở /dev-login.
+        to: import.meta.env.DEV ? "/dev-login" : "/auth/sign-in",
         search: {
           // location.href is pathname + search + hash without the origin.
           // location.search is a null-prototype parsed object, so string

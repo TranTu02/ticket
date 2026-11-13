@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { SquarePlusIcon } from "lucide-react";
+import { Globe, SquarePlusIcon, UserCheck, Users } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -26,6 +26,8 @@ import {
 } from "@/components/ui/popover";
 import icons from "@/constants/project-icons";
 import useCreateProject from "@/hooks/mutations/project/use-create-project";
+import useGetSharingGroups from "@/hooks/queries/project/use-get-sharing-groups";
+import useGetSharingUsers from "@/hooks/queries/project/use-get-sharing-users";
 import { prefetchBoard } from "@/hooks/queries/task/prefetch-board";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 import { useCanImport } from "@/hooks/use-can-import";
@@ -46,14 +48,29 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
   const [iconPopoverOpen, setIconPopoverOpen] = useState(false);
   const [iconSearch, setIconSearch] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [shareType, setShareType] = useState<"all" | "group" | "user">("all");
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+
   const queryClient = useQueryClient();
   const { data: workspace } = useActiveWorkspace();
   const { canImport } = useCanImport();
+
+  const { data: groups = [] } = useGetSharingGroups(open);
+  const { data: users = [] } = useGetSharingUsers(open);
+
   const { mutateAsync } = useCreateProject({
     name,
     slug,
     workspaceId: workspace?.id ?? "",
     icon: selectedIcon,
+    shareType,
+    groupId: shareType === "group" ? selectedGroupId : null,
+    sharedGroupId: shareType === "group" ? selectedGroupId : null,
+    sharedGroupIds:
+      shareType === "group" && selectedGroupId ? [selectedGroupId] : [],
+    sharedUserIds: shareType === "user" ? selectedUserIds : [],
   });
   const SelectedIcon =
     icons[selectedIcon as keyof typeof icons] || icons.Layout;
@@ -66,6 +83,9 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
     setName("");
     setSlug("");
     setSelectedIcon("Layout");
+    setShareType("all");
+    setSelectedGroupId(null);
+    setSelectedUserIds([]);
     setIconPopoverOpen(false);
     setIconSearch("");
     onClose();
@@ -228,6 +248,126 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
                 })}
               </div>
             </div>
+
+            {/* Project Access Sharing */}
+            <div className="space-y-2 pt-1">
+              <label className="text-xs font-medium text-foreground">
+                Quyền truy cập dự án
+              </label>
+              <div className="grid grid-cols-3 gap-1.5 rounded-lg border bg-muted/40 p-1 text-xs">
+                <button
+                  type="button"
+                  onClick={() => setShareType("all")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 font-medium transition-colors",
+                    shareType === "all"
+                      ? "bg-background text-foreground shadow-xs"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <Globe className="size-3.5" />
+                  <span>Toàn bộ</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShareType("group")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 font-medium transition-colors",
+                    shareType === "group"
+                      ? "bg-background text-foreground shadow-xs"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <Users className="size-3.5" />
+                  <span>Theo Nhóm</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShareType("user")}
+                  className={cn(
+                    "flex items-center justify-center gap-1 rounded-md py-1.5 font-medium transition-colors",
+                    shareType === "user"
+                      ? "bg-background text-foreground shadow-xs"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <UserCheck className="size-3.5" />
+                  <span>Người dùng</span>
+                </button>
+              </div>
+
+              {shareType === "group" && (
+                <div className="space-y-1.5 pt-1">
+                  <select
+                    className="w-full rounded-md border border-input bg-background px-3 py-1.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    value={selectedGroupId || ""}
+                    onChange={(e) => setSelectedGroupId(e.target.value || null)}
+                  >
+                    <option value="">-- Chọn nhóm nhân sự --</option>
+                    {groups.map((group) => (
+                      <option key={group.id} value={group.id}>
+                        {group.name}{" "}
+                        {group.memberCount !== undefined
+                          ? `(${group.memberCount} thành viên)`
+                          : ""}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-[11px] text-muted-foreground">
+                    Chỉ các nhân sự thuộc nhóm được chọn mới có quyền truy cập
+                    dự án này.
+                  </p>
+                </div>
+              )}
+
+              {shareType === "user" && (
+                <div className="space-y-1.5 pt-1">
+                  <div className="max-h-36 overflow-y-auto rounded-md border p-1 divide-y divide-border/50 text-xs">
+                    {users.map((user) => {
+                      const isSelected = selectedUserIds.includes(user.id);
+                      return (
+                        <div
+                          key={user.id}
+                          onClick={() => {
+                            setSelectedUserIds((prev) =>
+                              isSelected
+                                ? prev.filter((id) => id !== user.id)
+                                : [...prev, user.id],
+                            );
+                          }}
+                          className={cn(
+                            "flex items-center justify-between p-1.5 cursor-pointer rounded transition-colors",
+                            isSelected
+                              ? "bg-primary/10 text-foreground font-medium"
+                              : "hover:bg-muted/50 text-muted-foreground",
+                          )}
+                        >
+                          <span className="truncate">{user.name || user.email}</span>
+                          {user.groupName && (
+                            <span className="text-[10px] text-muted-foreground ml-2 shrink-0">
+                              {user.groupName}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="flex justify-between text-[11px] text-muted-foreground">
+                    <span>Đã chọn {selectedUserIds.length} nhân sự</span>
+                    {selectedUserIds.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setSelectedUserIds([])}
+                        className="text-primary hover:underline"
+                      >
+                        Bỏ chọn
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {canImport && (
               <p className="text-muted-foreground text-xs">
                 {t("settings:workspaceImport.entry.createProjectPrompt")}{" "}

@@ -27,6 +27,13 @@ export function useTaskProperties(
     task,
     project,
     labels,
+    assignees: (task?.assigneeIds ?? (task?.userId ? [task.userId] : []))
+      .map((userId) =>
+        workspaceUsers?.members?.find((member) => member.userId === userId),
+      )
+      .filter(
+        (member): member is NonNullable<typeof member> => member !== undefined,
+      ),
     status: {
       label: getStatusDisplayLabel(task?.status ?? "", statusColumn?.name),
       isFinal: statusColumn?.isFinal ?? false,

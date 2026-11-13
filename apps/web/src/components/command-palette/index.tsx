@@ -6,7 +6,6 @@ import { Fragment, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import SearchCommandMenu from "@/components/search-command-menu";
 import CreateTaskModal from "@/components/shared/modals/create-task-modal";
-import CreateWorkspaceModal from "@/components/shared/modals/create-workspace-modal";
 import {
   Command,
   CommandCollection,
@@ -24,12 +23,9 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import { Kbd, KbdGroup } from "@/components/ui/kbd";
-import useGetConfig from "@/hooks/queries/config/use-get-config";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 import { useShortcut } from "@/lib/shortcuts/use-shortcut";
 import type { ShortcutId } from "@/lib/shortcuts/catalog";
-import { authClient } from "@/lib/auth-client";
-import { hasInstanceAdminRole } from "@/lib/instance-admin";
 import { useUserPreferencesStore } from "@/store/user-preferences";
 import CreateProjectModal from "../shared/modals/create-project-modal";
 
@@ -52,16 +48,10 @@ function CommandPalette() {
   const navigate = useNavigate();
   const location = useLocation();
   const { data: workspace } = useActiveWorkspace();
-  const { data: session } = authClient.useSession();
-  const { data: config } = useGetConfig();
-  const isAdmin = hasInstanceAdminRole(session?.user?.role);
-  const canCreateWorkspace =
-    isAdmin || (config !== undefined && !config.disableWorkspaceCreation);
   const [open, setOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCreateTaskOpen, setIsCreateTaskOpen] = useState(false);
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
-  const [isCreateWorkspaceOpen, setIsCreateWorkspaceOpen] = useState(false);
   const projectIdFromRoute =
     location.pathname.match(/\/project\/([^/]+)/)?.[1] ?? undefined;
   const isBacklogView = location.pathname.endsWith("/backlog");
@@ -132,15 +122,6 @@ function CommandPalette() {
         value: "commands",
         label: t("navigation:commandPalette.commands"),
         items: [
-          ...(canCreateWorkspace
-            ? [
-                {
-                  value: "create-workspace",
-                  label: t("navigation:commandPalette.createWorkspace"),
-                  onRun: () => setIsCreateWorkspaceOpen(true),
-                },
-              ]
-            : []),
           {
             value: "theme-light",
             label: t("navigation:commandPalette.lightTheme"),
@@ -170,7 +151,6 @@ function CommandPalette() {
       setTheme,
       t,
       workspace?.id,
-      canCreateWorkspace,
       openShortcutsPanel,
     ],
   );
@@ -258,10 +238,6 @@ function CommandPalette() {
         status={isBacklogView ? "planned" : undefined}
         onClose={() => setIsCreateTaskOpen(false)}
         instant
-      />
-      <CreateWorkspaceModal
-        open={isCreateWorkspaceOpen}
-        onClose={() => setIsCreateWorkspaceOpen(false)}
       />
       <CreateProjectModal
         open={isCreateProjectOpen}

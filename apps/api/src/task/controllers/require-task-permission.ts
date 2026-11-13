@@ -81,20 +81,84 @@ export async function requireBulkTaskEntitlement(c: Context, next: Next) {
 
 export async function requireTaskAssigneePermission(c: Context, next: Next) {
   const id = c.req.param("id");
-  const { userId } = await readJsonBody(c);
-  const nextAssignee = typeof userId === "string" ? userId : null;
+  const { userId, assigneeIds } = await readJsonBody(c);
+  const nextAssignees = Array.isArray(assigneeIds)
+    ? assigneeIds.filter((id): id is string => typeof id === "string").sort()
+    : typeof userId === "string"
+      ? [userId]
+      : [];
 
   const [existingTask] = await db
-    .select({ userId: taskTable.userId })
+    .select({ userId: taskTable.userId, assigneeIds: taskTable.assigneeIds })
     .from(taskTable)
     .where(eq(taskTable.id, id ?? ""))
     .limit(1);
 
-  if (existingTask && existingTask.userId !== nextAssignee) {
+  if (
+    existingTask &&
+    (existingTask.userId !== (nextAssignees[0] ?? null) ||
+      [...(existingTask.assigneeIds ?? [])].sort().join("\0") !==
+        nextAssignees.join("\0"))
+  ) {
     return requireWorkspacePermission({ task: ["assign"] })(c, next);
   }
 
   return next();
+}
+
+export async function requireTaskManagerPermission(c: Context, next: Next) {
+  const id = c.req.param("id");
+  const userId = c.get("userId");
+  const [task] = await db
+    .select({
+      creatorId: taskTable.creatorId,
+      createdBy: taskTable.createdBy,
+      userId: taskTable.userId,
+      assigneeIds: taskTable.assigneeIds,
+    })
+    .from(taskTable)
+    .where(eq(taskTable.id, id ?? ""))
+    .limit(1);
+
+  if (
+    task &&
+    (task.creatorId === userId ||
+      task.createdBy === userId ||
+      task.userId === userId ||
+      task.assigneeIds?.includes(userId))
+  ) {
+    return next();
+  }
+
+  return requireWorkspacePermission({ task: ["update"] })(c, next);
+}
+
+export async function requireTaskCreatorOrAssignee(c: Context, next: Next) {
+  const id = c.req.param("id");
+  const userId = c.get("userId");
+  const [task] = await db
+    .select({
+      creatorId: taskTable.creatorId,
+      createdBy: taskTable.createdBy,
+      userId: taskTable.userId,
+      assigneeIds: taskTable.assigneeIds,
+    })
+    .from(taskTable)
+    .where(eq(taskTable.id, id ?? ""))
+    .limit(1);
+
+  if (
+    task &&
+    (task.creatorId === userId ||
+      task.createdBy === userId ||
+      task.userId === userId ||
+      task.assigneeIds?.includes(userId))
+  )
+    return next();
+
+  throw new HTTPException(403, {
+    message: "Only the creator or an assignee may change ticket visibility",
+  });
 }
 
 export async function requireTaskRecurrencePermission(c: Context, next: Next) {

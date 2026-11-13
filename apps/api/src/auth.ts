@@ -45,7 +45,7 @@ import {
 import type { AccessControl } from "better-auth/plugins/access";
 import type { UserWithAnonymous } from "better-auth/plugins/anonymous";
 import { config } from "dotenv-mono";
-import { eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import {
   assertBackchannelLogoutEnv,
   resolveBackchannelLogoutConfig,
@@ -104,7 +104,6 @@ import {
   checkRegistrationAllowed,
   userExistsByEmail,
 } from "./utils/check-registration-allowed";
-import { checkWorkspaceName } from "./utils/check-workspace-name";
 import {
   assertCustomOAuthEnv,
   parseManagedProfileFields,
@@ -125,7 +124,6 @@ import {
   getWorkspaceInvitationEmailCopy,
 } from "./utils/get-workspace-invitation-email-copy";
 import { getGithubSsoOAuthCredentials } from "./utils/github-sso-env";
-import { hasInstanceAdminRole } from "./utils/instance-admin-role";
 import {
   hasRegisteredUsers,
   promoteInitialAdministrator,
@@ -554,15 +552,7 @@ export const auth = betterAuth({
       //
       // Read the current instance role rather than a session's user snapshot,
       // which can predate first-user promotion or an administrator's changes.
-      allowUserToCreateOrganization: async (user) => {
-        if (!(await getInstanceSettings()).workspaceCreationRestricted)
-          return true;
-        const [freshUser] = await db
-          .select({ role: schema.userTable.role })
-          .from(schema.userTable)
-          .where(eq(schema.userTable.id, user.id));
-        return hasInstanceAdminRole(freshUser?.role);
-      },
+      allowUserToCreateOrganization: async () => false,
       // Better Auth defaults this to `true`, which blocks any user whose email
       // is not verified from accepting/rejecting an invitation. Kaneo does not
       // verify emails on signup (and guest/anonymous users are unverified by
@@ -571,14 +561,11 @@ export const auth = betterAuth({
       // that rather than on email verification.
       requireEmailVerificationOnInvitation: false,
       organizationHooks: {
-        beforeCreateOrganization: async ({ organization }) => {
-          const check = checkWorkspaceName(organization.name ?? "");
-          if (!check.ok) {
-            throw new APIError("BAD_REQUEST", {
-              code: "INVALID_WORKSPACE_NAME",
-              message: check.reason,
-            });
-          }
+        beforeCreateOrganization: async () => {
+          throw new APIError("FORBIDDEN", {
+            code: "WORKSPACE_CREATION_DISABLED",
+            message: "Workspace creation is disabled. Application is locked to IRDOP workspace.",
+          });
         },
         afterCreateOrganization: async ({ organization, user }) => {
           // Seed the editable default roles for this workspace. Each
@@ -1257,15 +1244,37 @@ export const auth = betterAuth({
       if (ctx.path.startsWith("/sign-up") || ctx.path.startsWith("/sign-in")) {
         const newSession = ctx.context.newSession;
         if (newSession) {
-          const workspaceMember = await db
-            .select({ workspaceId: schema.workspaceUserTable.workspaceId })
-            .from(schema.workspaceUserTable)
-            .where(eq(schema.workspaceUserTable.userId, newSession.user.id))
+          const irdop = await db
+            .select({ id: schema.workspaceTable.id })
+            .from(schema.workspaceTable)
+            .where(
+              sql`${schema.workspaceTable.slug} = 'irdop' or ${schema.workspaceTable.id} = 'irdop'`,
+            )
             .limit(1);
 
-          const activeWorkspaceId = workspaceMember[0]?.workspaceId || null;
+          let activeWorkspaceId = irdop[0]?.id || null;
 
           if (activeWorkspaceId) {
+            const member = await db
+              .select({ id: schema.workspaceUserTable.id })
+              .from(schema.workspaceUserTable)
+              .where(
+                and(
+                  eq(schema.workspaceUserTable.workspaceId, activeWorkspaceId),
+                  eq(schema.workspaceUserTable.userId, newSession.user.id),
+                ),
+              )
+              .limit(1);
+
+            if (!member[0]) {
+              await db.insert(schema.workspaceUserTable).values({
+                workspaceId: activeWorkspaceId,
+                userId: newSession.user.id,
+                role: "member",
+                joinedAt: new Date(),
+              });
+            }
+
             await db
               .update(schema.sessionTable)
               .set({ activeOrganizationId: activeWorkspaceId })

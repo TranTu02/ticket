@@ -11,23 +11,36 @@ import {
 async function updateTaskAssignee({
   id,
   userId,
+  assigneeIds,
   currentUserId,
 }: {
   id: string;
   userId: string | null;
+  assigneeIds?: string[];
   currentUserId: string;
 }) {
   const { before: existingTask, after: updatedTask } = await withLockedTask(
     id,
     async (tx, existingTask) => {
-      const nextAssigneeId = userId?.trim() || null;
-      if (existingTask.userId === nextAssigneeId) {
+      const nextAssigneeIds = [
+        ...new Set(
+          (assigneeIds ?? (userId ? [userId] : []))
+            .map((id) => id.trim())
+            .filter(Boolean),
+        ),
+      ];
+      const nextAssigneeId = nextAssigneeIds[0] ?? null;
+      if (
+        existingTask.userId === nextAssigneeId &&
+        (existingTask.assigneeIds ?? []).join("\0") ===
+          nextAssigneeIds.join("\0")
+      ) {
         return existingTask;
       }
 
-      if (nextAssigneeId) {
+      for (const nextId of nextAssigneeIds) {
         await assertAssignableUser(
-          nextAssigneeId,
+          nextId,
           await getProjectWorkspaceId(existingTask.projectId, tx),
           existingTask.projectId,
           tx,
@@ -36,7 +49,7 @@ async function updateTaskAssignee({
 
       const [updatedTask] = await tx
         .update(taskTable)
-        .set({ userId: nextAssigneeId })
+        .set({ userId: nextAssigneeId, assigneeIds: nextAssigneeIds })
         .where(eq(taskTable.id, id))
         .returning();
 

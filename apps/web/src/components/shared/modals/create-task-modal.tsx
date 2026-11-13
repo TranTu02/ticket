@@ -16,6 +16,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CustomFieldChip } from "@/components/custom-fields/custom-field-chip";
+import { PersonPicker, SharePicker } from "@/components/share/share-picker";
 import {
   findMissingRequiredFields,
   isCustomFieldValueEmpty,
@@ -67,6 +68,8 @@ import useGetProjects from "@/hooks/queries/project/use-get-projects";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 import { useGetActiveWorkspaceUsers } from "@/hooks/queries/workspace-users/use-get-active-workspace-users";
 import useGetProjectMembers from "@/hooks/queries/workspace-users/use-get-project-members";
+import useGetSharingGroups from "@/hooks/queries/project/use-get-sharing-groups";
+import useGetSharingUsers from "@/hooks/queries/project/use-get-sharing-users";
 import { useWorkspacePermission } from "@/hooks/use-workspace-permission";
 import { cn } from "@/lib/cn";
 import { uploadDraftAsset } from "@/lib/upload-draft-asset";
@@ -79,6 +82,7 @@ import { useAutoGrowTextarea } from "@/hooks/use-auto-grow-textarea";
 import { stripLineBreaks } from "@/lib/strip-line-breaks";
 import useProjectStore from "@/store/project";
 import type Task from "@/types/task";
+import type { TaskShareVisibility } from "@/types/task-share";
 import type { TaskRecurrence } from "@/types/task/recurrence";
 import { getInitialTaskColumn } from "./initial-task-column";
 
@@ -241,6 +245,14 @@ function CreateTaskModalContent({
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<Priority>("no-priority");
   const [assigneeId, setAssigneeId] = useState("");
+  const [assigneeIds, setAssigneeIds] = useState<string[]>([]);
+  const [shareType, setShareType] = useState<TaskShareVisibility>("public");
+  const [sharedUserIds, setSharedUserIds] = useState<string[]>([]);
+  const [sharedGroupIds, setSharedGroupIds] = useState<string[]>([]);
+  const { data: sharingUsers = [], isLoading: loadingSharingUsers } =
+    useGetSharingUsers(open);
+  const { data: sharingGroups = [], isLoading: loadingSharingGroups } =
+    useGetSharingGroups(open);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
   const [recurrence, setRecurrence] = useState<TaskRecurrence | null>(null);
@@ -249,6 +261,7 @@ function CreateTaskModalContent({
   const [projectOpen, setProjectOpen] = useState(false);
   const [priorityOpen, setPriorityOpen] = useState(false);
   const [assigneeOpen, setAssigneeOpen] = useState(false);
+  const [assigneeSearch, setAssigneeSearch] = useState("");
   const [createMore, setCreateMore] = useState(false);
   const [labels, setLabels] = useState<Label[]>([]);
   const [discardConfirmationOpen, setDiscardConfirmationOpen] = useState(false);
@@ -409,6 +422,7 @@ function CreateTaskModalContent({
     description.trim() ||
     priority !== "no-priority" ||
     assigneeId ||
+    assigneeIds.length > 0 ||
     startDate ||
     dueDate ||
     recurrence ||
@@ -565,9 +579,20 @@ function CreateTaskModalContent({
         await createTask({
           title: title.trim(),
           description: description.trim() || "",
-          userId: selectedUser?.id ?? "",
+          userId: selectedUser?.id ?? assigneeIds[0] ?? "",
+          assigneeIds: [
+            ...new Set([
+              ...assigneeIds,
+              ...(selectedUser ? [selectedUser.id] : []),
+            ]),
+          ],
           priority,
           projectId: resolvedProjectId,
+          shareType,
+          groupId: sharedGroupIds[0] ?? null,
+          sharedGroupId: sharedGroupIds[0] ?? null,
+          sharedGroupIds,
+          sharedUserIds,
           startDate: startDate ? startDate.toISOString() : undefined,
           dueDate: dueDate ? dueDate.toISOString() : undefined,
           recurrence: canSetRecurrence ? (recurrence ?? undefined) : undefined,
@@ -615,6 +640,10 @@ function CreateTaskModalContent({
         setDescription("");
         setPriority("no-priority");
         setAssigneeId("");
+        setAssigneeIds([]);
+        setShareType("public");
+        setSharedUserIds([]);
+        setSharedGroupIds([]);
         setStartDate(undefined);
         setDueDate(undefined);
         setRecurrence(null);
@@ -778,7 +807,7 @@ function CreateTaskModalContent({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
-        className="kaneo-create-task-modal max-w-2xl max-h-[90vh] flex flex-col overflow-hidden"
+        className="kaneo-create-task-modal max-w-4xl max-h-[92vh] flex flex-col overflow-hidden"
         showCloseButton={false}
         instant={instant}
       >
@@ -979,8 +1008,19 @@ function CreateTaskModalContent({
                     </span>
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="w-48 p-1" align="start">
-                  <div className="space-y-1">
+                <PopoverContent className="w-64 p-1" align="start">
+                  <div className="flex items-center gap-2 border-b px-2">
+                    <Search className="h-3.5 w-3.5 text-muted-foreground" />
+                    <input
+                      value={assigneeSearch}
+                      onChange={(event) =>
+                        setAssigneeSearch(event.target.value)
+                      }
+                      placeholder="Tìm người theo tên"
+                      className="h-9 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                    />
+                  </div>
+                  <div className="max-h-56 space-y-1 overflow-y-auto">
                     {priorityOptions.map((option) => (
                       <button
                         key={option.value}
@@ -1059,31 +1099,46 @@ function CreateTaskModalContent({
                       </span>
                       {!selectedUser && <Check className="ml-auto h-4 w-4" />}
                     </button>
-                    {assigneeOptions.map((member) => (
-                      <button
-                        key={member.id}
-                        type="button"
-                        className="w-full flex items-center gap-2 px-2 py-1.5 text-sm hover:bg-accent/50 text-left transition-colors h-8"
-                        onClick={() => {
-                          setAssigneeId(member.id);
-                          setAssigneeOpen(false);
-                        }}
-                      >
-                        <Avatar className="h-6 w-6">
-                          <AvatarImage
-                            src={member.image ?? ""}
-                            alt={member.name}
-                          />
-                          <AvatarFallback className="text-xs font-medium border border-border/30">
-                            {getInitials(member.name)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-sm">{member.name}</span>
-                        {selectedUser?.id === member.id && (
-                          <Check className="ml-auto h-4 w-4" />
-                        )}
-                      </button>
-                    ))}
+                    {assigneeOptions
+                      .filter((member) =>
+                        member.name
+                          .toLowerCase()
+                          .includes(assigneeSearch.trim().toLowerCase()),
+                      )
+                      .map((member) => (
+                        <button
+                          key={member.id}
+                          type="button"
+                          className="w-full flex items-center gap-2 px-2 py-1.5 text-sm hover:bg-accent/50 text-left transition-colors h-8"
+                          onClick={() => {
+                            setAssigneeId(member.id);
+                            setAssigneeOpen(false);
+                          }}
+                        >
+                          <Avatar className="h-6 w-6">
+                            <AvatarImage
+                              src={member.image ?? ""}
+                              alt={member.name}
+                            />
+                            <AvatarFallback className="text-xs font-medium border border-border/30">
+                              {getInitials(member.name)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-sm">{member.name}</span>
+                          {selectedUser?.id === member.id && (
+                            <Check className="ml-auto h-4 w-4" />
+                          )}
+                        </button>
+                      ))}
+                    {assigneeOptions.filter((member) =>
+                      member.name
+                        .toLowerCase()
+                        .includes(assigneeSearch.trim().toLowerCase()),
+                    ).length === 0 && (
+                      <p className="px-2 py-4 text-center text-xs text-muted-foreground">
+                        Không tìm thấy người phù hợp
+                      </p>
+                    )}
                   </div>
                 </PopoverContent>
               </Popover>
@@ -1264,6 +1319,72 @@ function CreateTaskModalContent({
                   )}
                 </PopoverContent>
               </Popover>
+              <section className="w-full space-y-3 rounded-lg border border-border p-4">
+                <div>
+                  <h3 className="text-sm font-semibold">Quyền xem ticket</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Chọn phạm vi chia sẻ; người tạo ticket luôn giữ quyền truy
+                    cập.
+                  </p>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {(
+                    [
+                      ["public", "Public", "Thành viên workspace có thể xem"],
+                      [
+                        "private",
+                        "Private",
+                        "Chỉ người tạo, người được assign và người hoặc nhóm được chia sẻ có thể xem",
+                      ],
+                    ] as const
+                  ).map(([value, label, description]) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setShareType(value)}
+                      className={cn(
+                        "rounded-md border p-3 text-left",
+                        shareType === value
+                          ? "border-primary bg-primary/5"
+                          : "hover:bg-accent/50",
+                      )}
+                    >
+                      <span className="block text-xs font-semibold">
+                        {label}
+                      </span>
+                      <span className="mt-1 block text-[11px] text-muted-foreground">
+                        {description}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+                <SharePicker
+                  mode={shareType}
+                  showAllTargets
+                  creatorEditable={false}
+                  users={sharingUsers}
+                  groups={sharingGroups}
+                  loadingUsers={loadingSharingUsers}
+                  loadingGroups={loadingSharingGroups}
+                  creatorId={null}
+                  onCreatorIdChange={() => {}}
+                  selectedUserIds={sharedUserIds}
+                  onSelectedUserIdsChange={setSharedUserIds}
+                  selectedGroupIds={sharedGroupIds}
+                  onSelectedGroupIdsChange={setSharedGroupIds}
+                  disabled={isSubmitting}
+                />
+                <PersonPicker
+                  label="Assign ticket cho người dùng"
+                  placeholder="Chọn một hoặc nhiều người được giao"
+                  users={sharingUsers}
+                  selectedIds={assigneeIds}
+                  onChange={setAssigneeIds}
+                  multiple
+                  disabled={isSubmitting || loadingSharingUsers}
+                />
+              </section>
+
               {customFields.length > 0 && (
                 <div className="flex w-full flex-wrap items-center gap-2">
                   {customFields.map((field) => (

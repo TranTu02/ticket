@@ -29,7 +29,12 @@ async function listWorkspaces(userId: string) {
       ),
     )
     .innerJoin(userTable, eq(userTable.id, workspaceUserTable.userId))
-    .where(isNull(workspaceTable.archivedAt))
+    .where(
+      and(
+        isNull(workspaceTable.archivedAt),
+        sql`(${workspaceTable.slug} = 'irdop' or ${workspaceTable.id} = 'irdop')`,
+      ),
+    )
     .orderBy(
       sortName,
       workspaceTable.id,

@@ -38,6 +38,7 @@ type Task = {
   updatedAt?: string;
   userId: string | null;
   assigneeId: string | null;
+  assigneeIds?: string[];
   assigneeName: string | null;
   assigneeImage?: string | null;
   projectId: string;
