@@ -1,5 +1,6 @@
 import { client } from "@kaneo/libs";
 import { HttpError } from "@/lib/http-error";
+import { i18n } from "@/lib/i18n";
 
 export async function getDescriptionMatches(
   projectId: string,
@@ -17,12 +18,15 @@ export async function getDescriptionMatches(
       { init: { signal } },
     );
     if (!response.ok)
-      throw new HttpError(response.status, "Failed to search descriptions");
+      throw new HttpError(
+        response.status,
+        i18n.t("tasks:descriptionSearch.failed"),
+      );
     const page = await response.json();
     for (const id of page.ids) ids.add(id);
     if (page.nextCursor === null) break;
     if (page.nextCursor === after || page.ids.length === 0)
-      throw new Error("Description search did not advance");
+      throw new Error(i18n.t("tasks:descriptionSearch.didNotAdvance"));
     after = page.nextCursor;
   }
   signal?.throwIfAborted();

@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { authClient } from "@/lib/auth-client";
 
 type GetWorkspaceUsersRequest = {
@@ -22,6 +23,7 @@ function useGetWorkspaceUsers({
   filterOperator,
   filterValue,
 }: GetWorkspaceUsersRequest) {
+  const { t } = useTranslation();
   return useQuery({
     queryKey: [
       "workspace-users",
@@ -43,7 +45,7 @@ function useGetWorkspaceUsers({
       });
 
       if (error) {
-        throw new Error(error.message || "Failed to get workspace users");
+        throw new Error(error.message || t("team:members.loadFailed"));
       }
 
       return data.members;

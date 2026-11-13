@@ -1,4 +1,5 @@
 import { authClient } from "@/lib/auth-client";
+import { i18n } from "@/lib/i18n";
 
 type DeleteWorkspaceRequest = {
   id: string;
@@ -10,7 +11,7 @@ const deleteWorkspace = async ({ id }: DeleteWorkspaceRequest) => {
   });
 
   if (error) {
-    throw new Error(error.message || "Failed to delete workspace");
+    throw new Error(error.message || i18n.t("workspace:deleteFailed"));
   }
 
   return data;

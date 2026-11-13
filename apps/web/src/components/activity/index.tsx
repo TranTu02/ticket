@@ -405,7 +405,8 @@ function renderActivityContent({
 
   return (
     <span className="text-muted-foreground">
-      {content || toDisplayCase(activity.type)}
+      {content ||
+        t("activity:unknownType", { type: toDisplayCase(activity.type) })}
     </span>
   );
 }

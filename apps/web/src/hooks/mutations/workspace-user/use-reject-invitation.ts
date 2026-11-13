@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { authClient } from "@/lib/auth-client";
 
 type RejectInvitationRequest = {
@@ -6,6 +7,7 @@ type RejectInvitationRequest = {
 };
 
 function useRejectInvitation() {
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async ({ invitationId }: RejectInvitationRequest) => {
       const { data, error } = await authClient.organization.rejectInvitation({
@@ -13,7 +15,7 @@ function useRejectInvitation() {
       });
 
       if (error) {
-        throw new Error(error.message || "Failed to reject invitation");
+        throw new Error(error.message || t("team:invitations.rejectFailed"));
       }
 
       return data;

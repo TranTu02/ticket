@@ -117,7 +117,11 @@ async function updateProject(
       );
     }
 
-    if (sharing?.shareType === "user" && effectiveUserIds && effectiveUserIds.length > 0) {
+    if (
+      sharing?.shareType === "user" &&
+      effectiveUserIds &&
+      effectiveUserIds.length > 0
+    ) {
       for (const uid of effectiveUserIds) {
         await tx.execute(
           sql`INSERT INTO workspace_member_project (id, workspace_id, user_id, project_id)

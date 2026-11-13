@@ -128,7 +128,10 @@ export async function listActiveUsers(): Promise<ActiveUserItem[]> {
   return (result.rows as unknown as ActiveUserItem[]) || [];
 }
 
-export async function getProjectShare(projectId: string, _workspaceId?: string) {
+export async function getProjectShare(
+  projectId: string,
+  _workspaceId?: string,
+) {
   const [project] = await db
     .select({
       id: projectTable.id,
@@ -146,7 +149,10 @@ export async function getProjectShare(projectId: string, _workspaceId?: string) 
   }
 
   const effectiveGroupId =
-    project.sharedGroupId || project.groupId || project.sharedGroupIds?.[0] || null;
+    project.sharedGroupId ||
+    project.groupId ||
+    project.sharedGroupIds?.[0] ||
+    null;
   const effectiveGroupIds =
     project.sharedGroupIds && project.sharedGroupIds.length > 0
       ? project.sharedGroupIds
@@ -161,11 +167,20 @@ export async function getProjectShare(projectId: string, _workspaceId?: string) 
       SELECT id, name, member_count as "memberCount" FROM public.team WHERE id = ${effectiveGroupId} LIMIT 1
     `);
     if (groupResult.rows[0]) {
-      group = groupResult.rows[0] as { id: string; name: string; memberCount: number };
+      group = groupResult.rows[0] as {
+        id: string;
+        name: string;
+        memberCount: number;
+      };
     }
   }
 
-  let users: Array<{ id: string; userId?: string; name: string | null; email: string }> = [];
+  let users: Array<{
+    id: string;
+    userId?: string;
+    name: string | null;
+    email: string;
+  }> = [];
   if (effectiveUserIds.length > 0) {
     const usersResult = await db.execute(sql`
       SELECT u.id, u.id as "userId", u.name, u.email
@@ -173,7 +188,12 @@ export async function getProjectShare(projectId: string, _workspaceId?: string) 
       WHERE u.id = ANY(${effectiveUserIds})
          OR u.email = ANY(${effectiveUserIds})
     `);
-    users = usersResult.rows as unknown as Array<{ id: string; userId?: string; name: string | null; email: string }>;
+    users = usersResult.rows as unknown as Array<{
+      id: string;
+      userId?: string;
+      name: string | null;
+      email: string;
+    }>;
   }
 
   return {
@@ -200,7 +220,10 @@ export async function updateProjectShare(
   },
 ) {
   const effectiveGroupId =
-    sharing.sharedGroupId || sharing.groupId || sharing.sharedGroupIds?.[0] || null;
+    sharing.sharedGroupId ||
+    sharing.groupId ||
+    sharing.sharedGroupIds?.[0] ||
+    null;
   const effectiveGroupIds =
     sharing.sharedGroupIds && sharing.sharedGroupIds.length > 0
       ? sharing.sharedGroupIds

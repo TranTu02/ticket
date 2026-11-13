@@ -5,7 +5,8 @@ import db, { schema } from "../database";
 
 // Dev-only: mật khẩu chung cho mọi user được chọn ở màn hình dev login.
 // Chỉ dùng ở môi trường dev; không thay đổi user thật của LIMS.
-export const DEV_PASSWORD = process.env.DEV_AUTH_PASSWORD || "dev-password-2026";
+export const DEV_PASSWORD =
+  process.env.DEV_AUTH_PASSWORD || "dev-password-2026";
 export const IRDOP_WORKSPACE_ID = "irdop";
 export const IRDOP_WORKSPACE_SLUG = "irdop";
 export const IRDOP_WORKSPACE_NAME = "IRDOP";
@@ -56,19 +57,19 @@ async function findIdentity(identityId: string) {
            and lower(coalesce(i."identityStatus", '')) = 'active'
          limit 1`,
   );
-  return (result.rows[0] ?? null) as
-    | {
-        identityId: string;
-        email: string;
-        name: string | null;
-        roles: string[] | null;
-        groupName: string | null;
-        status: string | null;
-      }
-    | null;
+  return (result.rows[0] ?? null) as {
+    identityId: string;
+    email: string;
+    name: string | null;
+    roles: string[] | null;
+    groupName: string | null;
+    status: string | null;
+  } | null;
 }
 
-export async function listDevIdentities(query?: string): Promise<DevIdentityRow[]> {
+export async function listDevIdentities(
+  query?: string,
+): Promise<DevIdentityRow[]> {
   const search = (query ?? "").trim();
   const like = `%${search.toLowerCase()}%`;
   const result = await db.execute(
@@ -199,7 +200,10 @@ export async function devLogin(identityId: string): Promise<DevLoginResult> {
   const { userId, workspaceId } = await ensureTicketUser(identity);
 
   const response = await auth.api.signInEmail({
-    body: { email: identity.email.trim().toLowerCase(), password: DEV_PASSWORD },
+    body: {
+      email: identity.email.trim().toLowerCase(),
+      password: DEV_PASSWORD,
+    },
     asResponse: true,
   });
 

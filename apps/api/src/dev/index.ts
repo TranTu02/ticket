@@ -7,7 +7,8 @@ import { devLogin, listDevIdentities } from "./dev-user";
 export const devRoutes = new Hono();
 
 const enabled = () =>
-  process.env.DEV_AUTH_ENABLED !== "false" && process.env.NODE_ENV !== "production";
+  process.env.DEV_AUTH_ENABLED !== "false" &&
+  process.env.NODE_ENV !== "production";
 
 devRoutes.get("/users", async (c) => {
   if (!enabled()) return c.json({ users: [] });
@@ -16,7 +17,8 @@ devRoutes.get("/users", async (c) => {
 });
 
 devRoutes.post("/login", async (c) => {
-  if (!enabled()) throw new HTTPException(404, { message: "Dev auth đang tắt" });
+  if (!enabled())
+    throw new HTTPException(404, { message: "Dev auth đang tắt" });
 
   const body = (await c.req.json().catch(() => null)) as {
     identityId?: string;

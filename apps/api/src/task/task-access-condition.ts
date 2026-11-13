@@ -82,7 +82,6 @@ export async function canUserAccessTask(
   } catch {
     return false;
   }
-  return false;
 }
 
 export async function assertTaskAccess(

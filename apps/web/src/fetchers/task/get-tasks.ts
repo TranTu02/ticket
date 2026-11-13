@@ -2,6 +2,7 @@ import { client } from "@kaneo/libs";
 import type { InferResponseType } from "hono/client";
 import { HttpError } from "@/lib/http-error";
 import { loadBoardPages } from "./load-board-pages";
+import { i18n } from "@/lib/i18n";
 
 async function getTasks(
   projectId: string,
@@ -27,7 +28,7 @@ async function getTasks(
         { init: { signal } },
       );
       if (!response.ok)
-        throw new HttpError(response.status, "Failed to fetch tasks");
+        throw new HttpError(response.status, i18n.t("tasks:board.loadFailed"));
       return response.json();
     },
     signal,

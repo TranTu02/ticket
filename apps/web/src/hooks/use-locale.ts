@@ -6,7 +6,7 @@ import { authClient } from "@/lib/auth-client";
 import { getBrowserLocale, resolveLocale } from "@/lib/i18n";
 
 export function useLocale() {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const queryClient = useQueryClient();
 
   const locale = useMemo(
@@ -17,7 +17,7 @@ export function useLocale() {
   const setLocale = async (nextLocale: AppLocale) => {
     const { error } = await authClient.updateUser({ locale: nextLocale });
     if (error) {
-      throw new Error(error.message || "Failed to update locale");
+      throw new Error(error.message || t("common:language.updateFailed"));
     }
 
     const resolved = resolveLocale(nextLocale, null);

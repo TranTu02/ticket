@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { authClient } from "@/lib/auth-client";
 
 type DeleteWorkspaceRequest = {
@@ -6,6 +7,7 @@ type DeleteWorkspaceRequest = {
 };
 
 function useDeleteWorkspace() {
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async ({ workspaceId }: DeleteWorkspaceRequest) => {
       const { data, error } = await authClient.organization.delete({
@@ -13,7 +15,7 @@ function useDeleteWorkspace() {
       });
 
       if (error) {
-        throw new Error(error.message || "Failed to delete workspace");
+        throw new Error(error.message || t("workspace:deleteFailed"));
       }
 
       return data;

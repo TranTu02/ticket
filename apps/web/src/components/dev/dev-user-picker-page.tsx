@@ -24,7 +24,9 @@ function initials(name: string | null, email: string) {
   return parts.map((part) => part[0]?.toUpperCase()).join("") || "?";
 }
 
-export default function DevUserPickerPage({ redirectTo }: DevUserPickerPageProps) {
+export default function DevUserPickerPage({
+  redirectTo,
+}: DevUserPickerPageProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [users, setUsers] = useState<DevIdentity[]>([]);
@@ -43,7 +45,9 @@ export default function DevUserPickerPage({ redirectTo }: DevUserPickerPageProps
         if (!cancelled) setError("");
       } catch (cause) {
         if (!cancelled) {
-          setError(cause instanceof Error ? cause.message : t("devAuth:loadError"));
+          setError(
+            cause instanceof Error ? cause.message : t("devAuth:loadError"),
+          );
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -71,7 +75,9 @@ export default function DevUserPickerPage({ redirectTo }: DevUserPickerPageProps
       // Full reload để auth store nhận session mới.
       window.location.assign(target);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : t("devAuth:loginError"));
+      setError(
+        cause instanceof Error ? cause.message : t("devAuth:loginError"),
+      );
       setPendingId(null);
     }
   };
@@ -90,7 +96,9 @@ export default function DevUserPickerPage({ redirectTo }: DevUserPickerPageProps
               dev
             </Badge>
           </div>
-          <p className="text-muted-foreground text-sm">{t("devAuth:subtitle")}</p>
+          <p className="text-muted-foreground text-sm">
+            {t("devAuth:subtitle")}
+          </p>
         </div>
 
         <div className="border-b p-4">
@@ -164,7 +172,10 @@ export default function DevUserPickerPage({ redirectTo }: DevUserPickerPageProps
                       {pending ? (
                         <Spinner className="size-4 shrink-0" />
                       ) : (
-                        <ArrowRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                        <ArrowRight
+                          className="size-4 shrink-0 text-muted-foreground"
+                          aria-hidden
+                        />
                       )}
                     </button>
                   </li>
@@ -175,13 +186,18 @@ export default function DevUserPickerPage({ redirectTo }: DevUserPickerPageProps
         </div>
 
         {error ? (
-          <p role="alert" className="border-t bg-destructive/10 px-4 py-3 text-destructive text-sm">
+          <p
+            role="alert"
+            className="border-t bg-destructive/10 px-4 py-3 text-destructive text-sm"
+          >
             {error}
           </p>
         ) : null}
 
         <div className="flex items-center justify-between gap-3 border-t bg-muted/30 px-4 py-3">
-          <p className="text-muted-foreground text-xs">{t("devAuth:footerHint")}</p>
+          <p className="text-muted-foreground text-xs">
+            {t("devAuth:footerHint")}
+          </p>
           <Button
             type="button"
             variant="ghost"

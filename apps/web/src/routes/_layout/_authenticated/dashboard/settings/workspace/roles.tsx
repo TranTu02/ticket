@@ -548,13 +548,13 @@ export function PermissionList({
               {t(`settings:workspaceRoles.resources.${resource}`, {
                 defaultValue: Object.hasOwn(RESOURCE_LABELS, resource)
                   ? RESOURCE_LABELS[resource]
-                  : resource.charAt(0).toUpperCase() + resource.slice(1),
+                  : t("settings:workspaceRoles.resources.unknown"),
               })}
             </p>
             <div className="space-y-4">
               {actions.map((action, idx) => {
                 const meta = PERMISSION_LABELS[`${resource}:${action}`] ?? {
-                  label: `${action} ${resource}`,
+                  label: t("settings:workspaceRoles.permissions.unknownLabel"),
                   description: "",
                 };
                 const labelKey = `${resource}.${action}.label`;

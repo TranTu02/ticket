@@ -13,7 +13,8 @@
 			"filter": "Filter"
 		},
 		"a11y": {
-			"toggleSidebar": "Tampilkan/sembunyikan panel samping"
+			"toggleSidebar": "Tampilkan/sembunyikan panel samping",
+			"checkmark": "Check"
 		},
 		"sidebar": {
 			"title": "Bilah sisi",
@@ -44,7 +45,8 @@
 			"dutch": "Belanda",
 			"korean": "Korea",
 			"chinese": "Mandarin",
-			"italian": "Italia"
+			"italian": "Italia",
+			"updateFailed": "Failed to update locale"
 		},
 		"people": {
 			"someone": "Seseorang",
@@ -62,7 +64,8 @@
 				"cors": "Unable to connect to the server. This might be due to CORS configuration issues.",
 				"network": "Network error. Please check your internet connection and try again.",
 				"server": "Server error. Please try again later.",
-				"unknown": "An unexpected error occurred."
+				"unknown": "An unexpected error occurred.",
+				"instanceStatusFailed": "Failed to fetch instance status: {{message}}"
 			},
 			"troubleshootingSteps": {
 				"cors": {
@@ -182,7 +185,8 @@
 				"account_not_linked": "Identitas ini tidak dapat ditautkan ke akun yang sudah ada. Masuk dengan email untuk memverifikasi akun, lalu coba SSO lagi. Jika masuk dengan email tidak tersedia, hubungi administrator Anda.",
 				"oauth_code_verification_failed": "Verifikasi OAuth gagal. Silakan coba lagi.",
 				"registration_is_currently_disabled_you_need_a_valid_invitation_to_create_an_account_": "Pendaftaran saat ini dinonaktifkan. Anda memerlukan undangan yang valid untuk membuat akun.",
-				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Gunakan alamat email permanen. Alamat email sekali pakai tidak dapat digunakan untuk membuat akun."
+				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Gunakan alamat email permanen. Alamat email sekali pakai tidak dapat digunakan untuk membuat akun.",
+				"unknown": "Sign-in failed. Please try again."
 			},
 			"instanceStatusError": "Tidak dapat menghubungi server. Silakan coba lagi beberapa saat lagi.",
 			"heading": "Masuk ke Kaneo",
@@ -555,8 +559,11 @@
 				"title": "Masuk untuk mengotorisasi klien ini",
 				"description": "Anda akan langsung kembali ke sini untuk meninjaunya.",
 				"submit": "Masuk"
-			}
-		}
+			},
+			"authorizationInvalidOrExpired": "This authorization request is invalid or has expired.",
+			"authorizationCompleteFailed": "Could not complete the authorization request."
+		},
+		"passwordChangeFailed": "Failed to change password"
 	},
 	"settings": {
 		"advancedSettings": "Pengaturan lanjutan",
@@ -587,7 +594,11 @@
 				"removeSuccess": "Profile picture removed",
 				"updateError": "Failed to update profile picture",
 				"updateSuccess": "Profile picture updated",
-				"upload": "Unggah"
+				"upload": "Unggah",
+				"readError": "The image could not be read.",
+				"chooseFile": "Choose an image file.",
+				"tooLarge": "Choose an image smaller than 10MB.",
+				"processError": "The image could not be processed."
 			},
 			"deleteAccount": {
 				"confirm": "Delete account",
@@ -1037,7 +1048,10 @@
 			"verifyNotInstalled": "GitHub App Kaneo belum terpasang di repositori ini.",
 			"verifyReady": "GitHub App Kaneo sudah terpasang dengan izin yang diperlukan.",
 			"workflowHint": "Pindahkan tugas saat pull request dibuka atau digabungkan di",
-			"workflowLink": "Alur kerja"
+			"workflowLink": "Alur kerja",
+			"verification": {
+				"missingRepository": "Missing repository"
+			}
 		},
 		"giteaIntegration": {
 			"validation": {
@@ -1070,7 +1084,10 @@
 			"browseNeedsCredentials": "Masukkan URL Gitea dan token untuk menjelajah.",
 			"browseEmpty": "Token ini tidak dapat melihat repositori apa pun.",
 			"chooseRepositoryDescription": "Ketik owner/name atau pilih dari daftar.",
-			"webhookEvents": "Aktifkan event push, pull request, issue, komentar issue, dan create."
+			"webhookEvents": "Aktifkan event push, pull request, issue, komentar issue, dan create.",
+			"verification": {
+				"missingAccess": "Missing Gitea access"
+			}
 		},
 		"slackIntegration": {
 			"validation": {
@@ -1221,7 +1238,9 @@
 			"export": "Ekspor",
 			"exportDescription": "Unduh semua tugas di proyek ini sebagai file.",
 			"import": "Impor",
-			"importDescription": "Tambahkan tugas dari file yang sebelumnya Anda ekspor."
+			"importDescription": "Tambahkan tugas dari file yang sebelumnya Anda ekspor.",
+			"exampleTitle": "Task title",
+			"exampleDescription": "Description text"
 		},
 		"workflowEditor": {
 			"toastError": "Gagal memperbarui aturan",
@@ -1293,7 +1312,8 @@
 				"member": "Members",
 				"invitation": "Invitations",
 				"team": "Teams",
-				"ac": "Roles and permissions"
+				"ac": "Roles and permissions",
+				"unknown": "Unknown resource"
 			},
 			"permissions": {
 				"project": {
@@ -1441,7 +1461,8 @@
 						"label": "Delete roles",
 						"description": "Delete custom workspace roles."
 					}
-				}
+				},
+				"unknownLabel": "Unknown permission"
 			},
 			"validation": {
 				"nameRequired": "Nama wajib diisi",
@@ -1826,7 +1847,10 @@
 			"chooseProjectDescription": "Ketik path proyek atau pilih dari daftar.",
 			"noSearchMatchTitle": "Tidak ada proyek yang cocok",
 			"useProject": "Gunakan proyek",
-			"webhookEvents": "Aktifkan event push, issue, komentar, dan merge request."
+			"webhookEvents": "Aktifkan event push, issue, komentar, dan merge request.",
+			"verification": {
+				"missingAccess": "Missing GitLab access"
+			}
 		},
 		"calendarFeeds": {
 			"title": "Calendar feeds",
@@ -1961,7 +1985,10 @@
 			"checkoutSuccess": {
 				"title": "Terima kasih telah berlangganan",
 				"description": "Pembayaran diterima. Paket di bawah akan diperbarui setelah dikonfirmasi."
-			}
+			},
+			"checkoutStartFailed": "Could not start checkout",
+			"portalOpenFailed": "Could not open billing portal",
+			"unknownPlan": "Unknown billing plan: {{plan}}"
 		},
 		"syncRules": {
 			"addLabel": "Add label",
@@ -2788,7 +2815,8 @@
 			"title": "Webhooks",
 			"url": "URL",
 			"save": "Save"
-		}
+		},
+		"profileUpdateFailed": "Failed to update user profile"
 	},
 	"navigation": {
 		"commandPalette": {
@@ -3177,7 +3205,8 @@
 			"importedBy": "Imported by {{name}}",
 			"commentedOnForge": "berkomentar di {{forge}}"
 		},
-		"movedFromOtherProject": "moved task from another project to \"{{to}}\""
+		"movedFromOtherProject": "moved task from another project to \"{{to}}\"",
+		"unknownType": "Activity: {{type}}"
 	},
 	"tasks": {
 		"dateFilter": {
@@ -3343,7 +3372,10 @@
 				"saving": "Saving…",
 				"saveFailed": "Changes could not be saved",
 				"retrySave": "Retry"
-			}
+			},
+			"noTaskSelected": "No task selected",
+			"uploadEmptyFile": "Only non-empty file uploads are supported.",
+			"uploadFailed": "Failed to upload file to storage."
 		},
 		"entity": {
 			"task": "Tugas"
@@ -3706,7 +3738,8 @@
 			"loadErrorTitle": "Papan ini tidak termuat",
 			"loadErrorDescription": "Terjadi masalah saat mengambil tugasnya. Periksa koneksi Anda dan coba lagi.",
 			"refreshError": "Papan ini tidak dapat diperbarui, jadi mungkin belum terbaru.",
-			"tryAgain": "Coba lagi"
+			"tryAgain": "Coba lagi",
+			"loadFailed": "Failed to fetch tasks"
 		},
 		"recurrence": {
 			"daily_other": "Setiap {{count}} hari",
@@ -3771,6 +3804,53 @@
 			"startsOn": "Mulai {{date}}",
 			"beforeStart": "{{date}} sebelum tanggal mulai",
 			"afterDue": "{{date}} setelah tenggat"
+		},
+		"share": {
+			"membersCount": "{{count}} members",
+			"recipientsUpdated": "Sharing recipients updated",
+			"updateError": "Could not update sharing.",
+			"loadError": "Could not load sharing details.",
+			"retry": "Retry",
+			"addPeople": "Add people",
+			"addGroups": "Add groups",
+			"searchPeople": "Search people",
+			"searchGroups": "Search groups",
+			"noPeopleFound": "No people found",
+			"noGroupsFound": "No groups found",
+			"selectedCount": "{{count}} selected",
+			"save": "Save",
+			"visibility": "Visibility",
+			"users": "Users",
+			"groups": "Groups",
+			"creatorRetainsAccess": "Creator and assignees always retain access",
+			"public": "Public",
+			"publicDescription": "Workspace members can view this ticket. Selected users and groups are additional shares.",
+			"private": "Private",
+			"privateDescription": "Only the creator, assignees and selected users or groups can view this ticket.",
+			"currentAccess": "Current access",
+			"currentAccessPublic": "All workspace members can view this ticket. Selected people and groups are also listed below.",
+			"currentAccessPrivate": "Only selected people and groups, the creator, and assignees can view this ticket.",
+			"sharedWithGroups": "Shared with groups",
+			"noGroupsSelected": "No groups selected",
+			"sharedWithPeople": "Shared with people",
+			"noPeopleSelected": "No people selected"
+		},
+		"filter": {
+			"booleanTrue": "True",
+			"booleanFalse": "False"
+		},
+		"create": {
+			"noProjectSelected": "No project selected for task creation"
+		},
+		"descriptionSearch": {
+			"failed": "Failed to search descriptions",
+			"didNotAdvance": "Description search did not advance"
+		},
+		"description": {
+			"changedWhileLoading": "Description changed while loading",
+			"pageDidNotAdvance": "Description page did not advance",
+			"loadFailed": "Failed to load description",
+			"projectLoadFailed": "Failed to load project description"
 		}
 	},
 	"invitations": {
@@ -3928,7 +4008,19 @@
 			"manage": "Manage workspaces",
 			"otherWorkspaces": "Go to workspaces",
 			"title": "Workspace archived"
-		}
+		},
+		"roles": {
+			"createFailed": "Failed to create role",
+			"deleteFailed": "Failed to delete role",
+			"updateFailed": "Failed to update role"
+		},
+		"deleteFailed": "Failed to delete workspace",
+		"ownershipPromoteFailed": "Failed to promote new owner",
+		"ownershipDemoteFailed": "Failed to demote previous owner",
+		"updateFailed": "Failed to update workspace",
+		"createFailed": "Failed to create workspace",
+		"loadFailed": "Failed to get full workspace",
+		"listFailed": "Failed to fetch workspaces"
 	},
 	"team": {
 		"roles": {
@@ -3940,7 +4032,15 @@
 		"members": {
 			"pageTitle": "Anggota",
 			"inviteMember": "Undang anggota",
-			"you": "Anda"
+			"you": "Anda",
+			"users": "Users",
+			"groups": "Groups",
+			"members": "Members",
+			"noMembersInGroup": "No members in this group",
+			"removeFailed": "Failed to remove workspace member",
+			"updateRoleFailed": "Failed to update workspace member role",
+			"loadActiveFailed": "Failed to get active workspace user",
+			"loadFailed": "Failed to get workspace users"
 		},
 		"invitations": {
 			"linkLabel": "Tautan undangan",
@@ -3948,7 +4048,15 @@
 			"linkCopied": "Tautan undangan disalin",
 			"copyFailed": "Tidak dapat menyalin secara otomatis. Pilih tautan lalu tekan Ctrl+C.",
 			"pendingBadge": "tertunda",
-			"expires": "Kedaluwarsa {{date}}"
+			"expires": "Kedaluwarsa {{date}}",
+			"acceptFailed": "Failed to accept invitation",
+			"cancelFailed": "Failed to cancel invitation",
+			"inviteFailed": "Failed to invite workspace member",
+			"rejectFailed": "Failed to reject invitation",
+			"loadFailed": "Failed to get invitation",
+			"loadUserInvitationsFailed": "Failed to get user invitations",
+			"loadWorkspaceInvitesFailed": "Failed to get workspace invites",
+			"pendingLoadFailed": "Failed to get pending invitations"
 		},
 		"inviteModal": {
 			"title": "Undang Anggota Tim",

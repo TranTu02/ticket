@@ -13,7 +13,8 @@
 			"filter": "筛选"
 		},
 		"a11y": {
-			"toggleSidebar": "切换侧边栏"
+			"toggleSidebar": "切换侧边栏",
+			"checkmark": "Check"
 		},
 		"sidebar": {
 			"title": "侧边栏",
@@ -44,7 +45,8 @@
 			"dutch": "荷兰语",
 			"korean": "韩语",
 			"chinese": "中文",
-			"italian": "意大利语"
+			"italian": "意大利语",
+			"updateFailed": "Failed to update locale"
 		},
 		"people": {
 			"someone": "某人",
@@ -62,7 +64,8 @@
 				"network": "网络异常，请检查网络连接后重试。",
 				"auth": "身份验证失败，请重新登录。",
 				"server": "服务器错误，请稍后重试。",
-				"unknown": "发生未知错误。"
+				"unknown": "发生未知错误。",
+				"instanceStatusFailed": "Failed to fetch instance status: {{message}}"
 			},
 			"troubleshootingSteps": {
 				"cors": {
@@ -182,7 +185,8 @@
 				"account_not_linked": "该身份无法关联到现有账户。请先用邮箱登录以验证账户，然后再尝试 SSO。如果无法使用邮箱登录，请联系管理员。",
 				"oauth_code_verification_failed": "OAuth 校验失败，请重试。",
 				"registration_is_currently_disabled_you_need_a_valid_invitation_to_create_an_account_": "已关闭注册。创建账户需要有效的邀请。",
-				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "请使用长期有效的邮箱地址。一次性邮箱无法创建账户。"
+				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "请使用长期有效的邮箱地址。一次性邮箱无法创建账户。",
+				"unknown": "Sign-in failed. Please try again."
 			},
 			"instanceStatusError": "无法连接服务器，请稍后重试。",
 			"heading": "登录 Kaneo",
@@ -555,8 +559,11 @@
 				"title": "登录以授权此客户端",
 				"description": "登录后会立即返回此处进行审核。",
 				"submit": "登录"
-			}
-		}
+			},
+			"authorizationInvalidOrExpired": "This authorization request is invalid or has expired.",
+			"authorizationCompleteFailed": "Could not complete the authorization request."
+		},
+		"passwordChangeFailed": "Failed to change password"
 	},
 	"settings": {
 		"advancedSettings": "高级设置",
@@ -587,7 +594,11 @@
 				"updateError": "更新头像失败",
 				"removeSuccess": "头像已移除",
 				"removeError": "移除头像失败",
-				"upload": "上传"
+				"upload": "上传",
+				"readError": "The image could not be read.",
+				"chooseFile": "Choose an image file.",
+				"tooLarge": "Choose an image smaller than 10MB.",
+				"processError": "The image could not be processed."
 			},
 			"deleteAccount": {
 				"sectionTitle": "危险区域",
@@ -901,7 +912,8 @@
 				"member": "成员",
 				"invitation": "邀请",
 				"team": "团队",
-				"ac": "角色与权限"
+				"ac": "角色与权限",
+				"unknown": "Unknown resource"
 			},
 			"permissions": {
 				"project": {
@@ -1049,7 +1061,8 @@
 						"label": "删除",
 						"description": "可以删除自定义角色。"
 					}
-				}
+				},
+				"unknownLabel": "Unknown permission"
 			},
 			"validation": {
 				"nameRequired": "角色名称不能为空",
@@ -1281,7 +1294,10 @@
 			"verifyNotInstalled": "Kaneo GitHub App 尚未安装到此仓库。",
 			"verifyReady": "Kaneo GitHub App 已安装，并具备所需权限。",
 			"workflowHint": "要在 PR 打开或合并时移动任务，请前往",
-			"workflowLink": "工作流"
+			"workflowLink": "工作流",
+			"verification": {
+				"missingRepository": "Missing repository"
+			}
 		},
 		"giteaIntegration": {
 			"validation": {
@@ -1314,7 +1330,10 @@
 			"browseNeedsCredentials": "输入 Gitea URL 和令牌即可浏览。",
 			"browseEmpty": "此令牌看不到任何仓库。",
 			"chooseRepositoryDescription": "输入 owner/name，或从列表中选择。",
-			"webhookEvents": "启用 push、pull request、issue、issue comment 和 create 事件。"
+			"webhookEvents": "启用 push、pull request、issue、issue comment 和 create 事件。",
+			"verification": {
+				"missingAccess": "Missing Gitea access"
+			}
 		},
 		"slackIntegration": {
 			"validation": {
@@ -1483,7 +1502,9 @@
 			"export": "导出",
 			"exportDescription": "将此项目中的所有任务下载为文件。",
 			"import": "导入",
-			"importDescription": "从之前导出的文件中添加任务。"
+			"importDescription": "从之前导出的文件中添加任务。",
+			"exampleTitle": "Task title",
+			"exampleDescription": "Description text"
 		},
 		"workflowEditor": {
 			"toastError": "更新规则失败",
@@ -1826,7 +1847,10 @@
 			"chooseProjectDescription": "输入路径，或从列表中选择。",
 			"noSearchMatchTitle": "没有匹配的项目",
 			"useProject": "使用此项目",
-			"webhookEvents": "启用 push、issue、comment 和 merge request 事件。"
+			"webhookEvents": "启用 push、issue、comment 和 merge request 事件。",
+			"verification": {
+				"missingAccess": "Missing GitLab access"
+			}
 		},
 		"calendarFeeds": {
 			"title": "日历订阅",
@@ -1961,7 +1985,10 @@
 			"checkoutSuccess": {
 				"title": "感谢订阅",
 				"description": "已收到付款。确认后，下方的方案会随即更新。"
-			}
+			},
+			"checkoutStartFailed": "Could not start checkout",
+			"portalOpenFailed": "Could not open billing portal",
+			"unknownPlan": "Unknown billing plan: {{plan}}"
 		},
 		"syncRules": {
 			"addLabel": "添加标签",
@@ -2788,7 +2815,8 @@
 			"title": "Webhooks",
 			"url": "URL",
 			"save": "Save"
-		}
+		},
+		"profileUpdateFailed": "Failed to update user profile"
 	},
 	"navigation": {
 		"commandPalette": {
@@ -3177,7 +3205,8 @@
 			"importedBy": "由 {{name}} 导入",
 			"commentedOnForge": "在 {{forge}} 上评论"
 		},
-		"movedFromOtherProject": "将任务从其它项目移动到「{{to}}」"
+		"movedFromOtherProject": "将任务从其它项目移动到「{{to}}」",
+		"unknownType": "Activity: {{type}}"
 	},
 	"tasks": {
 		"dateFilter": {
@@ -3343,7 +3372,10 @@
 				"saving": "正在保存…",
 				"saveFailed": "更改保存失败",
 				"retrySave": "重试"
-			}
+			},
+			"noTaskSelected": "No task selected",
+			"uploadEmptyFile": "Only non-empty file uploads are supported.",
+			"uploadFailed": "Failed to upload file to storage."
 		},
 		"entity": {
 			"task": "任务"
@@ -3706,7 +3738,8 @@
 			"loadErrorTitle": "此看板未能加载",
 			"loadErrorDescription": "获取任务时出错。请检查网络连接后重试。",
 			"refreshError": "无法刷新此看板，内容可能不是最新的。",
-			"tryAgain": "重试"
+			"tryAgain": "重试",
+			"loadFailed": "Failed to fetch tasks"
 		},
 		"recurrence": {
 			"daily_other": "每 {{count}} 天",
@@ -3771,6 +3804,53 @@
 			"startsOn": "开始于 {{date}}",
 			"beforeStart": "{{date}} 早于开始日期",
 			"afterDue": "{{date}} 晚于截止日期"
+		},
+		"share": {
+			"membersCount": "{{count}} members",
+			"recipientsUpdated": "Sharing recipients updated",
+			"updateError": "Could not update sharing.",
+			"loadError": "Could not load sharing details.",
+			"retry": "Retry",
+			"addPeople": "Add people",
+			"addGroups": "Add groups",
+			"searchPeople": "Search people",
+			"searchGroups": "Search groups",
+			"noPeopleFound": "No people found",
+			"noGroupsFound": "No groups found",
+			"selectedCount": "{{count}} selected",
+			"save": "Save",
+			"visibility": "Visibility",
+			"users": "Users",
+			"groups": "Groups",
+			"creatorRetainsAccess": "Creator and assignees always retain access",
+			"public": "Public",
+			"publicDescription": "Workspace members can view this ticket. Selected users and groups are additional shares.",
+			"private": "Private",
+			"privateDescription": "Only the creator, assignees and selected users or groups can view this ticket.",
+			"currentAccess": "Current access",
+			"currentAccessPublic": "All workspace members can view this ticket. Selected people and groups are also listed below.",
+			"currentAccessPrivate": "Only selected people and groups, the creator, and assignees can view this ticket.",
+			"sharedWithGroups": "Shared with groups",
+			"noGroupsSelected": "No groups selected",
+			"sharedWithPeople": "Shared with people",
+			"noPeopleSelected": "No people selected"
+		},
+		"filter": {
+			"booleanTrue": "True",
+			"booleanFalse": "False"
+		},
+		"create": {
+			"noProjectSelected": "No project selected for task creation"
+		},
+		"descriptionSearch": {
+			"failed": "Failed to search descriptions",
+			"didNotAdvance": "Description search did not advance"
+		},
+		"description": {
+			"changedWhileLoading": "Description changed while loading",
+			"pageDidNotAdvance": "Description page did not advance",
+			"loadFailed": "Failed to load description",
+			"projectLoadFailed": "Failed to load project description"
 		}
 	},
 	"invitations": {
@@ -3928,7 +4008,19 @@
 			"manage": "Manage workspaces",
 			"otherWorkspaces": "Go to workspaces",
 			"title": "Workspace archived"
-		}
+		},
+		"roles": {
+			"createFailed": "Failed to create role",
+			"deleteFailed": "Failed to delete role",
+			"updateFailed": "Failed to update role"
+		},
+		"deleteFailed": "Failed to delete workspace",
+		"ownershipPromoteFailed": "Failed to promote new owner",
+		"ownershipDemoteFailed": "Failed to demote previous owner",
+		"updateFailed": "Failed to update workspace",
+		"createFailed": "Failed to create workspace",
+		"loadFailed": "Failed to get full workspace",
+		"listFailed": "Failed to fetch workspaces"
 	},
 	"team": {
 		"roles": {
@@ -3940,7 +4032,15 @@
 		"members": {
 			"pageTitle": "成员",
 			"inviteMember": "邀请成员",
-			"you": "你"
+			"you": "你",
+			"users": "Users",
+			"groups": "Groups",
+			"members": "Members",
+			"noMembersInGroup": "No members in this group",
+			"removeFailed": "Failed to remove workspace member",
+			"updateRoleFailed": "Failed to update workspace member role",
+			"loadActiveFailed": "Failed to get active workspace user",
+			"loadFailed": "Failed to get workspace users"
 		},
 		"invitations": {
 			"pendingBadge": "待处理",
@@ -3948,7 +4048,15 @@
 			"linkLabel": "邀请链接",
 			"copyLink": "复制链接",
 			"linkCopied": "邀请链接已复制",
-			"copyFailed": "无法自动复制，请选中链接后按 Ctrl+C。"
+			"copyFailed": "无法自动复制，请选中链接后按 Ctrl+C。",
+			"acceptFailed": "Failed to accept invitation",
+			"cancelFailed": "Failed to cancel invitation",
+			"inviteFailed": "Failed to invite workspace member",
+			"rejectFailed": "Failed to reject invitation",
+			"loadFailed": "Failed to get invitation",
+			"loadUserInvitationsFailed": "Failed to get user invitations",
+			"loadWorkspaceInvitesFailed": "Failed to get workspace invites",
+			"pendingLoadFailed": "Failed to get pending invitations"
 		},
 		"inviteModal": {
 			"title": "邀请团队成员",

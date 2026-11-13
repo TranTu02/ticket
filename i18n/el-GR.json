@@ -13,7 +13,8 @@
 			"filter": "Φίλτρο"
 		},
 		"a11y": {
-			"toggleSidebar": "Εναλλαγή πλαϊνής μπάρας"
+			"toggleSidebar": "Εναλλαγή πλαϊνής μπάρας",
+			"checkmark": "Check"
 		},
 		"sidebar": {
 			"title": "Πλαϊνή μπάρα",
@@ -44,7 +45,8 @@
 			"dutch": "Ολλανδικά",
 			"korean": "Κορεατικά",
 			"chinese": "Κινεζικά",
-			"italian": "Ιταλικά"
+			"italian": "Ιταλικά",
+			"updateFailed": "Failed to update locale"
 		},
 		"people": {
 			"someone": "Κάποιος",
@@ -62,7 +64,8 @@
 				"cors": "Unable to connect to the server. This might be due to CORS configuration issues.",
 				"network": "Network error. Please check your internet connection and try again.",
 				"server": "Server error. Please try again later.",
-				"unknown": "An unexpected error occurred."
+				"unknown": "An unexpected error occurred.",
+				"instanceStatusFailed": "Failed to fetch instance status: {{message}}"
 			},
 			"troubleshootingSteps": {
 				"cors": {
@@ -182,7 +185,8 @@
 				"account_not_linked": "Αυτή η ταυτότητα δεν ήταν δυνατό να συνδεθεί με τον υπάρχοντα λογαριασμό. Συνδεθείτε με email για να επαληθεύσετε τον λογαριασμό και έπειτα δοκιμάστε ξανά το SSO. Αν η σύνδεση με email δεν είναι διαθέσιμη, επικοινωνήστε με τον διαχειριστή σας.",
 				"oauth_code_verification_failed": "Η επαλήθευση OAuth απέτυχε. Δοκιμάστε ξανά.",
 				"registration_is_currently_disabled_you_need_a_valid_invitation_to_create_an_account_": "Η εγγραφή είναι προς το παρόν απενεργοποιημένη. Χρειάζεστε έγκυρη πρόσκληση για να δημιουργήσετε λογαριασμό.",
-				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Χρησιμοποιήστε μια μόνιμη διεύθυνση email. Με προσωρινές διευθύνσεις δεν μπορούν να δημιουργηθούν λογαριασμοί."
+				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Χρησιμοποιήστε μια μόνιμη διεύθυνση email. Με προσωρινές διευθύνσεις δεν μπορούν να δημιουργηθούν λογαριασμοί.",
+				"unknown": "Sign-in failed. Please try again."
 			},
 			"instanceStatusError": "Δεν ήταν δυνατή η επικοινωνία με τον διακομιστή. Δοκιμάστε ξανά σε λίγο.",
 			"heading": "Σύνδεση στο Kaneo",
@@ -560,8 +564,11 @@
 				"title": "Συνδεθείτε για να εξουσιοδοτήσετε αυτόν τον πελάτη",
 				"description": "Θα επιστρέψετε αμέσως εδώ για να το ελέγξετε.",
 				"submit": "Σύνδεση"
-			}
-		}
+			},
+			"authorizationInvalidOrExpired": "This authorization request is invalid or has expired.",
+			"authorizationCompleteFailed": "Could not complete the authorization request."
+		},
+		"passwordChangeFailed": "Failed to change password"
 	},
 	"settings": {
 		"advancedSettings": "Σύνθετες ρυθμίσεις",
@@ -592,7 +599,11 @@
 				"removeSuccess": "Profile picture removed",
 				"updateError": "Failed to update profile picture",
 				"updateSuccess": "Profile picture updated",
-				"upload": "Μεταφόρτωση"
+				"upload": "Μεταφόρτωση",
+				"readError": "The image could not be read.",
+				"chooseFile": "Choose an image file.",
+				"tooLarge": "Choose an image smaller than 10MB.",
+				"processError": "The image could not be processed."
 			},
 			"deleteAccount": {
 				"confirm": "Delete account",
@@ -1045,7 +1056,10 @@
 			"verifyNotInstalled": "Η εφαρμογή Kaneo GitHub δεν είναι εγκατεστημένη σε αυτό το αποθετήριο.",
 			"verifyReady": "Η εφαρμογή Kaneo GitHub είναι εγκατεστημένη με τα δικαιώματα που χρειάζεται.",
 			"workflowHint": "Μετακινήστε εργασίες όταν ανοίγουν ή συγχωνεύονται pull requests στη",
-			"workflowLink": "Ροή εργασίας"
+			"workflowLink": "Ροή εργασίας",
+			"verification": {
+				"missingRepository": "Missing repository"
+			}
 		},
 		"giteaIntegration": {
 			"validation": {
@@ -1078,7 +1092,10 @@
 			"browseNeedsCredentials": "Εισαγάγετε το URL του Gitea και ένα token για περιήγηση.",
 			"browseEmpty": "Αυτό το token δεν έχει πρόσβαση σε κανένα αποθετήριο.",
 			"chooseRepositoryDescription": "Πληκτρολογήστε owner/name ή επιλέξτε ένα από τη λίστα.",
-			"webhookEvents": "Ενεργοποιήστε τα γεγονότα push, pull request, issue, issue comment και create."
+			"webhookEvents": "Ενεργοποιήστε τα γεγονότα push, pull request, issue, issue comment και create.",
+			"verification": {
+				"missingAccess": "Missing Gitea access"
+			}
 		},
 		"slackIntegration": {
 			"connect": "Σύνδεση Slack",
@@ -1229,7 +1246,9 @@
 			"export": "Εξαγωγή",
 			"exportDescription": "Κατεβάστε όλες τις εργασίες αυτού του έργου σε ένα αρχείο.",
 			"import": "Εισαγωγή",
-			"importDescription": "Προσθέστε εργασίες από ένα αρχείο που εξαγάγατε νωρίτερα."
+			"importDescription": "Προσθέστε εργασίες από ένα αρχείο που εξαγάγατε νωρίτερα.",
+			"exampleTitle": "Task title",
+			"exampleDescription": "Description text"
 		},
 		"workflowEditor": {
 			"toastError": "Αποτυχία ενημέρωσης κανόνα",
@@ -1302,7 +1321,8 @@
 				"member": "Members",
 				"invitation": "Invitations",
 				"team": "Teams",
-				"ac": "Roles and permissions"
+				"ac": "Roles and permissions",
+				"unknown": "Unknown resource"
 			},
 			"permissions": {
 				"project": {
@@ -1450,7 +1470,8 @@
 						"label": "Delete roles",
 						"description": "Delete custom workspace roles."
 					}
-				}
+				},
+				"unknownLabel": "Unknown permission"
 			},
 			"validation": {
 				"nameRequired": "Το όνομα ρόλου είναι υποχρεωτικό",
@@ -1836,7 +1857,10 @@
 			"chooseProjectDescription": "Πληκτρολογήστε τη διαδρομή του ή επιλέξτε ένα από τη λίστα.",
 			"noSearchMatchTitle": "Κανένα έργο δεν ταιριάζει",
 			"useProject": "Χρήση έργου",
-			"webhookEvents": "Ενεργοποιήστε τα γεγονότα push, issue, comment και merge request."
+			"webhookEvents": "Ενεργοποιήστε τα γεγονότα push, issue, comment και merge request.",
+			"verification": {
+				"missingAccess": "Missing GitLab access"
+			}
 		},
 		"calendarFeeds": {
 			"title": "Calendar feeds",
@@ -1974,7 +1998,10 @@
 			"checkoutSuccess": {
 				"title": "Ευχαριστούμε για τη συνδρομή σας",
 				"description": "Η πληρωμή ελήφθη. Το πρόγραμμα παρακάτω θα ενημερωθεί μόλις επιβεβαιωθεί."
-			}
+			},
+			"checkoutStartFailed": "Could not start checkout",
+			"portalOpenFailed": "Could not open billing portal",
+			"unknownPlan": "Unknown billing plan: {{plan}}"
 		},
 		"syncRules": {
 			"addLabel": "Add label",
@@ -2837,7 +2864,8 @@
 			"title": "Webhooks",
 			"url": "URL",
 			"save": "Save"
-		}
+		},
+		"profileUpdateFailed": "Failed to update user profile"
 	},
 	"navigation": {
 		"commandPalette": {
@@ -3231,7 +3259,8 @@
 			"importedBy": "Imported by {{name}}",
 			"commentedOnForge": "σχολίασε στο {{forge}}"
 		},
-		"movedFromOtherProject": "moved task from another project to \"{{to}}\""
+		"movedFromOtherProject": "moved task from another project to \"{{to}}\"",
+		"unknownType": "Activity: {{type}}"
 	},
 	"tasks": {
 		"dateFilter": {
@@ -3397,7 +3426,10 @@
 				"saving": "Saving…",
 				"saveFailed": "Changes could not be saved",
 				"retrySave": "Retry"
-			}
+			},
+			"noTaskSelected": "No task selected",
+			"uploadEmptyFile": "Only non-empty file uploads are supported.",
+			"uploadFailed": "Failed to upload file to storage."
 		},
 		"entity": {
 			"task": "Εργασία"
@@ -3769,7 +3801,8 @@
 			"loadErrorTitle": "Αυτός ο πίνακας δεν φορτώθηκε",
 			"loadErrorDescription": "Κάτι πήγε στραβά κατά τη λήψη των εργασιών. Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά.",
 			"refreshError": "Δεν ήταν δυνατή η ανανέωση του πίνακα, οπότε μπορεί να μην είναι ενημερωμένος.",
-			"tryAgain": "Δοκιμάστε ξανά"
+			"tryAgain": "Δοκιμάστε ξανά",
+			"loadFailed": "Failed to fetch tasks"
 		},
 		"recurrence": {
 			"daily_one": "Κάθε ημέρα",
@@ -3843,6 +3876,53 @@
 			"startsOn": "Ξεκινά {{date}}",
 			"beforeStart": "Η {{date}} είναι πριν από την ημερομηνία έναρξης",
 			"afterDue": "Η {{date}} είναι μετά την προθεσμία"
+		},
+		"share": {
+			"membersCount": "{{count}} members",
+			"recipientsUpdated": "Sharing recipients updated",
+			"updateError": "Could not update sharing.",
+			"loadError": "Could not load sharing details.",
+			"retry": "Retry",
+			"addPeople": "Add people",
+			"addGroups": "Add groups",
+			"searchPeople": "Search people",
+			"searchGroups": "Search groups",
+			"noPeopleFound": "No people found",
+			"noGroupsFound": "No groups found",
+			"selectedCount": "{{count}} selected",
+			"save": "Save",
+			"visibility": "Visibility",
+			"users": "Users",
+			"groups": "Groups",
+			"creatorRetainsAccess": "Creator and assignees always retain access",
+			"public": "Public",
+			"publicDescription": "Workspace members can view this ticket. Selected users and groups are additional shares.",
+			"private": "Private",
+			"privateDescription": "Only the creator, assignees and selected users or groups can view this ticket.",
+			"currentAccess": "Current access",
+			"currentAccessPublic": "All workspace members can view this ticket. Selected people and groups are also listed below.",
+			"currentAccessPrivate": "Only selected people and groups, the creator, and assignees can view this ticket.",
+			"sharedWithGroups": "Shared with groups",
+			"noGroupsSelected": "No groups selected",
+			"sharedWithPeople": "Shared with people",
+			"noPeopleSelected": "No people selected"
+		},
+		"filter": {
+			"booleanTrue": "True",
+			"booleanFalse": "False"
+		},
+		"create": {
+			"noProjectSelected": "No project selected for task creation"
+		},
+		"descriptionSearch": {
+			"failed": "Failed to search descriptions",
+			"didNotAdvance": "Description search did not advance"
+		},
+		"description": {
+			"changedWhileLoading": "Description changed while loading",
+			"pageDidNotAdvance": "Description page did not advance",
+			"loadFailed": "Failed to load description",
+			"projectLoadFailed": "Failed to load project description"
 		}
 	},
 	"invitations": {
@@ -4004,7 +4084,19 @@
 			"manage": "Manage workspaces",
 			"otherWorkspaces": "Go to workspaces",
 			"title": "Workspace archived"
-		}
+		},
+		"roles": {
+			"createFailed": "Failed to create role",
+			"deleteFailed": "Failed to delete role",
+			"updateFailed": "Failed to update role"
+		},
+		"deleteFailed": "Failed to delete workspace",
+		"ownershipPromoteFailed": "Failed to promote new owner",
+		"ownershipDemoteFailed": "Failed to demote previous owner",
+		"updateFailed": "Failed to update workspace",
+		"createFailed": "Failed to create workspace",
+		"loadFailed": "Failed to get full workspace",
+		"listFailed": "Failed to fetch workspaces"
 	},
 	"team": {
 		"roles": {
@@ -4016,7 +4108,15 @@
 		"members": {
 			"pageTitle": "Μέλη",
 			"inviteMember": "Πρόσκληση μέλους",
-			"you": "Εσείς"
+			"you": "Εσείς",
+			"users": "Users",
+			"groups": "Groups",
+			"members": "Members",
+			"noMembersInGroup": "No members in this group",
+			"removeFailed": "Failed to remove workspace member",
+			"updateRoleFailed": "Failed to update workspace member role",
+			"loadActiveFailed": "Failed to get active workspace user",
+			"loadFailed": "Failed to get workspace users"
 		},
 		"invitations": {
 			"linkLabel": "Σύνδεσμος πρόσκλησης",
@@ -4024,7 +4124,15 @@
 			"linkCopied": "Ο σύνδεσμος της πρόσκλησης αντιγράφηκε",
 			"copyFailed": "Δεν ήταν δυνατή η αυτόματη αντιγραφή. Επιλέξτε τον σύνδεσμο και πατήστε Ctrl+C.",
 			"pendingBadge": "σε εκκρεμότητα",
-			"expires": "Λήγει {{date}}"
+			"expires": "Λήγει {{date}}",
+			"acceptFailed": "Failed to accept invitation",
+			"cancelFailed": "Failed to cancel invitation",
+			"inviteFailed": "Failed to invite workspace member",
+			"rejectFailed": "Failed to reject invitation",
+			"loadFailed": "Failed to get invitation",
+			"loadUserInvitationsFailed": "Failed to get user invitations",
+			"loadWorkspaceInvitesFailed": "Failed to get workspace invites",
+			"pendingLoadFailed": "Failed to get pending invitations"
 		},
 		"inviteModal": {
 			"title": "Πρόσκληση μέλους ομάδας",

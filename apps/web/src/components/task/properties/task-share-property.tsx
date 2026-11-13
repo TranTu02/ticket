@@ -8,6 +8,7 @@ import {
   Users,
 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { TaskShareModal } from "@/components/task/task-share/task-share-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,6 +44,7 @@ export function TaskShareProperty({
   taskId: string;
   taskTitle: string;
 }) {
+  const { t } = useTranslation();
   const [editTarget, setEditTarget] = useState<EditTarget | null>(null);
   const [isVisibilityOpen, setIsVisibilityOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -85,7 +87,9 @@ export function TaskShareProperty({
     return {
       id,
       name: group?.name ?? id,
-      detail: group?.memberCount ? `${group.memberCount} members` : undefined,
+      detail: group?.memberCount
+        ? t("tasks:share.membersCount", { count: group.memberCount })
+        : undefined,
     };
   });
   const selectedUsers: RecipientItem[] = selectedUserIds.map((id) => {
@@ -105,7 +109,9 @@ export function TaskShareProperty({
     groups: groups.map((group) => ({
       id: group.id,
       name: group.name,
-      detail: group.memberCount ? `${group.memberCount} members` : undefined,
+      detail: group.memberCount
+        ? t("tasks:share.membersCount", { count: group.memberCount })
+        : undefined,
     })),
   };
   const activeDraftIds = editTarget === "users" ? draftUserIds : draftGroupIds;
@@ -140,10 +146,10 @@ export function TaskShareProperty({
         sharedUserIds: nextUserIds,
       });
       setEditTarget(null);
-      toast.success("Sharing recipients updated");
+      toast.success(t("tasks:share.recipientsUpdated"));
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Could not update sharing.",
+        error instanceof Error ? error.message : t("tasks:share.updateError"),
       );
     }
   };
@@ -160,9 +166,7 @@ export function TaskShareProperty({
     return (
       <div className="min-w-0 flex-1 px-2 py-1">
         <p className="break-words text-[11px] text-destructive">
-          {error instanceof Error
-            ? error.message
-            : "Could not load sharing details."}
+          {error instanceof Error ? error.message : t("tasks:share.loadError")}
         </p>
         <Button
           type="button"
@@ -178,7 +182,7 @@ export function TaskShareProperty({
               toast.error(
                 result.error instanceof Error
                   ? result.error.message
-                  : "Could not load sharing details.",
+                  : t("tasks:share.loadError"),
               );
             }
           }}
@@ -188,7 +192,7 @@ export function TaskShareProperty({
           ) : (
             <RefreshCw />
           )}
-          Retry
+          {t("tasks:share.retry")}
         </Button>
       </div>
     );
@@ -223,7 +227,9 @@ export function TaskShareProperty({
             </span>
           ) : (
             <span className="text-xs text-muted-foreground">
-              {target === "users" ? "Add people" : "Add groups"}
+              {target === "users"
+                ? t("tasks:share.addPeople")
+                : t("tasks:share.addGroups")}
             </span>
           )}
         </PropertyValue>
@@ -234,7 +240,11 @@ export function TaskShareProperty({
           <Input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder={target === "users" ? "Search people" : "Search groups"}
+            placeholder={
+              target === "users"
+                ? t("tasks:share.searchPeople")
+                : t("tasks:share.searchGroups")
+            }
             className="h-10 border-0 px-0 shadow-none focus-visible:ring-0"
           />
         </div>
@@ -273,13 +283,15 @@ export function TaskShareProperty({
             })
           ) : (
             <p className="px-3 py-6 text-center text-sm text-muted-foreground">
-              {target === "users" ? "No people found" : "No groups found"}
+              {target === "users"
+                ? t("tasks:share.noPeopleFound")
+                : t("tasks:share.noGroupsFound")}
             </p>
           )}
         </div>
         <div className="flex items-center justify-between border-t p-2">
           <span className="text-xs text-muted-foreground">
-            {activeDraftIds.length} selected
+            {t("tasks:share.selectedCount", { count: activeDraftIds.length })}
           </span>
           <Button
             type="button"
@@ -287,7 +299,7 @@ export function TaskShareProperty({
             disabled={isSaving}
             onClick={() => void saveRecipients()}
           >
-            Save
+            {t("tasks:share.save")}
           </Button>
         </div>
       </PopoverContent>
@@ -299,7 +311,7 @@ export function TaskShareProperty({
   return (
     <>
       <div className="min-w-0 flex-1">
-        <PropertyRow label="Visibility">
+        <PropertyRow label={t("tasks:share.visibility")}>
           <PropertyValue
             disabled={!canEdit}
             onClick={() => setIsVisibilityOpen(true)}
@@ -309,14 +321,14 @@ export function TaskShareProperty({
             <Share2 className="ml-auto text-muted-foreground" />
           </PropertyValue>
         </PropertyRow>
-        <PropertyRow label="Users" align="start">
+        <PropertyRow label={t("tasks:share.users")} align="start">
           {renderRecipientRow("users", selectedUsers)}
         </PropertyRow>
-        <PropertyRow label="Groups" align="start">
+        <PropertyRow label={t("tasks:share.groups")} align="start">
           {renderRecipientRow("groups", selectedGroups)}
         </PropertyRow>
         <p className="px-2 py-1 text-[10px] text-muted-foreground">
-          Creator and assignees always retain access
+          {t("tasks:share.creatorRetainsAccess")}
         </p>
       </div>
       <TaskShareModal

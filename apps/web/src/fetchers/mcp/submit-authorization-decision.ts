@@ -1,4 +1,5 @@
 import { getApiUrl } from "@/fetchers/get-api-url";
+import { i18n } from "@/lib/i18n";
 
 export async function submitMcpAuthorizationDecision(
   requestId: string,
@@ -14,7 +15,7 @@ export async function submitMcpAuthorizationDecision(
     },
   );
   if (!response.ok) {
-    throw new Error("Could not complete the authorization request.");
+    throw new Error(i18n.t("auth:mcp.authorizationCompleteFailed"));
   }
 
   const body = (await response.json()) as { redirect: string };

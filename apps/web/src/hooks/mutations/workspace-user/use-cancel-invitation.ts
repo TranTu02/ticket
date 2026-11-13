@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { authClient } from "@/lib/auth-client";
 import queryClient from "@/query-client";
 
@@ -8,6 +9,7 @@ type CancelInvitationRequest = {
 };
 
 function useCancelInvitation() {
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async ({ invitationId }: CancelInvitationRequest) => {
       const { data, error } = await authClient.organization.cancelInvitation({
@@ -15,7 +17,7 @@ function useCancelInvitation() {
       });
 
       if (error) {
-        throw new Error(error.message || "Failed to cancel invitation");
+        throw new Error(error.message || t("team:invitations.cancelFailed"));
       }
 
       return data;

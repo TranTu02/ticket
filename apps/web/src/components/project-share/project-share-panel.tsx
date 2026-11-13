@@ -129,14 +129,15 @@ export function ProjectSharePanel({
             Quyền truy cập & Chia sẻ dự án
           </h3>
           <p className="text-sm text-muted-foreground">
-            Chỉ định ai trong tổ chức IRDOP có thể xem và làm việc với dự án này.
+            Chỉ định ai trong tổ chức IRDOP có thể xem và làm việc với dự án
+            này.
           </p>
         </div>
       )}
 
       <p className="text-xs text-muted-foreground leading-relaxed">
-        Người tạo dự án luôn có quyền truy cập và được quản lý ở khu riêng, không
-        nằm trong danh sách người được chia sẻ.
+        Người tạo dự án luôn có quyền truy cập và được quản lý ở khu riêng,
+        không nằm trong danh sách người được chia sẻ.
       </p>
 
       {/* Mode selection cards */}
@@ -237,7 +238,8 @@ export function ProjectSharePanel({
             <span>Chế độ mặc định Workspace</span>
           </div>
           <p className="mt-1 text-xs">
-            Dự án này mở cho toàn bộ {users.length > 0 ? `${users.length} ` : ""}
+            Dự án này mở cho toàn bộ{" "}
+            {users.length > 0 ? `${users.length} ` : ""}
             thành viên hoạt động của Workspace IRDOP.
           </p>
         </div>

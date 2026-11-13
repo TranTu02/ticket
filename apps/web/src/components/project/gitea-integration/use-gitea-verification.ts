@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useDebouncedCheck } from "@/components/project/code-hosting/use-debounced-check";
 import {
   type GiteaAccess,
@@ -10,9 +11,13 @@ export function useGiteaVerification(
   access: GiteaAccess | null,
 ) {
   const { mutateAsync: verify } = useVerifyGiteaAccess();
+  const { t } = useTranslation();
 
   return useDebouncedCheck(access ? giteaAccessKey(access) : null, () => {
-    if (!access) throw new Error("Missing Gitea access");
+    if (!access)
+      throw new Error(
+        t("settings:giteaIntegration.verification.missingAccess"),
+      );
     return verify({
       projectId,
       baseUrl: access.baseUrl,

@@ -1,4 +1,5 @@
 import { authClient } from "@/lib/auth-client";
+import { i18n } from "@/lib/i18n";
 
 export type DeleteWorkspaceUserRequest = {
   workspaceId: string;
@@ -15,7 +16,7 @@ async function deleteWorkspaceUser({
   });
 
   if (error) {
-    throw new Error(error.message || "Failed to remove workspace member");
+    throw new Error(error.message || i18n.t("team:members.removeFailed"));
   }
 
   return data;

@@ -1,5 +1,6 @@
 import { CheckCircle2, Globe, Info, Share2, Users } from "lucide-react";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 import { SharePicker } from "@/components/share/share-picker";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
@@ -22,28 +23,6 @@ interface TaskSharePanelProps {
   hideHeader?: boolean;
 }
 
-const SHARE_MODES: {
-  value: TaskShareVisibility;
-  label: string;
-  description: string;
-  icon: React.ComponentType<{ className?: string }>;
-}[] = [
-  {
-    value: "public",
-    label: "Public",
-    description:
-      "Workspace members can view this ticket. Selected users and groups are additional shares.",
-    icon: Globe,
-  },
-  {
-    value: "private",
-    label: "Private",
-    description:
-      "Only the creator, assignees and selected users or groups can view this ticket.",
-    icon: Users,
-  },
-];
-
 export function TaskSharePanel({
   taskId,
   taskTitle,
@@ -52,6 +31,26 @@ export function TaskSharePanel({
   className,
   hideHeader = false,
 }: TaskSharePanelProps) {
+  const { t } = useTranslation();
+  const SHARE_MODES: {
+    value: TaskShareVisibility;
+    label: string;
+    description: string;
+    icon: React.ComponentType<{ className?: string }>;
+  }[] = [
+    {
+      value: "public",
+      label: t("tasks:share.public"),
+      description: t("tasks:share.publicDescription"),
+      icon: Globe,
+    },
+    {
+      value: "private",
+      label: t("tasks:share.private"),
+      description: t("tasks:share.privateDescription"),
+      icon: Users,
+    },
+  ];
   const { canUpdateTasks, isCheckingPermissions } = useWorkspacePermission();
   const { user: currentUser } = useAuth();
 
@@ -195,17 +194,19 @@ export function TaskSharePanel({
 
       <section className="space-y-3 rounded-lg border bg-muted/20 p-3.5">
         <div>
-          <h4 className="text-sm font-semibold">Current access</h4>
+          <h4 className="text-sm font-semibold">
+            {t("tasks:share.currentAccess")}
+          </h4>
           <p className="mt-1 text-xs text-muted-foreground">
             {shareType === "public"
-              ? "All workspace members can view this ticket. Selected people and groups are also listed below."
-              : "Only selected people and groups, the creator, and assignees can view this ticket."}
+              ? t("tasks:share.currentAccessPublic")
+              : t("tasks:share.currentAccessPrivate")}
           </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1.5">
             <p className="text-xs font-medium text-muted-foreground">
-              Shared with groups
+              {t("tasks:share.sharedWithGroups")}
             </p>
             {selectedGroups.length ? (
               selectedGroups.map((group) => (
@@ -219,20 +220,22 @@ export function TaskSharePanel({
                   </span>
                   {group.memberCount !== undefined && (
                     <span className="shrink-0 text-xs text-muted-foreground">
-                      {group.memberCount} members
+                      {t("tasks:share.membersCount", {
+                        count: group.memberCount,
+                      })}
                     </span>
                   )}
                 </div>
               ))
             ) : (
               <p className="rounded-md bg-background px-2.5 py-2 text-xs text-muted-foreground">
-                No groups selected
+                {t("tasks:share.noGroupsSelected")}
               </p>
             )}
           </div>
           <div className="space-y-1.5">
             <p className="text-xs font-medium text-muted-foreground">
-              Shared with people
+              {t("tasks:share.sharedWithPeople")}
             </p>
             {selectedUsers.length ? (
               selectedUsers.map((user) => (
@@ -252,7 +255,7 @@ export function TaskSharePanel({
               ))
             ) : (
               <p className="rounded-md bg-background px-2.5 py-2 text-xs text-muted-foreground">
-                No people selected
+                {t("tasks:share.noPeopleSelected")}
               </p>
             )}
           </div>

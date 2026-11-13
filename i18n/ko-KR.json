@@ -13,7 +13,8 @@
 			"filter": "필터"
 		},
 		"a11y": {
-			"toggleSidebar": "사이드바 토글"
+			"toggleSidebar": "사이드바 토글",
+			"checkmark": "Check"
 		},
 		"sidebar": {
 			"title": "사이드바",
@@ -44,7 +45,8 @@
 			"dutch": "네덜란드어",
 			"korean": "한국어",
 			"chinese": "중국어",
-			"italian": "이탈리아어"
+			"italian": "이탈리아어",
+			"updateFailed": "Failed to update locale"
 		},
 		"people": {
 			"someone": "누군가",
@@ -62,7 +64,8 @@
 				"cors": "Unable to connect to the server. This might be due to CORS configuration issues.",
 				"network": "Network error. Please check your internet connection and try again.",
 				"server": "Server error. Please try again later.",
-				"unknown": "An unexpected error occurred."
+				"unknown": "An unexpected error occurred.",
+				"instanceStatusFailed": "Failed to fetch instance status: {{message}}"
 			},
 			"troubleshootingSteps": {
 				"cors": {
@@ -182,7 +185,8 @@
 				"account_not_linked": "이 자격 증명을 기존 계정에 연결할 수 없습니다. 이메일로 로그인하여 계정을 확인한 후 SSO를 다시 시도하세요. 이메일 로그인을 사용할 수 없는 경우 관리자에게 문의하세요.",
 				"oauth_code_verification_failed": "OAuth 인증에 실패했습니다. 다시 시도하세요.",
 				"registration_is_currently_disabled_you_need_a_valid_invitation_to_create_an_account_": "회원가입이 현재 비활성화되어 있습니다. 계정을 만들려면 유효한 초대가 필요합니다.",
-				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "영구적인 이메일 주소를 사용하세요. 일회용 주소로는 계정을 만들 수 없습니다."
+				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "영구적인 이메일 주소를 사용하세요. 일회용 주소로는 계정을 만들 수 없습니다.",
+				"unknown": "Sign-in failed. Please try again."
 			},
 			"instanceStatusError": "서버에 연결할 수 없습니다. 잠시 후 다시 시도하세요.",
 			"heading": "Kaneo에 로그인",
@@ -555,8 +559,11 @@
 				"title": "로그인하여 이 클라이언트 승인",
 				"description": "로그인 후 바로 이곳으로 돌아와 검토할 수 있습니다.",
 				"submit": "로그인"
-			}
-		}
+			},
+			"authorizationInvalidOrExpired": "This authorization request is invalid or has expired.",
+			"authorizationCompleteFailed": "Could not complete the authorization request."
+		},
+		"passwordChangeFailed": "Failed to change password"
 	},
 	"settings": {
 		"advancedSettings": "고급 설정",
@@ -587,7 +594,11 @@
 				"removeSuccess": "Profile picture removed",
 				"updateError": "Failed to update profile picture",
 				"updateSuccess": "Profile picture updated",
-				"upload": "업로드"
+				"upload": "업로드",
+				"readError": "The image could not be read.",
+				"chooseFile": "Choose an image file.",
+				"tooLarge": "Choose an image smaller than 10MB.",
+				"processError": "The image could not be processed."
 			},
 			"deleteAccount": {
 				"confirm": "Delete account",
@@ -1037,7 +1048,10 @@
 			"verifyNotInstalled": "Kaneo GitHub 앱이 이 저장소에 설치되어 있지 않습니다.",
 			"verifyReady": "Kaneo GitHub 앱이 필요한 권한으로 설치되어 있습니다.",
 			"workflowHint": "풀 리퀘스트가 열리거나 병합될 때 작업을 옮기려면",
-			"workflowLink": "워크플로"
+			"workflowLink": "워크플로",
+			"verification": {
+				"missingRepository": "Missing repository"
+			}
 		},
 		"giteaIntegration": {
 			"validation": {
@@ -1070,7 +1084,10 @@
 			"browseNeedsCredentials": "찾아보려면 Gitea URL과 토큰을 입력하세요.",
 			"browseEmpty": "이 토큰으로 볼 수 있는 저장소가 없습니다.",
 			"chooseRepositoryDescription": "owner/name을 입력하거나 목록에서 선택하세요.",
-			"webhookEvents": "푸시, 풀 리퀘스트, 이슈, 이슈 댓글, 생성 이벤트를 켜세요."
+			"webhookEvents": "푸시, 풀 리퀘스트, 이슈, 이슈 댓글, 생성 이벤트를 켜세요.",
+			"verification": {
+				"missingAccess": "Missing Gitea access"
+			}
 		},
 		"slackIntegration": {
 			"validation": {
@@ -1221,7 +1238,9 @@
 			"export": "내보내기",
 			"exportDescription": "이 프로젝트의 모든 작업을 파일로 다운로드합니다.",
 			"import": "가져오기",
-			"importDescription": "이전에 내보낸 파일에서 작업을 추가합니다."
+			"importDescription": "이전에 내보낸 파일에서 작업을 추가합니다.",
+			"exampleTitle": "Task title",
+			"exampleDescription": "Description text"
 		},
 		"workflowEditor": {
 			"toastError": "규칙 업데이트에 실패했습니다",
@@ -1293,7 +1312,8 @@
 				"member": "Members",
 				"invitation": "Invitations",
 				"team": "Teams",
-				"ac": "Roles and permissions"
+				"ac": "Roles and permissions",
+				"unknown": "Unknown resource"
 			},
 			"permissions": {
 				"project": {
@@ -1441,7 +1461,8 @@
 						"label": "Delete roles",
 						"description": "Delete custom workspace roles."
 					}
-				}
+				},
+				"unknownLabel": "Unknown permission"
 			},
 			"validation": {
 				"nameRequired": "역할 이름은 필수입니다",
@@ -1826,7 +1847,10 @@
 			"chooseProjectDescription": "경로를 입력하거나 목록에서 선택하세요.",
 			"noSearchMatchTitle": "일치하는 프로젝트 없음",
 			"useProject": "프로젝트 사용",
-			"webhookEvents": "푸시, 이슈, 댓글, 머지 리퀘스트 이벤트를 켜세요."
+			"webhookEvents": "푸시, 이슈, 댓글, 머지 리퀘스트 이벤트를 켜세요.",
+			"verification": {
+				"missingAccess": "Missing GitLab access"
+			}
 		},
 		"calendarFeeds": {
 			"title": "Calendar feeds",
@@ -1961,7 +1985,10 @@
 			"checkoutSuccess": {
 				"title": "구독해 주셔서 감사합니다",
 				"description": "결제가 접수되었습니다. 확인되는 대로 아래 플랜이 업데이트됩니다."
-			}
+			},
+			"checkoutStartFailed": "Could not start checkout",
+			"portalOpenFailed": "Could not open billing portal",
+			"unknownPlan": "Unknown billing plan: {{plan}}"
 		},
 		"syncRules": {
 			"addLabel": "Add label",
@@ -2788,7 +2815,8 @@
 			"title": "Webhooks",
 			"url": "URL",
 			"save": "Save"
-		}
+		},
+		"profileUpdateFailed": "Failed to update user profile"
 	},
 	"navigation": {
 		"commandPalette": {
@@ -3177,7 +3205,8 @@
 			"importedBy": "Imported by {{name}}",
 			"commentedOnForge": "{{forge}}에 댓글을 남김"
 		},
-		"movedFromOtherProject": "moved task from another project to \"{{to}}\""
+		"movedFromOtherProject": "moved task from another project to \"{{to}}\"",
+		"unknownType": "Activity: {{type}}"
 	},
 	"tasks": {
 		"dateFilter": {
@@ -3343,7 +3372,10 @@
 				"saving": "Saving…",
 				"saveFailed": "Changes could not be saved",
 				"retrySave": "Retry"
-			}
+			},
+			"noTaskSelected": "No task selected",
+			"uploadEmptyFile": "Only non-empty file uploads are supported.",
+			"uploadFailed": "Failed to upload file to storage."
 		},
 		"entity": {
 			"task": "작업"
@@ -3706,7 +3738,8 @@
 			"loadErrorTitle": "이 보드를 불러오지 못했습니다",
 			"loadErrorDescription": "작업을 가져오는 중 문제가 발생했습니다. 연결을 확인하고 다시 시도하세요.",
 			"refreshError": "보드를 새로 고치지 못해 최신 상태가 아닐 수 있습니다.",
-			"tryAgain": "다시 시도"
+			"tryAgain": "다시 시도",
+			"loadFailed": "Failed to fetch tasks"
 		},
 		"recurrence": {
 			"daily_other": "{{count}}일마다",
@@ -3771,6 +3804,53 @@
 			"startsOn": "시작: {{date}}",
 			"beforeStart": "{{date}}은(는) 시작일 이전입니다",
 			"afterDue": "{{date}}은(는) 마감일 이후입니다"
+		},
+		"share": {
+			"membersCount": "{{count}} members",
+			"recipientsUpdated": "Sharing recipients updated",
+			"updateError": "Could not update sharing.",
+			"loadError": "Could not load sharing details.",
+			"retry": "Retry",
+			"addPeople": "Add people",
+			"addGroups": "Add groups",
+			"searchPeople": "Search people",
+			"searchGroups": "Search groups",
+			"noPeopleFound": "No people found",
+			"noGroupsFound": "No groups found",
+			"selectedCount": "{{count}} selected",
+			"save": "Save",
+			"visibility": "Visibility",
+			"users": "Users",
+			"groups": "Groups",
+			"creatorRetainsAccess": "Creator and assignees always retain access",
+			"public": "Public",
+			"publicDescription": "Workspace members can view this ticket. Selected users and groups are additional shares.",
+			"private": "Private",
+			"privateDescription": "Only the creator, assignees and selected users or groups can view this ticket.",
+			"currentAccess": "Current access",
+			"currentAccessPublic": "All workspace members can view this ticket. Selected people and groups are also listed below.",
+			"currentAccessPrivate": "Only selected people and groups, the creator, and assignees can view this ticket.",
+			"sharedWithGroups": "Shared with groups",
+			"noGroupsSelected": "No groups selected",
+			"sharedWithPeople": "Shared with people",
+			"noPeopleSelected": "No people selected"
+		},
+		"filter": {
+			"booleanTrue": "True",
+			"booleanFalse": "False"
+		},
+		"create": {
+			"noProjectSelected": "No project selected for task creation"
+		},
+		"descriptionSearch": {
+			"failed": "Failed to search descriptions",
+			"didNotAdvance": "Description search did not advance"
+		},
+		"description": {
+			"changedWhileLoading": "Description changed while loading",
+			"pageDidNotAdvance": "Description page did not advance",
+			"loadFailed": "Failed to load description",
+			"projectLoadFailed": "Failed to load project description"
 		}
 	},
 	"invitations": {
@@ -3928,7 +4008,19 @@
 			"manage": "Manage workspaces",
 			"otherWorkspaces": "Go to workspaces",
 			"title": "Workspace archived"
-		}
+		},
+		"roles": {
+			"createFailed": "Failed to create role",
+			"deleteFailed": "Failed to delete role",
+			"updateFailed": "Failed to update role"
+		},
+		"deleteFailed": "Failed to delete workspace",
+		"ownershipPromoteFailed": "Failed to promote new owner",
+		"ownershipDemoteFailed": "Failed to demote previous owner",
+		"updateFailed": "Failed to update workspace",
+		"createFailed": "Failed to create workspace",
+		"loadFailed": "Failed to get full workspace",
+		"listFailed": "Failed to fetch workspaces"
 	},
 	"team": {
 		"roles": {
@@ -3940,7 +4032,15 @@
 		"members": {
 			"pageTitle": "멤버",
 			"inviteMember": "멤버 초대",
-			"you": "나"
+			"you": "나",
+			"users": "Users",
+			"groups": "Groups",
+			"members": "Members",
+			"noMembersInGroup": "No members in this group",
+			"removeFailed": "Failed to remove workspace member",
+			"updateRoleFailed": "Failed to update workspace member role",
+			"loadActiveFailed": "Failed to get active workspace user",
+			"loadFailed": "Failed to get workspace users"
 		},
 		"invitations": {
 			"linkLabel": "초대 링크",
@@ -3948,7 +4048,15 @@
 			"linkCopied": "초대 링크가 복사되었습니다",
 			"copyFailed": "자동으로 복사하지 못했습니다. 링크를 선택한 후 Ctrl+C를 누르세요.",
 			"pendingBadge": "대기 중",
-			"expires": "{{date}} 만료"
+			"expires": "{{date}} 만료",
+			"acceptFailed": "Failed to accept invitation",
+			"cancelFailed": "Failed to cancel invitation",
+			"inviteFailed": "Failed to invite workspace member",
+			"rejectFailed": "Failed to reject invitation",
+			"loadFailed": "Failed to get invitation",
+			"loadUserInvitationsFailed": "Failed to get user invitations",
+			"loadWorkspaceInvitesFailed": "Failed to get workspace invites",
+			"pendingLoadFailed": "Failed to get pending invitations"
 		},
 		"inviteModal": {
 			"title": "팀 멤버 초대",

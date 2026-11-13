@@ -78,7 +78,9 @@ export async function getConversation(
   return (result.rows[0] as unknown as ConversationRow) ?? null;
 }
 
-export async function listMessages(conversationId: string): Promise<MessageRow[]> {
+export async function listMessages(
+  conversationId: string,
+): Promise<MessageRow[]> {
   const result = await db.execute(
     sql`select "messageId", "conversationId", role, content, status, "agentId", "runId", "createdAt"
           from service."aiMessage"

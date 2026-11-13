@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { authClient } from "@/lib/auth-client";
 
 type GetFullWorkspaceRequest = {
@@ -12,6 +13,7 @@ function useGetFullWorkspace({
   workspaceSlug,
   membersLimit = 100,
 }: GetFullWorkspaceRequest) {
+  const { t } = useTranslation();
   return useQuery({
     queryKey: ["workspace", "full", workspaceId || workspaceSlug],
     enabled: !!(workspaceId || workspaceSlug),
@@ -26,7 +28,7 @@ function useGetFullWorkspace({
       );
 
       if (error) {
-        throw new Error(error.message || "Failed to get full workspace");
+        throw new Error(error.message || t("workspace:loadFailed"));
       }
 
       return data;

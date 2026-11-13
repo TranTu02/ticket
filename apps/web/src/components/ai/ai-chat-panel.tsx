@@ -56,7 +56,9 @@ export default function AiChatPanel({ workspaceId }: AiChatPanelProps) {
   const abortRef = useRef<AbortController | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  const currentAgent = agents.find((agent) => agent.id === (active?.agentId ?? agentId));
+  const currentAgent = agents.find(
+    (agent) => agent.id === (active?.agentId ?? agentId),
+  );
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -73,15 +75,20 @@ export default function AiChatPanel({ workspaceId }: AiChatPanelProps) {
         if (cancelled) return;
         setAgents(nextAgents);
         setConversations(nextConversations);
-        if (nextAgents[0] && !nextAgents.some((agent) => agent.id === agentId)) {
+        if (
+          nextAgents[0] &&
+          !nextAgents.some((agent) => agent.id === agentId)
+        ) {
           setAgentId(nextAgents[0].id);
         }
         const savedId = localStorage.getItem(`${STORAGE_KEY}.${workspaceId}`);
-        const saved = nextConversations.find((item) => item.conversationId === savedId);
+        const saved = nextConversations.find(
+          (item) => item.conversationId === savedId,
+        );
         if (saved) setActive(saved);
         else if (nextConversations[0]) setActive(nextConversations[0]);
-      } catch (cause) {
-        if (!cancelled) setError(cause instanceof Error ? cause.message : t("ai:loadError"));
+      } catch (_cause) {
+        if (!cancelled) setError(t("ai:loadError"));
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -97,7 +104,10 @@ export default function AiChatPanel({ workspaceId }: AiChatPanelProps) {
       setMessages([]);
       return;
     }
-    localStorage.setItem(`${STORAGE_KEY}.${workspaceId}`, active.conversationId);
+    localStorage.setItem(
+      `${STORAGE_KEY}.${workspaceId}`,
+      active.conversationId,
+    );
     let cancelled = false;
     (async () => {
       try {
@@ -105,7 +115,10 @@ export default function AiChatPanel({ workspaceId }: AiChatPanelProps) {
         if (cancelled) return;
         setMessages(
           history
-            .filter((message: AiMessage) => message.role === "user" || message.role === "assistant")
+            .filter(
+              (message: AiMessage) =>
+                message.role === "user" || message.role === "assistant",
+            )
             .map((message) => ({
               key: message.messageId,
               role: message.role as "user" | "assistant",
@@ -113,8 +126,8 @@ export default function AiChatPanel({ workspaceId }: AiChatPanelProps) {
               failed: message.status === "ERROR",
             })),
         );
-      } catch (cause) {
-        if (!cancelled) setError(cause instanceof Error ? cause.message : t("ai:loadError"));
+      } catch (_cause) {
+        if (!cancelled) setError(t("ai:loadError"));
       }
     })();
     return () => {
@@ -135,8 +148,8 @@ export default function AiChatPanel({ workspaceId }: AiChatPanelProps) {
         setConversations((prev) => [conversation, ...prev]);
         setActive(conversation);
         setMessages([]);
-      } catch (cause) {
-        setError(cause instanceof Error ? cause.message : t("ai:createError"));
+      } catch (_cause) {
+        setError(t("ai:createError"));
       }
     },
     [agentId, workspaceId, t],
@@ -188,7 +201,7 @@ export default function AiChatPanel({ workspaceId }: AiChatPanelProps) {
                 ),
               );
             } else if (event.type === "error") {
-              setError(event.message);
+              setError(t("ai:sendError"));
               setMessages((prev) =>
                 prev.map((message) =>
                   message.key === agentKey
@@ -200,7 +213,12 @@ export default function AiChatPanel({ workspaceId }: AiChatPanelProps) {
               setMessages((prev) =>
                 prev.map((message) =>
                   message.key === agentKey
-                    ? { ...message, pending: false, failed: false, key: event.messageId || message.key }
+                    ? {
+                        ...message,
+                        pending: false,
+                        failed: false,
+                        key: event.messageId || message.key,
+                      }
                     : message,
                 ),
               );
@@ -222,11 +240,13 @@ export default function AiChatPanel({ workspaceId }: AiChatPanelProps) {
         }, 800);
       } catch (cause) {
         if ((cause as Error)?.name !== "AbortError") {
-          setError(cause instanceof Error ? cause.message : t("ai:sendError"));
+          setError(t("ai:sendError"));
         }
         setMessages((prev) =>
           prev.map((message) =>
-            message.pending ? { ...message, pending: false, failed: true } : message,
+            message.pending
+              ? { ...message, pending: false, failed: true }
+              : message,
           ),
         );
       } finally {
@@ -262,7 +282,9 @@ export default function AiChatPanel({ workspaceId }: AiChatPanelProps) {
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-2">
           {conversations.length === 0 ? (
-            <p className="px-2 py-4 text-muted-foreground text-xs">{t("ai:noConversations")}</p>
+            <p className="px-2 py-4 text-muted-foreground text-xs">
+              {t("ai:noConversations")}
+            </p>
           ) : (
             <ul className="flex flex-col gap-0.5">
               {conversations.map((conversation) => (
@@ -373,7 +395,9 @@ export default function AiChatPanel({ workspaceId }: AiChatPanelProps) {
                   )}
                 >
                   <span className="text-[10px] text-muted-foreground uppercase tracking-wide">
-                    {message.role === "user" ? t("ai:you") : (currentAgent?.name ?? t("ai:defaultAgent"))}
+                    {message.role === "user"
+                      ? t("ai:you")
+                      : (currentAgent?.name ?? t("ai:defaultAgent"))}
                   </span>
                   <div
                     data-message-content={message.role}
@@ -387,7 +411,10 @@ export default function AiChatPanel({ workspaceId }: AiChatPanelProps) {
                   >
                     {message.pending && !message.content ? (
                       <span className="inline-flex items-center gap-2 text-muted-foreground">
-                        <Loader2 className="size-3.5 animate-spin" aria-hidden />
+                        <Loader2
+                          className="size-3.5 animate-spin"
+                          aria-hidden
+                        />
                         {t("ai:thinking")}
                       </span>
                     ) : (
@@ -424,11 +451,22 @@ export default function AiChatPanel({ workspaceId }: AiChatPanelProps) {
               disabled={sending}
             />
             {sending ? (
-              <Button type="button" variant="outline" size="icon" onClick={stop} aria-label={t("ai:stop")}>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={stop}
+                aria-label={t("ai:stop")}
+              >
                 <Square className="size-4" aria-hidden />
               </Button>
             ) : (
-              <Button type="submit" size="icon" disabled={!input.trim()} aria-label={t("ai:send")}>
+              <Button
+                type="submit"
+                size="icon"
+                disabled={!input.trim()}
+                aria-label={t("ai:send")}
+              >
                 <SendHorizontal className="size-4" aria-hidden />
               </Button>
             )}

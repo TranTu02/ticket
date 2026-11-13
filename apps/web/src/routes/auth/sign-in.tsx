@@ -149,7 +149,7 @@ function SignIn() {
   const errorMessage = search.error
     ? t(
         `auth:signIn.errors.${search.error.replace(/[._]+/g, "_").toLowerCase()}`,
-        { defaultValue: search.error.replace(/_/g, " ") },
+        { defaultValue: t("auth:signIn.errors.unknown") },
       )
     : null;
 

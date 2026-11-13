@@ -211,8 +211,8 @@ export function useFilterSubjects({
         label:
           field.type === "boolean"
             ? value === "true"
-              ? "True"
-              : "False"
+              ? t("tasks:filter.booleanTrue")
+              : t("tasks:filter.booleanFalse")
             : field.type === "date"
               ? (formatCustomFieldValue("date", value, "medium")?.text ?? value)
               : value,

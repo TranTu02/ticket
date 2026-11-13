@@ -32,13 +32,13 @@ function RouteComponent() {
               variant={view === "members" ? "default" : "outline"}
               onClick={() => setView("members")}
             >
-              Users
+              {t("team:members.users")}
             </Button>
             <Button
               variant={view === "groups" ? "default" : "outline"}
               onClick={() => setView("groups")}
             >
-              Groups
+              {t("team:members.groups")}
             </Button>
           </div>
           {view === "members" ? (
@@ -66,7 +66,7 @@ function RouteComponent() {
                   </p>
                   <div className="mt-3 border-t pt-3">
                     <p className="mb-2 text-xs font-medium text-muted-foreground">
-                      Members
+                      {t("team:members.members")}
                     </p>
                     {group.members?.length ? (
                       <ul className="max-h-48 space-y-2 overflow-y-auto">
@@ -88,7 +88,7 @@ function RouteComponent() {
                       </ul>
                     ) : (
                       <p className="text-xs text-muted-foreground">
-                        No members in this group
+                        {t("team:members.noMembersInGroup")}
                       </p>
                     )}
                   </div>{" "}

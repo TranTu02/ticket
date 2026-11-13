@@ -13,7 +13,8 @@
 			"filter": "Filteren"
 		},
 		"a11y": {
-			"toggleSidebar": "Zijbalk in-/uitschakelen"
+			"toggleSidebar": "Zijbalk in-/uitschakelen",
+			"checkmark": "Check"
 		},
 		"sidebar": {
 			"title": "Zijbalk",
@@ -44,7 +45,8 @@
 			"korean": "Koreaans",
 			"chinese": "Chinees",
 			"italian": "Italiaans",
-			"spanish": "Spaans"
+			"spanish": "Spaans",
+			"updateFailed": "Failed to update locale"
 		},
 		"people": {
 			"someone": "Iemand",
@@ -62,7 +64,8 @@
 				"cors": "Unable to connect to the server. This might be due to CORS configuration issues.",
 				"network": "Network error. Please check your internet connection and try again.",
 				"server": "Server error. Please try again later.",
-				"unknown": "An unexpected error occurred."
+				"unknown": "An unexpected error occurred.",
+				"instanceStatusFailed": "Failed to fetch instance status: {{message}}"
 			},
 			"troubleshootingSteps": {
 				"cors": {
@@ -182,7 +185,8 @@
 				"account_not_linked": "Deze identiteit kon niet aan het bestaande account worden gekoppeld. Log in met e-mail om het account te verifiëren en probeer SSO daarna opnieuw. Als inloggen met e-mail niet beschikbaar is, neem dan contact op met je beheerder.",
 				"oauth_code_verification_failed": "OAuth-verificatie mislukt. Probeer het opnieuw.",
 				"registration_is_currently_disabled_you_need_a_valid_invitation_to_create_an_account_": "Registratie is momenteel uitgeschakeld. Je hebt een geldige uitnodiging nodig om een account aan te maken.",
-				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Gebruik een permanent e-mailadres. Met wegwerpadressen kun je geen account aanmaken."
+				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Gebruik een permanent e-mailadres. Met wegwerpadressen kun je geen account aanmaken.",
+				"unknown": "Sign-in failed. Please try again."
 			},
 			"instanceStatusError": "Kan de server niet bereiken. Probeer het over een moment opnieuw.",
 			"heading": "Inloggen bij Kaneo",
@@ -560,8 +564,11 @@
 				"title": "Log in om deze client te autoriseren",
 				"description": "Daarna kom je meteen hier terug om het te controleren.",
 				"submit": "Inloggen"
-			}
-		}
+			},
+			"authorizationInvalidOrExpired": "This authorization request is invalid or has expired.",
+			"authorizationCompleteFailed": "Could not complete the authorization request."
+		},
+		"passwordChangeFailed": "Failed to change password"
 	},
 	"settings": {
 		"advancedSettings": "Geavanceerde instellingen",
@@ -591,7 +598,11 @@
 				"removeSuccess": "Profile picture removed",
 				"updateError": "Failed to update profile picture",
 				"updateSuccess": "Profile picture updated",
-				"upload": "Uploaden"
+				"upload": "Uploaden",
+				"readError": "The image could not be read.",
+				"chooseFile": "Choose an image file.",
+				"tooLarge": "Choose an image smaller than 10MB.",
+				"processError": "The image could not be processed."
 			},
 			"deleteAccount": {
 				"confirm": "Delete account",
@@ -923,7 +934,10 @@
 			"verifyNotInstalled": "De Kaneo GitHub App is niet geïnstalleerd op deze repository.",
 			"verifyReady": "De Kaneo GitHub App is geïnstalleerd met de benodigde permissies.",
 			"workflowHint": "Verplaats taken wanneer pull requests worden geopend of gemerged in",
-			"workflowLink": "Workflow"
+			"workflowLink": "Workflow",
+			"verification": {
+				"missingRepository": "Missing repository"
+			}
 		},
 		"slackIntegration": {
 			"validation": {
@@ -1045,7 +1059,9 @@
 			"export": "Exporteren",
 			"exportDescription": "Download alle taken in dit project als bestand.",
 			"import": "Importeren",
-			"importDescription": "Voeg taken toe uit een bestand dat je eerder hebt geëxporteerd."
+			"importDescription": "Voeg taken toe uit een bestand dat je eerder hebt geëxporteerd.",
+			"exampleTitle": "Task title",
+			"exampleDescription": "Description text"
 		},
 		"workflowEditor": {
 			"toastError": "Bijwerken regel mislukt",
@@ -1240,7 +1256,8 @@
 				"member": "Members",
 				"invitation": "Invitations",
 				"team": "Teams",
-				"ac": "Roles and permissions"
+				"ac": "Roles and permissions",
+				"unknown": "Unknown resource"
 			},
 			"permissions": {
 				"project": {
@@ -1388,7 +1405,8 @@
 						"label": "Delete roles",
 						"description": "Delete custom workspace roles."
 					}
-				}
+				},
+				"unknownLabel": "Unknown permission"
 			},
 			"validation": {
 				"nameRequired": "Rolnaam is verplicht",
@@ -1476,7 +1494,10 @@
 			"browseNeedsCredentials": "Voer de Gitea-URL en een token in om te bladeren.",
 			"browseEmpty": "Dit token kan geen repositories zien.",
 			"chooseRepositoryDescription": "Typ owner/name of kies er een uit de lijst.",
-			"webhookEvents": "Schakel de gebeurtenissen push, pull request, issue, issue-reactie en create in."
+			"webhookEvents": "Schakel de gebeurtenissen push, pull request, issue, issue-reactie en create in.",
+			"verification": {
+				"missingAccess": "Missing Gitea access"
+			}
 		},
 		"telegramIntegration": {
 			"validation": {
@@ -1836,7 +1857,10 @@
 			"chooseProjectDescription": "Typ het pad of kies er een uit de lijst.",
 			"noSearchMatchTitle": "Geen overeenkomende projecten",
 			"useProject": "Project gebruiken",
-			"webhookEvents": "Schakel de gebeurtenissen push, issue, reactie en merge request in."
+			"webhookEvents": "Schakel de gebeurtenissen push, issue, reactie en merge request in.",
+			"verification": {
+				"missingAccess": "Missing GitLab access"
+			}
 		},
 		"calendarFeeds": {
 			"title": "Calendar feeds",
@@ -1974,7 +1998,10 @@
 			"checkoutSuccess": {
 				"title": "Bedankt voor je abonnement",
 				"description": "Betaling ontvangen. Het abonnement hieronder wordt bijgewerkt zodra die is bevestigd."
-			}
+			},
+			"checkoutStartFailed": "Could not start checkout",
+			"portalOpenFailed": "Could not open billing portal",
+			"unknownPlan": "Unknown billing plan: {{plan}}"
 		},
 		"syncRules": {
 			"addLabel": "Add label",
@@ -2837,7 +2864,8 @@
 			"title": "Webhooks",
 			"url": "URL",
 			"save": "Save"
-		}
+		},
+		"profileUpdateFailed": "Failed to update user profile"
 	},
 	"navigation": {
 		"commandPalette": {
@@ -3231,7 +3259,8 @@
 			"importedBy": "Imported by {{name}}",
 			"commentedOnForge": "heeft gereageerd op {{forge}}"
 		},
-		"movedFromOtherProject": "moved task from another project to \"{{to}}\""
+		"movedFromOtherProject": "moved task from another project to \"{{to}}\"",
+		"unknownType": "Activity: {{type}}"
 	},
 	"tasks": {
 		"dateFilter": {
@@ -3397,7 +3426,10 @@
 				"saving": "Saving…",
 				"saveFailed": "Changes could not be saved",
 				"retrySave": "Retry"
-			}
+			},
+			"noTaskSelected": "No task selected",
+			"uploadEmptyFile": "Only non-empty file uploads are supported.",
+			"uploadFailed": "Failed to upload file to storage."
 		},
 		"entity": {
 			"task": "Taak"
@@ -3769,7 +3801,8 @@
 			"loadErrorTitle": "Dit bord is niet geladen",
 			"loadErrorDescription": "Er ging iets mis bij het ophalen van de taken. Controleer je verbinding en probeer het opnieuw.",
 			"refreshError": "Dit bord kon niet worden vernieuwd en is mogelijk niet actueel.",
-			"tryAgain": "Opnieuw proberen"
+			"tryAgain": "Opnieuw proberen",
+			"loadFailed": "Failed to fetch tasks"
 		},
 		"recurrence": {
 			"daily_one": "Elke dag",
@@ -3843,6 +3876,53 @@
 			"startsOn": "Begint {{date}}",
 			"beforeStart": "{{date}} ligt vóór de startdatum",
 			"afterDue": "{{date}} ligt na de vervaldatum"
+		},
+		"share": {
+			"membersCount": "{{count}} members",
+			"recipientsUpdated": "Sharing recipients updated",
+			"updateError": "Could not update sharing.",
+			"loadError": "Could not load sharing details.",
+			"retry": "Retry",
+			"addPeople": "Add people",
+			"addGroups": "Add groups",
+			"searchPeople": "Search people",
+			"searchGroups": "Search groups",
+			"noPeopleFound": "No people found",
+			"noGroupsFound": "No groups found",
+			"selectedCount": "{{count}} selected",
+			"save": "Save",
+			"visibility": "Visibility",
+			"users": "Users",
+			"groups": "Groups",
+			"creatorRetainsAccess": "Creator and assignees always retain access",
+			"public": "Public",
+			"publicDescription": "Workspace members can view this ticket. Selected users and groups are additional shares.",
+			"private": "Private",
+			"privateDescription": "Only the creator, assignees and selected users or groups can view this ticket.",
+			"currentAccess": "Current access",
+			"currentAccessPublic": "All workspace members can view this ticket. Selected people and groups are also listed below.",
+			"currentAccessPrivate": "Only selected people and groups, the creator, and assignees can view this ticket.",
+			"sharedWithGroups": "Shared with groups",
+			"noGroupsSelected": "No groups selected",
+			"sharedWithPeople": "Shared with people",
+			"noPeopleSelected": "No people selected"
+		},
+		"filter": {
+			"booleanTrue": "True",
+			"booleanFalse": "False"
+		},
+		"create": {
+			"noProjectSelected": "No project selected for task creation"
+		},
+		"descriptionSearch": {
+			"failed": "Failed to search descriptions",
+			"didNotAdvance": "Description search did not advance"
+		},
+		"description": {
+			"changedWhileLoading": "Description changed while loading",
+			"pageDidNotAdvance": "Description page did not advance",
+			"loadFailed": "Failed to load description",
+			"projectLoadFailed": "Failed to load project description"
 		}
 	},
 	"invitations": {
@@ -4004,7 +4084,19 @@
 			"manage": "Manage workspaces",
 			"otherWorkspaces": "Go to workspaces",
 			"title": "Workspace archived"
-		}
+		},
+		"roles": {
+			"createFailed": "Failed to create role",
+			"deleteFailed": "Failed to delete role",
+			"updateFailed": "Failed to update role"
+		},
+		"deleteFailed": "Failed to delete workspace",
+		"ownershipPromoteFailed": "Failed to promote new owner",
+		"ownershipDemoteFailed": "Failed to demote previous owner",
+		"updateFailed": "Failed to update workspace",
+		"createFailed": "Failed to create workspace",
+		"loadFailed": "Failed to get full workspace",
+		"listFailed": "Failed to fetch workspaces"
 	},
 	"team": {
 		"roles": {
@@ -4016,7 +4108,15 @@
 		"members": {
 			"pageTitle": "Leden",
 			"inviteMember": "Lid uitnodigen",
-			"you": "Jij"
+			"you": "Jij",
+			"users": "Users",
+			"groups": "Groups",
+			"members": "Members",
+			"noMembersInGroup": "No members in this group",
+			"removeFailed": "Failed to remove workspace member",
+			"updateRoleFailed": "Failed to update workspace member role",
+			"loadActiveFailed": "Failed to get active workspace user",
+			"loadFailed": "Failed to get workspace users"
 		},
 		"invitations": {
 			"linkLabel": "Uitnodigingslink",
@@ -4024,7 +4124,15 @@
 			"linkCopied": "Uitnodigingslink gekopieerd",
 			"copyFailed": "Automatisch kopiëren mislukt. Selecteer de link en druk op Ctrl+C.",
 			"pendingBadge": "in afwachting",
-			"expires": "Verloopt op {{date}}"
+			"expires": "Verloopt op {{date}}",
+			"acceptFailed": "Failed to accept invitation",
+			"cancelFailed": "Failed to cancel invitation",
+			"inviteFailed": "Failed to invite workspace member",
+			"rejectFailed": "Failed to reject invitation",
+			"loadFailed": "Failed to get invitation",
+			"loadUserInvitationsFailed": "Failed to get user invitations",
+			"loadWorkspaceInvitesFailed": "Failed to get workspace invites",
+			"pendingLoadFailed": "Failed to get pending invitations"
 		},
 		"inviteModal": {
 			"title": "Teamlid uitnodigen",

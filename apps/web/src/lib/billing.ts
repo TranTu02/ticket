@@ -7,6 +7,7 @@ import {
 import type { WorkspaceUsage } from "@/constants/onboarding";
 import type { GetBillingResponse } from "@/fetchers/billing/get-billing";
 import { formatDate } from "@/lib/format";
+import { i18n } from "@/lib/i18n";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -55,7 +56,8 @@ export function getPlanPrice(
   interval: BillingIntervalKey,
 ) {
   const definition = BILLING_PLANS.find((p) => p.plan === plan);
-  if (!definition) throw new Error(`Unknown billing plan: ${plan}`);
+  if (!definition)
+    throw new Error(i18n.t("settings:billing.unknownPlan", { plan }));
 
   const isTeam = plan === "team";
   const isAnnual = interval === "annual";

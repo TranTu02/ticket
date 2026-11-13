@@ -146,13 +146,7 @@ function CommandPalette() {
         ],
       },
     ],
-    [
-      navigate,
-      setTheme,
-      t,
-      workspace?.id,
-      openShortcutsPanel,
-    ],
+    [navigate, setTheme, t, workspace?.id, openShortcutsPanel],
   );
 
   return (

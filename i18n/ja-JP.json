@@ -13,7 +13,8 @@
 			"filter": "フィルター"
 		},
 		"a11y": {
-			"toggleSidebar": "サイドバーを切り替え"
+			"toggleSidebar": "サイドバーを切り替え",
+			"checkmark": "Check"
 		},
 		"sidebar": {
 			"title": "サイドバー",
@@ -44,7 +45,8 @@
 			"dutch": "オランダ語",
 			"korean": "韓国語",
 			"chinese": "中国語",
-			"italian": "イタリア語"
+			"italian": "イタリア語",
+			"updateFailed": "Failed to update locale"
 		},
 		"people": {
 			"someone": "ユーザー",
@@ -62,7 +64,8 @@
 				"network": "ネットワークエラーが発生しました。インターネット接続を確認して再試行してください。",
 				"auth": "認証に失敗しました。再度サインインしてください。",
 				"server": "サーバーエラーが発生しました。しばらくしてからもう一度お試しください。",
-				"unknown": "予期しないエラーが発生しました。"
+				"unknown": "予期しないエラーが発生しました。",
+				"instanceStatusFailed": "Failed to fetch instance status: {{message}}"
 			},
 			"troubleshootingSteps": {
 				"cors": {
@@ -182,7 +185,8 @@
 				"account_not_linked": "この認証情報は既存のアカウントにリンクできませんでした。メールでサインインしてアカウントを確認後、再度SSOをお試しください。メールサインインが利用できない場合は、管理者にお問い合わせください。",
 				"oauth_code_verification_failed": "OAuth 認証に失敗しました。もう一度お試しください。",
 				"registration_is_currently_disabled_you_need_a_valid_invitation_to_create_an_account_": "現在、新規登録は無効になっています。アカウントを作成するには有効な招待が必要です。",
-				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "恒久的なメールアドレスを使用してください。使い捨てのメールアドレスではアカウントを作成できません。"
+				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "恒久的なメールアドレスを使用してください。使い捨てのメールアドレスではアカウントを作成できません。",
+				"unknown": "Sign-in failed. Please try again."
 			},
 			"instanceStatusError": "サーバーに接続できませんでした。しばらくしてから再試行してください。",
 			"heading": "Kaneo にサインイン",
@@ -555,8 +559,11 @@
 				"title": "サインインしてこのクライアントを承認",
 				"description": "サインイン後すぐにこのページに戻り、内容を確認できます。",
 				"submit": "サインイン"
-			}
-		}
+			},
+			"authorizationInvalidOrExpired": "This authorization request is invalid or has expired.",
+			"authorizationCompleteFailed": "Could not complete the authorization request."
+		},
+		"passwordChangeFailed": "Failed to change password"
 	},
 	"settings": {
 		"advancedSettings": "詳細設定",
@@ -587,7 +594,11 @@
 				"updateError": "プロフィール画像の更新に失敗しました",
 				"removeSuccess": "プロフィール画像を削除しました",
 				"removeError": "プロフィール画像の削除に失敗しました",
-				"upload": "アップロード"
+				"upload": "アップロード",
+				"readError": "The image could not be read.",
+				"chooseFile": "Choose an image file.",
+				"tooLarge": "Choose an image smaller than 10MB.",
+				"processError": "The image could not be processed."
 			},
 			"deleteAccount": {
 				"sectionTitle": "危険な操作",
@@ -901,7 +912,8 @@
 				"member": "Members",
 				"invitation": "Invitations",
 				"team": "Teams",
-				"ac": "Roles and permissions"
+				"ac": "Roles and permissions",
+				"unknown": "Unknown resource"
 			},
 			"permissions": {
 				"project": {
@@ -1049,7 +1061,8 @@
 						"label": "Delete roles",
 						"description": "Delete custom workspace roles."
 					}
-				}
+				},
+				"unknownLabel": "Unknown permission"
 			},
 			"validation": {
 				"nameRequired": "ロール名は必須です",
@@ -1281,7 +1294,10 @@
 			"verifyNotInstalled": "Kaneo GitHub App がこのリポジトリにインストールされていません。",
 			"verifyReady": "Kaneo GitHub App は必要な権限でインストールされています。",
 			"workflowHint": "プルリクエストのオープンやマージでタスクを移動するには",
-			"workflowLink": "ワークフロー"
+			"workflowLink": "ワークフロー",
+			"verification": {
+				"missingRepository": "Missing repository"
+			}
 		},
 		"giteaIntegration": {
 			"validation": {
@@ -1314,7 +1330,10 @@
 			"browseNeedsCredentials": "参照するには Gitea の URL とトークンを入力してください。",
 			"browseEmpty": "このトークンで参照できるリポジトリがありません。",
 			"chooseRepositoryDescription": "owner/name を入力するか、一覧から選択してください。",
-			"webhookEvents": "プッシュ、プルリクエスト、Issue、Issue コメント、作成の各イベントを有効にしてください。"
+			"webhookEvents": "プッシュ、プルリクエスト、Issue、Issue コメント、作成の各イベントを有効にしてください。",
+			"verification": {
+				"missingAccess": "Missing Gitea access"
+			}
 		},
 		"slackIntegration": {
 			"validation": {
@@ -1465,7 +1484,9 @@
 			"export": "エクスポート",
 			"exportDescription": "このプロジェクトのすべてのタスクをファイルとしてダウンロードします。",
 			"import": "インポート",
-			"importDescription": "以前にエクスポートしたファイルからタスクを追加します。"
+			"importDescription": "以前にエクスポートしたファイルからタスクを追加します。",
+			"exampleTitle": "Task title",
+			"exampleDescription": "Description text"
 		},
 		"workflowEditor": {
 			"toastError": "ルールの更新に失敗しました",
@@ -1826,7 +1847,10 @@
 			"chooseProjectDescription": "パスを入力するか、一覧から選択してください。",
 			"noSearchMatchTitle": "一致するプロジェクトがありません",
 			"useProject": "このプロジェクトを使用",
-			"webhookEvents": "プッシュ、Issue、コメント、マージリクエストの各イベントを有効にしてください。"
+			"webhookEvents": "プッシュ、Issue、コメント、マージリクエストの各イベントを有効にしてください。",
+			"verification": {
+				"missingAccess": "Missing GitLab access"
+			}
 		},
 		"calendarFeeds": {
 			"title": "Calendar feeds",
@@ -1961,7 +1985,10 @@
 			"checkoutSuccess": {
 				"title": "ご登録ありがとうございます",
 				"description": "お支払いを受け付けました。確認され次第、下のプランが更新されます。"
-			}
+			},
+			"checkoutStartFailed": "Could not start checkout",
+			"portalOpenFailed": "Could not open billing portal",
+			"unknownPlan": "Unknown billing plan: {{plan}}"
 		},
 		"syncRules": {
 			"addLabel": "Add label",
@@ -2788,7 +2815,8 @@
 			"title": "Webhooks",
 			"url": "URL",
 			"save": "Save"
-		}
+		},
+		"profileUpdateFailed": "Failed to update user profile"
 	},
 	"navigation": {
 		"commandPalette": {
@@ -3177,7 +3205,8 @@
 			"importedBy": "Imported by {{name}}",
 			"commentedOnForge": "{{forge}} でコメント"
 		},
-		"movedFromOtherProject": "moved task from another project to \"{{to}}\""
+		"movedFromOtherProject": "moved task from another project to \"{{to}}\"",
+		"unknownType": "Activity: {{type}}"
 	},
 	"tasks": {
 		"dateFilter": {
@@ -3343,7 +3372,10 @@
 				"saving": "Saving…",
 				"saveFailed": "Changes could not be saved",
 				"retrySave": "Retry"
-			}
+			},
+			"noTaskSelected": "No task selected",
+			"uploadEmptyFile": "Only non-empty file uploads are supported.",
+			"uploadFailed": "Failed to upload file to storage."
 		},
 		"entity": {
 			"task": "タスク"
@@ -3706,7 +3738,8 @@
 			"loadErrorTitle": "このボードを読み込めませんでした",
 			"loadErrorDescription": "タスクの取得中に問題が発生しました。接続を確認して、もう一度お試しください。",
 			"refreshError": "ボードを更新できなかったため、内容が古い可能性があります。",
-			"tryAgain": "再試行"
+			"tryAgain": "再試行",
+			"loadFailed": "Failed to fetch tasks"
 		},
 		"recurrence": {
 			"daily_other": "{{count}}日ごと",
@@ -3771,6 +3804,53 @@
 			"startsOn": "開始: {{date}}",
 			"beforeStart": "{{date}} は開始日より前です",
 			"afterDue": "{{date}} は期日より後です"
+		},
+		"share": {
+			"membersCount": "{{count}} members",
+			"recipientsUpdated": "Sharing recipients updated",
+			"updateError": "Could not update sharing.",
+			"loadError": "Could not load sharing details.",
+			"retry": "Retry",
+			"addPeople": "Add people",
+			"addGroups": "Add groups",
+			"searchPeople": "Search people",
+			"searchGroups": "Search groups",
+			"noPeopleFound": "No people found",
+			"noGroupsFound": "No groups found",
+			"selectedCount": "{{count}} selected",
+			"save": "Save",
+			"visibility": "Visibility",
+			"users": "Users",
+			"groups": "Groups",
+			"creatorRetainsAccess": "Creator and assignees always retain access",
+			"public": "Public",
+			"publicDescription": "Workspace members can view this ticket. Selected users and groups are additional shares.",
+			"private": "Private",
+			"privateDescription": "Only the creator, assignees and selected users or groups can view this ticket.",
+			"currentAccess": "Current access",
+			"currentAccessPublic": "All workspace members can view this ticket. Selected people and groups are also listed below.",
+			"currentAccessPrivate": "Only selected people and groups, the creator, and assignees can view this ticket.",
+			"sharedWithGroups": "Shared with groups",
+			"noGroupsSelected": "No groups selected",
+			"sharedWithPeople": "Shared with people",
+			"noPeopleSelected": "No people selected"
+		},
+		"filter": {
+			"booleanTrue": "True",
+			"booleanFalse": "False"
+		},
+		"create": {
+			"noProjectSelected": "No project selected for task creation"
+		},
+		"descriptionSearch": {
+			"failed": "Failed to search descriptions",
+			"didNotAdvance": "Description search did not advance"
+		},
+		"description": {
+			"changedWhileLoading": "Description changed while loading",
+			"pageDidNotAdvance": "Description page did not advance",
+			"loadFailed": "Failed to load description",
+			"projectLoadFailed": "Failed to load project description"
 		}
 	},
 	"invitations": {
@@ -3928,7 +4008,19 @@
 			"manage": "Manage workspaces",
 			"otherWorkspaces": "Go to workspaces",
 			"title": "Workspace archived"
-		}
+		},
+		"roles": {
+			"createFailed": "Failed to create role",
+			"deleteFailed": "Failed to delete role",
+			"updateFailed": "Failed to update role"
+		},
+		"deleteFailed": "Failed to delete workspace",
+		"ownershipPromoteFailed": "Failed to promote new owner",
+		"ownershipDemoteFailed": "Failed to demote previous owner",
+		"updateFailed": "Failed to update workspace",
+		"createFailed": "Failed to create workspace",
+		"loadFailed": "Failed to get full workspace",
+		"listFailed": "Failed to fetch workspaces"
 	},
 	"team": {
 		"roles": {
@@ -3940,7 +4032,15 @@
 		"members": {
 			"pageTitle": "メンバー",
 			"inviteMember": "メンバーを招待",
-			"you": "あなた"
+			"you": "あなた",
+			"users": "Users",
+			"groups": "Groups",
+			"members": "Members",
+			"noMembersInGroup": "No members in this group",
+			"removeFailed": "Failed to remove workspace member",
+			"updateRoleFailed": "Failed to update workspace member role",
+			"loadActiveFailed": "Failed to get active workspace user",
+			"loadFailed": "Failed to get workspace users"
 		},
 		"invitations": {
 			"pendingBadge": "保留中",
@@ -3948,7 +4048,15 @@
 			"linkLabel": "招待リンク",
 			"copyLink": "リンクをコピー",
 			"linkCopied": "招待リンクをコピーしました",
-			"copyFailed": "自動コピーできませんでした。リンクを選択して Ctrl+C を押してください。"
+			"copyFailed": "自動コピーできませんでした。リンクを選択して Ctrl+C を押してください。",
+			"acceptFailed": "Failed to accept invitation",
+			"cancelFailed": "Failed to cancel invitation",
+			"inviteFailed": "Failed to invite workspace member",
+			"rejectFailed": "Failed to reject invitation",
+			"loadFailed": "Failed to get invitation",
+			"loadUserInvitationsFailed": "Failed to get user invitations",
+			"loadWorkspaceInvitesFailed": "Failed to get workspace invites",
+			"pendingLoadFailed": "Failed to get pending invitations"
 		},
 		"inviteModal": {
 			"title": "チームメンバーを招待",

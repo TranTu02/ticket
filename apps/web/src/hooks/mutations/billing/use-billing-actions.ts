@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import {
   type BillingInterval,
@@ -10,6 +11,7 @@ import { savePendingPurchase } from "@/lib/analytics/pending-purchase";
 import { track } from "@/lib/analytics/track";
 
 export function useCreateCheckout(workspaceId: string | undefined) {
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: (input: { plan: BillingPlan; interval: BillingInterval }) =>
       createBillingCheckout({ workspaceId: workspaceId as string, ...input }),
@@ -20,13 +22,16 @@ export function useCreateCheckout(workspaceId: string | undefined) {
     },
     onError: (error) => {
       toast.error(
-        error instanceof Error ? error.message : "Could not start checkout",
+        error instanceof Error
+          ? error.message
+          : t("settings:billing.checkoutStartFailed"),
       );
     },
   });
 }
 
 export function useOpenBillingPortal(workspaceId: string | undefined) {
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: () => createBillingPortal(workspaceId as string),
     onSuccess: ({ portalUrl }) => {
@@ -36,7 +41,7 @@ export function useOpenBillingPortal(workspaceId: string | undefined) {
       toast.error(
         error instanceof Error
           ? error.message
-          : "Could not open billing portal",
+          : t("settings:billing.portalOpenFailed"),
       );
     },
   });

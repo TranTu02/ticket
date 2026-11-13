@@ -1,4 +1,5 @@
 import { authClient } from "@/lib/auth-client";
+import { i18n } from "@/lib/i18n";
 
 export type InviteWorkspaceMemberRequest = {
   workspaceId: string;
@@ -18,7 +19,7 @@ const inviteWorkspaceMember = async ({
   });
 
   if (error) {
-    throw new Error(error.message || "Failed to invite workspace member");
+    throw new Error(error.message || i18n.t("team:invitations.inviteFailed"));
   }
 
   return data;

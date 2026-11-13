@@ -5,10 +5,7 @@ import {
   getProjectShare,
   updateProjectShare,
 } from "./controllers/project-sharing";
-import {
-  getTaskShare,
-  updateTaskShare,
-} from "../task/controllers/update-task";
+import { getTaskShare, updateTaskShare } from "../task/controllers/update-task";
 
 export const projectAccessRoutes = new Hono();
 
@@ -21,7 +18,9 @@ export const projectAccessRoutes = new Hono();
  */
 const FALLBACK_WORKSPACE_ID = "irdop";
 
-function resolveWorkspaceId(c: { req: { query: (key: string) => string | undefined } }) {
+function resolveWorkspaceId(c: {
+  req: { query: (key: string) => string | undefined };
+}) {
   const fromQuery = c.req.query("workspaceId")?.trim();
   return fromQuery || FALLBACK_WORKSPACE_ID;
 }

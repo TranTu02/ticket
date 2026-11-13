@@ -1,6 +1,7 @@
 import createImageUpload, {
   finalizeImageUpload,
 } from "@/fetchers/task/create-image-upload";
+import { i18n } from "@/lib/i18n";
 
 const allowedImageMimeTypes = new Set([
   "image/apng",
@@ -42,7 +43,7 @@ export async function uploadTaskImage({
 }) {
   if (!isSupportedImageFile(file)) {
     if (!isSupportedTaskAsset(file)) {
-      throw new Error("Only non-empty file uploads are supported.");
+      throw new Error(i18n.t("tasks:detail.uploadEmptyFile"));
     }
   }
 
@@ -63,7 +64,7 @@ export async function uploadTaskImage({
   });
 
   if (!response.ok) {
-    throw new Error("Failed to upload file to storage.");
+    throw new Error(i18n.t("tasks:detail.uploadFailed"));
   }
 
   const asset = await finalizeImageUpload({

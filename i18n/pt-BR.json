@@ -13,7 +13,8 @@
 			"filter": "Filtrar"
 		},
 		"a11y": {
-			"toggleSidebar": "Alternar barra lateral"
+			"toggleSidebar": "Alternar barra lateral",
+			"checkmark": "Check"
 		},
 		"sidebar": {
 			"title": "Barra lateral",
@@ -44,7 +45,8 @@
 			"dutch": "Holandês",
 			"korean": "Coreano",
 			"chinese": "Chinês",
-			"italian": "Italiano"
+			"italian": "Italiano",
+			"updateFailed": "Failed to update locale"
 		},
 		"people": {
 			"someone": "Alguém",
@@ -62,7 +64,8 @@
 				"cors": "Unable to connect to the server. This might be due to CORS configuration issues.",
 				"network": "Network error. Please check your internet connection and try again.",
 				"server": "Server error. Please try again later.",
-				"unknown": "An unexpected error occurred."
+				"unknown": "An unexpected error occurred.",
+				"instanceStatusFailed": "Failed to fetch instance status: {{message}}"
 			},
 			"troubleshootingSteps": {
 				"cors": {
@@ -182,7 +185,8 @@
 				"account_not_linked": "Não foi possível vincular você a uma conta existente. Entre por e-mail para verificar a conta e tente o SSO novamente. Se o login por e-mail não estiver disponível, entre em contato com seu administrador.",
 				"oauth_code_verification_failed": "Falha na verificação do OAuth. Tente novamente.",
 				"registration_is_currently_disabled_you_need_a_valid_invitation_to_create_an_account_": "O cadastro está atualmente desativado. Você precisa de um convite válido para criar uma conta.",
-				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Use um endereço de e-mail permanente. Endereços temporários não podem criar contas."
+				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Use um endereço de e-mail permanente. Endereços temporários não podem criar contas.",
+				"unknown": "Sign-in failed. Please try again."
 			},
 			"instanceStatusError": "Não foi possível acessar o servidor. Tente novamente em alguns instantes.",
 			"heading": "Entrar no Kaneo",
@@ -565,8 +569,11 @@
 				"title": "Entre para autorizar este cliente",
 				"description": "Você voltará para cá logo em seguida para revisá-lo.",
 				"submit": "Entrar"
-			}
-		}
+			},
+			"authorizationInvalidOrExpired": "This authorization request is invalid or has expired.",
+			"authorizationCompleteFailed": "Could not complete the authorization request."
+		},
+		"passwordChangeFailed": "Failed to change password"
 	},
 	"settings": {
 		"advancedSettings": "Configurações avançadas",
@@ -597,7 +604,11 @@
 				"removeSuccess": "Profile picture removed",
 				"updateError": "Failed to update profile picture",
 				"updateSuccess": "Profile picture updated",
-				"upload": "Enviar"
+				"upload": "Enviar",
+				"readError": "The image could not be read.",
+				"chooseFile": "Choose an image file.",
+				"tooLarge": "Choose an image smaller than 10MB.",
+				"processError": "The image could not be processed."
 			},
 			"deleteAccount": {
 				"confirm": "Delete account",
@@ -918,7 +929,8 @@
 				"member": "Members",
 				"invitation": "Invitations",
 				"team": "Teams",
-				"ac": "Roles and permissions"
+				"ac": "Roles and permissions",
+				"unknown": "Unknown resource"
 			},
 			"permissions": {
 				"project": {
@@ -1066,7 +1078,8 @@
 						"label": "Delete roles",
 						"description": "Delete custom workspace roles."
 					}
-				}
+				},
+				"unknownLabel": "Unknown permission"
 			},
 			"validation": {
 				"nameRequired": "O nome da função é obrigatório",
@@ -1299,7 +1312,10 @@
 			"verifyNotInstalled": "O GitHub App do Kaneo não está instalado neste repositório.",
 			"verifyReady": "O GitHub App do Kaneo está instalado com as permissões necessárias.",
 			"workflowHint": "Mova tarefas quando pull requests forem abertos ou mesclados em",
-			"workflowLink": "Fluxo de trabalho"
+			"workflowLink": "Fluxo de trabalho",
+			"verification": {
+				"missingRepository": "Missing repository"
+			}
 		},
 		"giteaIntegration": {
 			"validation": {
@@ -1332,7 +1348,10 @@
 			"browseNeedsCredentials": "Informe a URL do Gitea e um token para procurar.",
 			"browseEmpty": "Este token não tem acesso a nenhum repositório.",
 			"chooseRepositoryDescription": "Digite owner/name ou escolha um da lista.",
-			"webhookEvents": "Ative os eventos de push, pull request, issue, comentário de issue e create."
+			"webhookEvents": "Ative os eventos de push, pull request, issue, comentário de issue e create.",
+			"verification": {
+				"missingAccess": "Missing Gitea access"
+			}
 		},
 		"slackIntegration": {
 			"validation": {
@@ -1483,7 +1502,9 @@
 			"export": "Exportar",
 			"exportDescription": "Baixe todas as tarefas deste projeto como um arquivo.",
 			"import": "Importar",
-			"importDescription": "Adicione tarefas de um arquivo que você exportou antes."
+			"importDescription": "Adicione tarefas de um arquivo que você exportou antes.",
+			"exampleTitle": "Task title",
+			"exampleDescription": "Description text"
 		},
 		"workflowEditor": {
 			"toastError": "Falha ao atualizar regra",
@@ -1846,7 +1867,10 @@
 			"chooseProjectDescription": "Digite o caminho ou escolha um da lista.",
 			"noSearchMatchTitle": "Nenhum projeto correspondente",
 			"useProject": "Usar projeto",
-			"webhookEvents": "Ative os eventos de push, issue, comentário e merge request."
+			"webhookEvents": "Ative os eventos de push, issue, comentário e merge request.",
+			"verification": {
+				"missingAccess": "Missing GitLab access"
+			}
 		},
 		"calendarFeeds": {
 			"title": "Calendar feeds",
@@ -1987,7 +2011,10 @@
 			"checkoutSuccess": {
 				"title": "Obrigado pela assinatura",
 				"description": "Pagamento recebido. O plano abaixo será atualizado assim que for confirmado."
-			}
+			},
+			"checkoutStartFailed": "Could not start checkout",
+			"portalOpenFailed": "Could not open billing portal",
+			"unknownPlan": "Unknown billing plan: {{plan}}"
 		},
 		"syncRules": {
 			"addLabel": "Add label",
@@ -2886,7 +2913,8 @@
 			"title": "Webhooks",
 			"url": "URL",
 			"save": "Save"
-		}
+		},
+		"profileUpdateFailed": "Failed to update user profile"
 	},
 	"navigation": {
 		"commandPalette": {
@@ -3285,7 +3313,8 @@
 			"importedBy": "Imported by {{name}}",
 			"commentedOnForge": "comentou no {{forge}}"
 		},
-		"movedFromOtherProject": "moved task from another project to \"{{to}}\""
+		"movedFromOtherProject": "moved task from another project to \"{{to}}\"",
+		"unknownType": "Activity: {{type}}"
 	},
 	"tasks": {
 		"dateFilter": {
@@ -3451,7 +3480,10 @@
 				"saving": "Saving…",
 				"saveFailed": "Changes could not be saved",
 				"retrySave": "Retry"
-			}
+			},
+			"noTaskSelected": "No task selected",
+			"uploadEmptyFile": "Only non-empty file uploads are supported.",
+			"uploadFailed": "Failed to upload file to storage."
 		},
 		"entity": {
 			"task": "Tarefa"
@@ -3832,7 +3864,8 @@
 			"loadErrorTitle": "Este quadro não carregou",
 			"loadErrorDescription": "Algo deu errado ao buscar as tarefas. Verifique sua conexão e tente novamente.",
 			"refreshError": "Não foi possível atualizar este quadro, então ele pode estar desatualizado.",
-			"tryAgain": "Tentar novamente"
+			"tryAgain": "Tentar novamente",
+			"loadFailed": "Failed to fetch tasks"
 		},
 		"recurrence": {
 			"daily_many": "A cada {{count}} dias",
@@ -3915,6 +3948,53 @@
 			"startsOn": "Começa em {{date}}",
 			"beforeStart": "{{date}} é antes da data de início",
 			"afterDue": "{{date}} é depois do prazo"
+		},
+		"share": {
+			"membersCount": "{{count}} members",
+			"recipientsUpdated": "Sharing recipients updated",
+			"updateError": "Could not update sharing.",
+			"loadError": "Could not load sharing details.",
+			"retry": "Retry",
+			"addPeople": "Add people",
+			"addGroups": "Add groups",
+			"searchPeople": "Search people",
+			"searchGroups": "Search groups",
+			"noPeopleFound": "No people found",
+			"noGroupsFound": "No groups found",
+			"selectedCount": "{{count}} selected",
+			"save": "Save",
+			"visibility": "Visibility",
+			"users": "Users",
+			"groups": "Groups",
+			"creatorRetainsAccess": "Creator and assignees always retain access",
+			"public": "Public",
+			"publicDescription": "Workspace members can view this ticket. Selected users and groups are additional shares.",
+			"private": "Private",
+			"privateDescription": "Only the creator, assignees and selected users or groups can view this ticket.",
+			"currentAccess": "Current access",
+			"currentAccessPublic": "All workspace members can view this ticket. Selected people and groups are also listed below.",
+			"currentAccessPrivate": "Only selected people and groups, the creator, and assignees can view this ticket.",
+			"sharedWithGroups": "Shared with groups",
+			"noGroupsSelected": "No groups selected",
+			"sharedWithPeople": "Shared with people",
+			"noPeopleSelected": "No people selected"
+		},
+		"filter": {
+			"booleanTrue": "True",
+			"booleanFalse": "False"
+		},
+		"create": {
+			"noProjectSelected": "No project selected for task creation"
+		},
+		"descriptionSearch": {
+			"failed": "Failed to search descriptions",
+			"didNotAdvance": "Description search did not advance"
+		},
+		"description": {
+			"changedWhileLoading": "Description changed while loading",
+			"pageDidNotAdvance": "Description page did not advance",
+			"loadFailed": "Failed to load description",
+			"projectLoadFailed": "Failed to load project description"
 		}
 	},
 	"invitations": {
@@ -4080,7 +4160,19 @@
 			"manage": "Manage workspaces",
 			"otherWorkspaces": "Go to workspaces",
 			"title": "Workspace archived"
-		}
+		},
+		"roles": {
+			"createFailed": "Failed to create role",
+			"deleteFailed": "Failed to delete role",
+			"updateFailed": "Failed to update role"
+		},
+		"deleteFailed": "Failed to delete workspace",
+		"ownershipPromoteFailed": "Failed to promote new owner",
+		"ownershipDemoteFailed": "Failed to demote previous owner",
+		"updateFailed": "Failed to update workspace",
+		"createFailed": "Failed to create workspace",
+		"loadFailed": "Failed to get full workspace",
+		"listFailed": "Failed to fetch workspaces"
 	},
 	"team": {
 		"roles": {
@@ -4092,7 +4184,15 @@
 		"members": {
 			"pageTitle": "Membros",
 			"inviteMember": "Convidar membro",
-			"you": "Você"
+			"you": "Você",
+			"users": "Users",
+			"groups": "Groups",
+			"members": "Members",
+			"noMembersInGroup": "No members in this group",
+			"removeFailed": "Failed to remove workspace member",
+			"updateRoleFailed": "Failed to update workspace member role",
+			"loadActiveFailed": "Failed to get active workspace user",
+			"loadFailed": "Failed to get workspace users"
 		},
 		"invitations": {
 			"pendingBadge": "pendente",
@@ -4100,7 +4200,15 @@
 			"linkLabel": "Link do convite",
 			"copyLink": "Copiar link",
 			"linkCopied": "Link do convite copiado",
-			"copyFailed": "Não foi possível copiar automaticamente. Selecione o link e pressione Ctrl+C."
+			"copyFailed": "Não foi possível copiar automaticamente. Selecione o link e pressione Ctrl+C.",
+			"acceptFailed": "Failed to accept invitation",
+			"cancelFailed": "Failed to cancel invitation",
+			"inviteFailed": "Failed to invite workspace member",
+			"rejectFailed": "Failed to reject invitation",
+			"loadFailed": "Failed to get invitation",
+			"loadUserInvitationsFailed": "Failed to get user invitations",
+			"loadWorkspaceInvitesFailed": "Failed to get workspace invites",
+			"pendingLoadFailed": "Failed to get pending invitations"
 		},
 		"inviteModal": {
 			"title": "Convidar membro da equipe",

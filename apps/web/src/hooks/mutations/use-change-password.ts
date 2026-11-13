@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { authClient } from "@/lib/auth-client";
 
 type ChangePasswordRequest = {
@@ -7,6 +8,7 @@ type ChangePasswordRequest = {
 };
 
 function useChangePassword() {
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async ({
       currentPassword,
@@ -21,7 +23,7 @@ function useChangePassword() {
       });
 
       if (error) {
-        throw new Error(error.message || "Failed to change password");
+        throw new Error(error.message || t("auth:passwordChangeFailed"));
       }
 
       return data;

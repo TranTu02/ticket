@@ -6,7 +6,10 @@ import type {
   UpdateProjectShareRequest,
 } from "@/types/project-share";
 
-async function parseError(response: Response, fallback: string): Promise<string> {
+async function parseError(
+  response: Response,
+  fallback: string,
+): Promise<string> {
   try {
     const body = await response.json();
     if (body?.message) return String(body.message);
@@ -22,7 +25,9 @@ export async function fetchSharingGroups(): Promise<ActiveGroup[]> {
     credentials: "include",
   });
   if (!response.ok) {
-    throw new Error(await parseError(response, "Không tải được danh sách nhóm."));
+    throw new Error(
+      await parseError(response, "Không tải được danh sách nhóm."),
+    );
   }
   const data = (await response.json()) as { groups: ActiveGroup[] };
   return data.groups ?? [];
@@ -33,7 +38,9 @@ export async function fetchSharingUsers(): Promise<ActiveUser[]> {
     credentials: "include",
   });
   if (!response.ok) {
-    throw new Error(await parseError(response, "Không tải được danh sách nhân sự."));
+    throw new Error(
+      await parseError(response, "Không tải được danh sách nhân sự."),
+    );
   }
   const data = (await response.json()) as { users: ActiveUser[] };
   return data.users ?? [];

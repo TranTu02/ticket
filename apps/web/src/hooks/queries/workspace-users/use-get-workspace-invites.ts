@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { authClient } from "@/lib/auth-client";
 
 type GetWorkspaceInvitesRequest = {
@@ -6,6 +7,7 @@ type GetWorkspaceInvitesRequest = {
 };
 
 function useGetWorkspaceInvites({ workspaceId }: GetWorkspaceInvitesRequest) {
+  const { t } = useTranslation();
   return useQuery({
     queryKey: ["workspace-invites", workspaceId],
     queryFn: async () => {
@@ -16,7 +18,9 @@ function useGetWorkspaceInvites({ workspaceId }: GetWorkspaceInvitesRequest) {
       });
 
       if (error) {
-        throw new Error(error.message || "Failed to get workspace invites");
+        throw new Error(
+          error.message || t("team:invitations.loadWorkspaceInvitesFailed"),
+        );
       }
 
       return data;

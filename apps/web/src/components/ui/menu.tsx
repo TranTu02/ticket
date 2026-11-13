@@ -3,6 +3,7 @@
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
 import { ChevronRightIcon } from "lucide-react";
 import * as React from "react";
+import { useTranslation } from "react-i18next";
 
 import { cn } from "@/lib/cn";
 
@@ -114,6 +115,7 @@ function MenuCheckboxItem({
 }: MenuPrimitive.CheckboxItem.Props & {
   variant?: "default" | "switch";
 }) {
+  const { t } = useTranslation();
   return (
     <MenuPrimitive.CheckboxItem
       checked={checked}
@@ -151,7 +153,7 @@ function MenuCheckboxItem({
               width="24"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <title>Check</title>
+              <title>{t("common:a11y.checkmark")}</title>
               <path d="M5.252 12.7 10.2 18.63 18.748 5.37" />
             </svg>
           </MenuPrimitive.CheckboxItemIndicator>

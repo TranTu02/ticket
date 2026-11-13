@@ -251,9 +251,9 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
 
             {/* Project Access Sharing */}
             <div className="space-y-2 pt-1">
-              <label className="text-xs font-medium text-foreground">
+              <span className="text-xs font-medium text-foreground">
                 Quyền truy cập dự án
-              </label>
+              </span>
               <div className="grid grid-cols-3 gap-1.5 rounded-lg border bg-muted/40 p-1 text-xs">
                 <button
                   type="button"
@@ -328,12 +328,24 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
                       return (
                         <div
                           key={user.id}
+                          role="button"
+                          tabIndex={0}
                           onClick={() => {
                             setSelectedUserIds((prev) =>
                               isSelected
                                 ? prev.filter((id) => id !== user.id)
                                 : [...prev, user.id],
                             );
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") {
+                              event.preventDefault();
+                              setSelectedUserIds((prev) =>
+                                isSelected
+                                  ? prev.filter((id) => id !== user.id)
+                                  : [...prev, user.id],
+                              );
+                            }
                           }}
                           className={cn(
                             "flex items-center justify-between p-1.5 cursor-pointer rounded transition-colors",
@@ -342,7 +354,9 @@ function CreateProjectModal({ open, onClose }: CreateProjectModalProps) {
                               : "hover:bg-muted/50 text-muted-foreground",
                           )}
                         >
-                          <span className="truncate">{user.name || user.email}</span>
+                          <span className="truncate">
+                            {user.name || user.email}
+                          </span>
                           {user.groupName && (
                             <span className="text-[10px] text-muted-foreground ml-2 shrink-0">
                               {user.groupName}

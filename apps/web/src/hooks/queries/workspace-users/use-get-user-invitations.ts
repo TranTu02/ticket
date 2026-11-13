@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { authClient } from "@/lib/auth-client";
 
 function useGetUserInvitations() {
+  const { t } = useTranslation();
   return useQuery({
     queryKey: ["user-invitations"],
     queryFn: async () => {
@@ -9,7 +11,9 @@ function useGetUserInvitations() {
         await authClient.organization.listUserInvitations();
 
       if (error) {
-        throw new Error(error.message || "Failed to get user invitations");
+        throw new Error(
+          error.message || t("team:invitations.loadUserInvitationsFailed"),
+        );
       }
 
       return data;

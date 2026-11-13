@@ -362,9 +362,7 @@ const getTaskRoute = createRoute({
   summary: "Get task",
   description:
     "Get a single task by ID, with its assignee name. The board view omits descriptions above 64 KiB and includes task and same-project parent subtask progress.",
-  middleware: [
-    workspaceAccess.fromTask(),
-  ] as const,
+  middleware: [workspaceAccess.fromTask()] as const,
   request: {
     params: taskParam,
     query: z.object({ view: z.enum(["detail", "board"]).optional() }),

@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { authClient } from "@/lib/auth-client";
 
 type DeleteWorkspaceRoleRequest = {
@@ -8,6 +9,7 @@ type DeleteWorkspaceRoleRequest = {
 
 function useDeleteWorkspaceRole() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async ({
       workspaceId,
@@ -18,7 +20,7 @@ function useDeleteWorkspaceRole() {
         roleName,
       });
       if (error) {
-        throw new Error(error.message || "Failed to delete role");
+        throw new Error(error.message || t("workspace:roles.deleteFailed"));
       }
       return data;
     },

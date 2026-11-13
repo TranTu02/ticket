@@ -1,3 +1,5 @@
+import { i18n } from "@/lib/i18n";
+
 export const AVATAR_OUTPUT_SIZE = 256;
 export const MAX_AVATAR_SOURCE_BYTES = 10 * 1024 * 1024;
 export const ACCEPTED_AVATAR_TYPES = "image/*";
@@ -33,7 +35,8 @@ async function decodeImage(file: File) {
     return await new Promise<HTMLImageElement>((resolve, reject) => {
       const image = new Image();
       image.onload = () => resolve(image);
-      image.onerror = () => reject(new Error("The image could not be read."));
+      image.onerror = () =>
+        reject(new Error(i18n.t("settings:informationPage.avatar.readError")));
       image.src = objectUrl;
     });
   } finally {
@@ -61,11 +64,11 @@ async function blobToBase64(blob: Blob) {
 
 export async function prepareAvatarImage(file: File): Promise<PreparedAvatar> {
   if (!file.type.startsWith("image/")) {
-    throw new Error("Choose an image file.");
+    throw new Error(i18n.t("settings:informationPage.avatar.chooseFile"));
   }
 
   if (file.size > MAX_AVATAR_SOURCE_BYTES) {
-    throw new Error("Choose an image smaller than 10MB.");
+    throw new Error(i18n.t("settings:informationPage.avatar.tooLarge"));
   }
 
   const source = await decodeImage(file);
@@ -73,7 +76,7 @@ export async function prepareAvatarImage(file: File): Promise<PreparedAvatar> {
   const height = "height" in source ? source.height : 0;
 
   if (!width || !height) {
-    throw new Error("The image could not be read.");
+    throw new Error(i18n.t("settings:informationPage.avatar.readError"));
   }
 
   const { sourceX, sourceY, side } = getCoverCropRect(width, height);
@@ -83,7 +86,7 @@ export async function prepareAvatarImage(file: File): Promise<PreparedAvatar> {
 
   const context = canvas.getContext("2d");
   if (!context) {
-    throw new Error("The image could not be processed.");
+    throw new Error(i18n.t("settings:informationPage.avatar.processError"));
   }
 
   context.imageSmoothingQuality = "high";
@@ -107,7 +110,7 @@ export async function prepareAvatarImage(file: File): Promise<PreparedAvatar> {
     (await toBlob(canvas, "image/webp")) ?? (await toBlob(canvas, "image/png"));
 
   if (!blob || !isSupportedOutputType(blob.type)) {
-    throw new Error("The image could not be processed.");
+    throw new Error(i18n.t("settings:informationPage.avatar.processError"));
   }
 
   return {

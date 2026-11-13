@@ -13,7 +13,8 @@
 			"filter": "Филтрирај"
 		},
 		"a11y": {
-			"toggleSidebar": "Вклучи/исклучи странична лента"
+			"toggleSidebar": "Вклучи/исклучи странична лента",
+			"checkmark": "Check"
 		},
 		"sidebar": {
 			"title": "Странична лента",
@@ -44,7 +45,8 @@
 			"dutch": "Холандски",
 			"korean": "Корејски",
 			"chinese": "Кинески",
-			"italian": "Италијански"
+			"italian": "Италијански",
+			"updateFailed": "Failed to update locale"
 		},
 		"people": {
 			"someone": "Некој",
@@ -62,7 +64,8 @@
 				"cors": "Unable to connect to the server. This might be due to CORS configuration issues.",
 				"network": "Network error. Please check your internet connection and try again.",
 				"server": "Server error. Please try again later.",
-				"unknown": "An unexpected error occurred."
+				"unknown": "An unexpected error occurred.",
+				"instanceStatusFailed": "Failed to fetch instance status: {{message}}"
 			},
 			"troubleshootingSteps": {
 				"cors": {
@@ -182,7 +185,8 @@
 				"account_not_linked": "Овој идентитет не можеше да се поврзе со постоечката сметка. Најави се преку е-пошта за да ја потврдиш сметката, па обиди се повторно со SSO. Ако најавата преку е-пошта не е достапна, контактирај го твојот администратор.",
 				"oauth_code_verification_failed": "OAuth верификацијата не успеа. Обиди се повторно.",
 				"registration_is_currently_disabled_you_need_a_valid_invitation_to_create_an_account_": "Регистрацијата е моментално оневозможена. Потребна ти е валидна покана за да креираш сметка.",
-				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Користи трајна адреса за е-пошта. Со привремени адреси не може да се креираат сметки."
+				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Користи трајна адреса за е-пошта. Со привремени адреси не може да се креираат сметки.",
+				"unknown": "Sign-in failed. Please try again."
 			},
 			"instanceStatusError": "Не можеше да се воспостави врска со серверот. Обиди се повторно за момент.",
 			"heading": "Најави се на Kaneo",
@@ -560,8 +564,11 @@
 				"title": "Најави се за да го овластиш овој клиент",
 				"description": "Веднаш потоа ќе се вратиш тука за да го прегледаш.",
 				"submit": "Најави се"
-			}
-		}
+			},
+			"authorizationInvalidOrExpired": "This authorization request is invalid or has expired.",
+			"authorizationCompleteFailed": "Could not complete the authorization request."
+		},
+		"passwordChangeFailed": "Failed to change password"
 	},
 	"settings": {
 		"advancedSettings": "Напредни поставки",
@@ -592,7 +599,11 @@
 				"removeSuccess": "Profile picture removed",
 				"updateError": "Failed to update profile picture",
 				"updateSuccess": "Profile picture updated",
-				"upload": "Прикачи"
+				"upload": "Прикачи",
+				"readError": "The image could not be read.",
+				"chooseFile": "Choose an image file.",
+				"tooLarge": "Choose an image smaller than 10MB.",
+				"processError": "The image could not be processed."
 			},
 			"deleteAccount": {
 				"confirm": "Delete account",
@@ -1045,7 +1056,10 @@
 			"verifyNotInstalled": "Kaneo GitHub апликацијата не е инсталирана на овој репозиториум.",
 			"verifyReady": "Kaneo GitHub апликацијата е инсталирана со потребните дозволи.",
 			"workflowHint": "Преместувај задачи кога pull requests се отвораат или спојуваат во",
-			"workflowLink": "Работен тек"
+			"workflowLink": "Работен тек",
+			"verification": {
+				"missingRepository": "Missing repository"
+			}
 		},
 		"giteaIntegration": {
 			"validation": {
@@ -1078,7 +1092,10 @@
 			"browseNeedsCredentials": "Внеси Gitea URL и токен за прелистување.",
 			"browseEmpty": "Овој токен не гледа ниеден репозиториум.",
 			"chooseRepositoryDescription": "Впиши owner/name или избери од листата.",
-			"webhookEvents": "Вклучи ги настаните push, pull request, issue, issue comment и create."
+			"webhookEvents": "Вклучи ги настаните push, pull request, issue, issue comment и create.",
+			"verification": {
+				"missingAccess": "Missing Gitea access"
+			}
 		},
 		"slackIntegration": {
 			"validation": {
@@ -1229,7 +1246,9 @@
 			"export": "Извези",
 			"exportDescription": "Преземи ги сите задачи од овој проект како датотека.",
 			"import": "Увези",
-			"importDescription": "Додај задачи од претходно извезена датотека."
+			"importDescription": "Додај задачи од претходно извезена датотека.",
+			"exampleTitle": "Task title",
+			"exampleDescription": "Description text"
 		},
 		"workflowEditor": {
 			"toastError": "Неуспешно ажурирање на правило",
@@ -1302,7 +1321,8 @@
 				"member": "Members",
 				"invitation": "Invitations",
 				"team": "Teams",
-				"ac": "Roles and permissions"
+				"ac": "Roles and permissions",
+				"unknown": "Unknown resource"
 			},
 			"permissions": {
 				"project": {
@@ -1450,7 +1470,8 @@
 						"label": "Delete roles",
 						"description": "Delete custom workspace roles."
 					}
-				}
+				},
+				"unknownLabel": "Unknown permission"
 			},
 			"validation": {
 				"nameRequired": "Името на улогата е задолжително",
@@ -1836,7 +1857,10 @@
 			"chooseProjectDescription": "Впиши ја неговата патека или избери од листата.",
 			"noSearchMatchTitle": "Нема соодветни проекти",
 			"useProject": "Користи проект",
-			"webhookEvents": "Вклучи ги настаните push, issue, comment и merge request."
+			"webhookEvents": "Вклучи ги настаните push, issue, comment и merge request.",
+			"verification": {
+				"missingAccess": "Missing GitLab access"
+			}
 		},
 		"calendarFeeds": {
 			"title": "Calendar feeds",
@@ -1974,7 +1998,10 @@
 			"checkoutSuccess": {
 				"title": "Ви благодариме за претплатата",
 				"description": "Плаќањето е примено. Планот подолу ќе се ажурира штом биде потврдено."
-			}
+			},
+			"checkoutStartFailed": "Could not start checkout",
+			"portalOpenFailed": "Could not open billing portal",
+			"unknownPlan": "Unknown billing plan: {{plan}}"
 		},
 		"syncRules": {
 			"addLabel": "Add label",
@@ -2837,7 +2864,8 @@
 			"title": "Webhooks",
 			"url": "URL",
 			"save": "Save"
-		}
+		},
+		"profileUpdateFailed": "Failed to update user profile"
 	},
 	"navigation": {
 		"commandPalette": {
@@ -3231,7 +3259,8 @@
 			"importedBy": "Imported by {{name}}",
 			"commentedOnForge": "коментираше на {{forge}}"
 		},
-		"movedFromOtherProject": "moved task from another project to \"{{to}}\""
+		"movedFromOtherProject": "moved task from another project to \"{{to}}\"",
+		"unknownType": "Activity: {{type}}"
 	},
 	"tasks": {
 		"dateFilter": {
@@ -3397,7 +3426,10 @@
 				"saving": "Saving…",
 				"saveFailed": "Changes could not be saved",
 				"retrySave": "Retry"
-			}
+			},
+			"noTaskSelected": "No task selected",
+			"uploadEmptyFile": "Only non-empty file uploads are supported.",
+			"uploadFailed": "Failed to upload file to storage."
 		},
 		"entity": {
 			"task": "Задача"
@@ -3769,7 +3801,8 @@
 			"loadErrorTitle": "Оваа табла не се вчита",
 			"loadErrorDescription": "Нешто тргна наопаку при преземањето на задачите. Проверете ја врската и обидете се повторно.",
 			"refreshError": "Таблата не може да се освежи, па можеби не е ажурна.",
-			"tryAgain": "Обиди се повторно"
+			"tryAgain": "Обиди се повторно",
+			"loadFailed": "Failed to fetch tasks"
 		},
 		"recurrence": {
 			"daily_one": "На секој {{count}} ден",
@@ -3843,6 +3876,53 @@
 			"startsOn": "Почнува: {{date}}",
 			"beforeStart": "{{date}} е пред датумот на почеток",
 			"afterDue": "{{date}} е по рокот"
+		},
+		"share": {
+			"membersCount": "{{count}} members",
+			"recipientsUpdated": "Sharing recipients updated",
+			"updateError": "Could not update sharing.",
+			"loadError": "Could not load sharing details.",
+			"retry": "Retry",
+			"addPeople": "Add people",
+			"addGroups": "Add groups",
+			"searchPeople": "Search people",
+			"searchGroups": "Search groups",
+			"noPeopleFound": "No people found",
+			"noGroupsFound": "No groups found",
+			"selectedCount": "{{count}} selected",
+			"save": "Save",
+			"visibility": "Visibility",
+			"users": "Users",
+			"groups": "Groups",
+			"creatorRetainsAccess": "Creator and assignees always retain access",
+			"public": "Public",
+			"publicDescription": "Workspace members can view this ticket. Selected users and groups are additional shares.",
+			"private": "Private",
+			"privateDescription": "Only the creator, assignees and selected users or groups can view this ticket.",
+			"currentAccess": "Current access",
+			"currentAccessPublic": "All workspace members can view this ticket. Selected people and groups are also listed below.",
+			"currentAccessPrivate": "Only selected people and groups, the creator, and assignees can view this ticket.",
+			"sharedWithGroups": "Shared with groups",
+			"noGroupsSelected": "No groups selected",
+			"sharedWithPeople": "Shared with people",
+			"noPeopleSelected": "No people selected"
+		},
+		"filter": {
+			"booleanTrue": "True",
+			"booleanFalse": "False"
+		},
+		"create": {
+			"noProjectSelected": "No project selected for task creation"
+		},
+		"descriptionSearch": {
+			"failed": "Failed to search descriptions",
+			"didNotAdvance": "Description search did not advance"
+		},
+		"description": {
+			"changedWhileLoading": "Description changed while loading",
+			"pageDidNotAdvance": "Description page did not advance",
+			"loadFailed": "Failed to load description",
+			"projectLoadFailed": "Failed to load project description"
 		}
 	},
 	"invitations": {
@@ -4004,7 +4084,19 @@
 			"manage": "Manage workspaces",
 			"otherWorkspaces": "Go to workspaces",
 			"title": "Workspace archived"
-		}
+		},
+		"roles": {
+			"createFailed": "Failed to create role",
+			"deleteFailed": "Failed to delete role",
+			"updateFailed": "Failed to update role"
+		},
+		"deleteFailed": "Failed to delete workspace",
+		"ownershipPromoteFailed": "Failed to promote new owner",
+		"ownershipDemoteFailed": "Failed to demote previous owner",
+		"updateFailed": "Failed to update workspace",
+		"createFailed": "Failed to create workspace",
+		"loadFailed": "Failed to get full workspace",
+		"listFailed": "Failed to fetch workspaces"
 	},
 	"team": {
 		"roles": {
@@ -4016,7 +4108,15 @@
 		"members": {
 			"pageTitle": "Членови",
 			"inviteMember": "Покани член",
-			"you": "Ти"
+			"you": "Ти",
+			"users": "Users",
+			"groups": "Groups",
+			"members": "Members",
+			"noMembersInGroup": "No members in this group",
+			"removeFailed": "Failed to remove workspace member",
+			"updateRoleFailed": "Failed to update workspace member role",
+			"loadActiveFailed": "Failed to get active workspace user",
+			"loadFailed": "Failed to get workspace users"
 		},
 		"invitations": {
 			"linkLabel": "Линк за покана",
@@ -4024,7 +4124,15 @@
 			"linkCopied": "Линкот за покана е копиран",
 			"copyFailed": "Не можеше да се копира автоматски. Избери го линкот и притисни Ctrl+C.",
 			"pendingBadge": "на чекање",
-			"expires": "Истекува {{date}}"
+			"expires": "Истекува {{date}}",
+			"acceptFailed": "Failed to accept invitation",
+			"cancelFailed": "Failed to cancel invitation",
+			"inviteFailed": "Failed to invite workspace member",
+			"rejectFailed": "Failed to reject invitation",
+			"loadFailed": "Failed to get invitation",
+			"loadUserInvitationsFailed": "Failed to get user invitations",
+			"loadWorkspaceInvitesFailed": "Failed to get workspace invites",
+			"pendingLoadFailed": "Failed to get pending invitations"
 		},
 		"inviteModal": {
 			"title": "Покани член на тим",

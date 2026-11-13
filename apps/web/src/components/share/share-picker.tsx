@@ -258,10 +258,13 @@ export function SharePicker({
         )}
         {(mode === "group" || showAllTargets) && (
           <div className="space-y-2">
-            <label className="text-sm font-medium">Chia sẻ cho nhóm</label>
+            <label htmlFor="share-group-search" className="text-sm font-medium">
+              Chia sẻ cho nhóm
+            </label>
             <div className="flex items-center gap-2 rounded-md border px-3">
               <Search className="size-4 text-muted-foreground" />
               <Input
+                id="share-group-search"
                 value={groupSearch}
                 onChange={(event) => setGroupSearch(event.target.value)}
                 placeholder="Tìm nhóm"

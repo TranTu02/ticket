@@ -13,7 +13,8 @@
 			"filter": "फ़िल्टर"
 		},
 		"a11y": {
-			"toggleSidebar": "साइडबार टॉगल करें"
+			"toggleSidebar": "साइडबार टॉगल करें",
+			"checkmark": "Check"
 		},
 		"sidebar": {
 			"title": "साइडबार",
@@ -44,7 +45,8 @@
 			"dutch": "डच",
 			"korean": "कोरियन",
 			"chinese": "चीनी",
-			"italian": "इतालवी"
+			"italian": "इतालवी",
+			"updateFailed": "Failed to update locale"
 		},
 		"people": {
 			"someone": "कोई",
@@ -62,7 +64,8 @@
 				"cors": "Unable to connect to the server. This might be due to CORS configuration issues.",
 				"network": "Network error. Please check your internet connection and try again.",
 				"server": "Server error. Please try again later.",
-				"unknown": "An unexpected error occurred."
+				"unknown": "An unexpected error occurred.",
+				"instanceStatusFailed": "Failed to fetch instance status: {{message}}"
 			},
 			"troubleshootingSteps": {
 				"cors": {
@@ -182,7 +185,8 @@
 				"account_not_linked": "यह पहचान मौजूदा खाते से लिंक नहीं हो सकी। खाते की पुष्टि के लिए ईमेल से साइन इन करें, फिर SSO पुनः प्रयास करें। यदि ईमेल साइन-इन उपलब्ध नहीं है, तो अपने व्यवस्थापक से संपर्क करें।",
 				"oauth_code_verification_failed": "OAuth सत्यापन विफल। कृपया पुनः प्रयास करें।",
 				"registration_is_currently_disabled_you_need_a_valid_invitation_to_create_an_account_": "पंजीकरण वर्तमान में अक्षम है। खाता बनाने के लिए आपको वैध निमंत्रण चाहिए।",
-				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "स्थायी ईमेल पते का उपयोग करें। अस्थायी पतों से खाते नहीं बनाए जा सकते।"
+				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "स्थायी ईमेल पते का उपयोग करें। अस्थायी पतों से खाते नहीं बनाए जा सकते।",
+				"unknown": "Sign-in failed. Please try again."
 			},
 			"instanceStatusError": "सर्वर से संपर्क नहीं हो सका। कृपया कुछ देर बाद पुनः प्रयास करें।",
 			"heading": "Kaneo में साइन इन करें",
@@ -560,8 +564,11 @@
 				"title": "इस क्लाइंट को अधिकृत करने के लिए साइन इन करें",
 				"description": "इसकी समीक्षा करने के लिए आप तुरंत यहीं वापस आएँगे।",
 				"submit": "साइन इन करें"
-			}
-		}
+			},
+			"authorizationInvalidOrExpired": "This authorization request is invalid or has expired.",
+			"authorizationCompleteFailed": "Could not complete the authorization request."
+		},
+		"passwordChangeFailed": "Failed to change password"
 	},
 	"settings": {
 		"advancedSettings": "उन्नत सेटिंग्स",
@@ -592,7 +599,11 @@
 				"removeSuccess": "Profile picture removed",
 				"updateError": "Failed to update profile picture",
 				"updateSuccess": "Profile picture updated",
-				"upload": "अपलोड करें"
+				"upload": "अपलोड करें",
+				"readError": "The image could not be read.",
+				"chooseFile": "Choose an image file.",
+				"tooLarge": "Choose an image smaller than 10MB.",
+				"processError": "The image could not be processed."
 			},
 			"deleteAccount": {
 				"confirm": "Delete account",
@@ -910,7 +921,8 @@
 				"member": "Members",
 				"invitation": "Invitations",
 				"team": "Teams",
-				"ac": "Roles and permissions"
+				"ac": "Roles and permissions",
+				"unknown": "Unknown resource"
 			},
 			"permissions": {
 				"project": {
@@ -1058,7 +1070,8 @@
 						"label": "Delete roles",
 						"description": "Delete custom workspace roles."
 					}
-				}
+				},
+				"unknownLabel": "Unknown permission"
 			},
 			"validation": {
 				"nameRequired": "भूमिका का नाम आवश्यक है",
@@ -1290,7 +1303,10 @@
 			"verifyNotInstalled": "Kaneo GitHub App इस रिपॉज़िटरी पर इंस्टॉल नहीं है।",
 			"verifyReady": "Kaneo GitHub App ज़रूरी अनुमतियों के साथ इंस्टॉल है।",
 			"workflowHint": "पुल रिक्वेस्ट खुलने या मर्ज होने पर कार्य आगे बढ़ाने के लिए देखें:",
-			"workflowLink": "वर्कफ़्लो"
+			"workflowLink": "वर्कफ़्लो",
+			"verification": {
+				"missingRepository": "Missing repository"
+			}
 		},
 		"giteaIntegration": {
 			"validation": {
@@ -1323,7 +1339,10 @@
 			"browseNeedsCredentials": "ब्राउज़ करने के लिए Gitea URL और टोकन दर्ज करें।",
 			"browseEmpty": "इस टोकन से कोई रिपॉज़िटरी नहीं दिखती।",
 			"chooseRepositoryDescription": "owner/name लिखें या सूची से चुनें।",
-			"webhookEvents": "पुश, पुल रिक्वेस्ट, इश्यू, इश्यू कमेंट और क्रिएट इवेंट चालू करें।"
+			"webhookEvents": "पुश, पुल रिक्वेस्ट, इश्यू, इश्यू कमेंट और क्रिएट इवेंट चालू करें।",
+			"verification": {
+				"missingAccess": "Missing Gitea access"
+			}
 		},
 		"slackIntegration": {
 			"validation": {
@@ -1474,7 +1493,9 @@
 			"export": "निर्यात करें",
 			"exportDescription": "इस प्रोजेक्ट के सभी कार्य एक फ़ाइल के रूप में डाउनलोड करें।",
 			"import": "आयात करें",
-			"importDescription": "पहले निर्यात की गई फ़ाइल से कार्य जोड़ें।"
+			"importDescription": "पहले निर्यात की गई फ़ाइल से कार्य जोड़ें।",
+			"exampleTitle": "Task title",
+			"exampleDescription": "Description text"
 		},
 		"workflowEditor": {
 			"toastError": "नियम अपडेट करने में विफल",
@@ -1836,7 +1857,10 @@
 			"chooseProjectDescription": "उसका पाथ लिखें या सूची से चुनें।",
 			"noSearchMatchTitle": "कोई मेल खाता प्रोजेक्ट नहीं",
 			"useProject": "प्रोजेक्ट उपयोग करें",
-			"webhookEvents": "पुश, इश्यू, कमेंट और मर्ज रिक्वेस्ट इवेंट चालू करें।"
+			"webhookEvents": "पुश, इश्यू, कमेंट और मर्ज रिक्वेस्ट इवेंट चालू करें।",
+			"verification": {
+				"missingAccess": "Missing GitLab access"
+			}
 		},
 		"calendarFeeds": {
 			"title": "Calendar feeds",
@@ -1974,7 +1998,10 @@
 			"checkoutSuccess": {
 				"title": "सदस्यता लेने के लिए धन्यवाद",
 				"description": "भुगतान प्राप्त हुआ। पुष्टि होते ही नीचे दी गई योजना अपडेट हो जाएगी।"
-			}
+			},
+			"checkoutStartFailed": "Could not start checkout",
+			"portalOpenFailed": "Could not open billing portal",
+			"unknownPlan": "Unknown billing plan: {{plan}}"
 		},
 		"syncRules": {
 			"addLabel": "Add label",
@@ -2837,7 +2864,8 @@
 			"title": "Webhooks",
 			"url": "URL",
 			"save": "Save"
-		}
+		},
+		"profileUpdateFailed": "Failed to update user profile"
 	},
 	"navigation": {
 		"commandPalette": {
@@ -3231,7 +3259,8 @@
 			"importedBy": "Imported by {{name}}",
 			"commentedOnForge": "{{forge}} पर टिप्पणी की"
 		},
-		"movedFromOtherProject": "moved task from another project to \"{{to}}\""
+		"movedFromOtherProject": "moved task from another project to \"{{to}}\"",
+		"unknownType": "Activity: {{type}}"
 	},
 	"tasks": {
 		"dateFilter": {
@@ -3397,7 +3426,10 @@
 				"saving": "Saving…",
 				"saveFailed": "Changes could not be saved",
 				"retrySave": "Retry"
-			}
+			},
+			"noTaskSelected": "No task selected",
+			"uploadEmptyFile": "Only non-empty file uploads are supported.",
+			"uploadFailed": "Failed to upload file to storage."
 		},
 		"entity": {
 			"task": "कार्य"
@@ -3769,7 +3801,8 @@
 			"loadErrorTitle": "यह बोर्ड लोड नहीं हुआ",
 			"loadErrorDescription": "इसके टास्क लाते समय कुछ गड़बड़ हो गई। अपना कनेक्शन जाँचें और फिर से कोशिश करें।",
 			"refreshError": "यह बोर्ड रीफ़्रेश नहीं हो सका, इसलिए यह पुराना हो सकता है।",
-			"tryAgain": "फिर से कोशिश करें"
+			"tryAgain": "फिर से कोशिश करें",
+			"loadFailed": "Failed to fetch tasks"
 		},
 		"recurrence": {
 			"daily_one": "हर दिन",
@@ -3843,6 +3876,53 @@
 			"startsOn": "शुरुआत: {{date}}",
 			"beforeStart": "{{date}} प्रारंभ तारीख से पहले है",
 			"afterDue": "{{date}} नियत तारीख के बाद है"
+		},
+		"share": {
+			"membersCount": "{{count}} members",
+			"recipientsUpdated": "Sharing recipients updated",
+			"updateError": "Could not update sharing.",
+			"loadError": "Could not load sharing details.",
+			"retry": "Retry",
+			"addPeople": "Add people",
+			"addGroups": "Add groups",
+			"searchPeople": "Search people",
+			"searchGroups": "Search groups",
+			"noPeopleFound": "No people found",
+			"noGroupsFound": "No groups found",
+			"selectedCount": "{{count}} selected",
+			"save": "Save",
+			"visibility": "Visibility",
+			"users": "Users",
+			"groups": "Groups",
+			"creatorRetainsAccess": "Creator and assignees always retain access",
+			"public": "Public",
+			"publicDescription": "Workspace members can view this ticket. Selected users and groups are additional shares.",
+			"private": "Private",
+			"privateDescription": "Only the creator, assignees and selected users or groups can view this ticket.",
+			"currentAccess": "Current access",
+			"currentAccessPublic": "All workspace members can view this ticket. Selected people and groups are also listed below.",
+			"currentAccessPrivate": "Only selected people and groups, the creator, and assignees can view this ticket.",
+			"sharedWithGroups": "Shared with groups",
+			"noGroupsSelected": "No groups selected",
+			"sharedWithPeople": "Shared with people",
+			"noPeopleSelected": "No people selected"
+		},
+		"filter": {
+			"booleanTrue": "True",
+			"booleanFalse": "False"
+		},
+		"create": {
+			"noProjectSelected": "No project selected for task creation"
+		},
+		"descriptionSearch": {
+			"failed": "Failed to search descriptions",
+			"didNotAdvance": "Description search did not advance"
+		},
+		"description": {
+			"changedWhileLoading": "Description changed while loading",
+			"pageDidNotAdvance": "Description page did not advance",
+			"loadFailed": "Failed to load description",
+			"projectLoadFailed": "Failed to load project description"
 		}
 	},
 	"invitations": {
@@ -4004,7 +4084,19 @@
 			"manage": "Manage workspaces",
 			"otherWorkspaces": "Go to workspaces",
 			"title": "Workspace archived"
-		}
+		},
+		"roles": {
+			"createFailed": "Failed to create role",
+			"deleteFailed": "Failed to delete role",
+			"updateFailed": "Failed to update role"
+		},
+		"deleteFailed": "Failed to delete workspace",
+		"ownershipPromoteFailed": "Failed to promote new owner",
+		"ownershipDemoteFailed": "Failed to demote previous owner",
+		"updateFailed": "Failed to update workspace",
+		"createFailed": "Failed to create workspace",
+		"loadFailed": "Failed to get full workspace",
+		"listFailed": "Failed to fetch workspaces"
 	},
 	"team": {
 		"roles": {
@@ -4016,7 +4108,15 @@
 		"members": {
 			"pageTitle": "सदस्य",
 			"inviteMember": "सदस्य आमंत्रित करें",
-			"you": "आप"
+			"you": "आप",
+			"users": "Users",
+			"groups": "Groups",
+			"members": "Members",
+			"noMembersInGroup": "No members in this group",
+			"removeFailed": "Failed to remove workspace member",
+			"updateRoleFailed": "Failed to update workspace member role",
+			"loadActiveFailed": "Failed to get active workspace user",
+			"loadFailed": "Failed to get workspace users"
 		},
 		"invitations": {
 			"pendingBadge": "लंबित",
@@ -4024,7 +4124,15 @@
 			"linkLabel": "निमंत्रण लिंक",
 			"copyLink": "लिंक कॉपी करें",
 			"linkCopied": "निमंत्रण लिंक कॉपी किया गया",
-			"copyFailed": "स्वचालित रूप से कॉपी नहीं हो सका। लिंक चुनें और Ctrl+C दबाएँ।"
+			"copyFailed": "स्वचालित रूप से कॉपी नहीं हो सका। लिंक चुनें और Ctrl+C दबाएँ।",
+			"acceptFailed": "Failed to accept invitation",
+			"cancelFailed": "Failed to cancel invitation",
+			"inviteFailed": "Failed to invite workspace member",
+			"rejectFailed": "Failed to reject invitation",
+			"loadFailed": "Failed to get invitation",
+			"loadUserInvitationsFailed": "Failed to get user invitations",
+			"loadWorkspaceInvitesFailed": "Failed to get workspace invites",
+			"pendingLoadFailed": "Failed to get pending invitations"
 		},
 		"inviteModal": {
 			"title": "टीम सदस्य आमंत्रित करें",

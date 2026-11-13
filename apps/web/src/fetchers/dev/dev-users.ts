@@ -28,7 +28,9 @@ export async function fetchDevUsers(query?: string): Promise<DevIdentity[]> {
     credentials: "include",
   });
   if (!response.ok) {
-    throw new Error(await parseError(response, "Không tải được danh sách người dùng."));
+    throw new Error(
+      await parseError(response, "Không tải được danh sách người dùng."),
+    );
   }
   const body = (await response.json()) as { users: DevIdentity[] };
   return body.users ?? [];

@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { authClient } from "@/lib/auth-client";
 
 type UpdateWorkspaceRequest = {
@@ -11,6 +12,7 @@ type UpdateWorkspaceRequest = {
 };
 
 function useUpdateWorkspace() {
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async ({
       workspaceId,
@@ -54,7 +56,7 @@ function useUpdateWorkspace() {
       });
 
       if (error) {
-        throw new Error(error.message || "Failed to update workspace");
+        throw new Error(error.message || t("workspace:updateFailed"));
       }
 
       return data;

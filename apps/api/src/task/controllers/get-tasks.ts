@@ -197,7 +197,9 @@ async function getTasksPage(
     recurrence: taskTable.recurrence,
     creatorId: taskTable.creatorId,
     createdBy: taskTable.createdBy,
-    creatorName: sql<string | null>`(SELECT name FROM public."user" WHERE id = ${taskTable.creatorId} OR id = ${taskTable.createdBy} LIMIT 1)`,
+    creatorName: sql<
+      string | null
+    >`(SELECT name FROM public."user" WHERE id = ${taskTable.creatorId} OR id = ${taskTable.createdBy} LIMIT 1)`,
     shareType: taskTable.shareType,
     groupId: taskTable.sharedGroupId,
     sharedGroupId: taskTable.sharedGroupId,

@@ -28,7 +28,8 @@ const currentIdentity = async (c: {
 }) => {
   const userId = c.get("userId");
   const email = c.get("userEmail");
-  if (!userId || !email) throw new HTTPException(401, { message: "Unauthorized" });
+  if (!userId || !email)
+    throw new HTTPException(401, { message: "Unauthorized" });
   return resolveChatIdentity(userId, email);
 };
 
@@ -37,7 +38,10 @@ aiRoutes.get("/agents", (c) => c.json({ agents: AI_AGENTS }));
 aiRoutes.get("/conversations", async (c) => {
   const identity = await currentIdentity(c);
   const workspaceId = c.req.query("workspaceId");
-  const conversations = await listConversations(identity.identityId, workspaceId);
+  const conversations = await listConversations(
+    identity.identityId,
+    workspaceId,
+  );
   return c.json({ conversations });
 });
 
@@ -69,8 +73,12 @@ aiRoutes.post("/conversations", async (c) => {
 aiRoutes.get("/conversations/:conversationId/messages", async (c) => {
   const identity = await currentIdentity(c);
   const conversationId = c.req.param("conversationId");
-  const conversation = await getConversation(conversationId, identity.identityId);
-  if (!conversation) throw new HTTPException(404, { message: "Không tìm thấy hội thoại" });
+  const conversation = await getConversation(
+    conversationId,
+    identity.identityId,
+  );
+  if (!conversation)
+    throw new HTTPException(404, { message: "Không tìm thấy hội thoại" });
 
   const messages = await listMessages(conversationId);
   return c.json({ conversation, messages });
@@ -79,16 +87,25 @@ aiRoutes.get("/conversations/:conversationId/messages", async (c) => {
 aiRoutes.post("/conversations/:conversationId/messages", async (c) => {
   const identity = await currentIdentity(c);
   const conversationId = c.req.param("conversationId");
-  const conversation = await getConversation(conversationId, identity.identityId);
-  if (!conversation) throw new HTTPException(404, { message: "Không tìm thấy hội thoại" });
+  const conversation = await getConversation(
+    conversationId,
+    identity.identityId,
+  );
+  if (!conversation)
+    throw new HTTPException(404, { message: "Không tìm thấy hội thoại" });
 
-  const body = (await c.req.json().catch(() => null)) as { content?: string } | null;
+  const body = (await c.req.json().catch(() => null)) as {
+    content?: string;
+  } | null;
   const content = body?.content?.trim();
-  if (!content) throw new HTTPException(400, { message: "Nội dung tin nhắn trống" });
+  if (!content)
+    throw new HTTPException(400, { message: "Nội dung tin nhắn trống" });
 
   const agentId = conversation.agentId;
   if (!isAiAgentId(agentId)) {
-    throw new HTTPException(400, { message: "Agent của hội thoại không hợp lệ" });
+    throw new HTTPException(400, {
+      message: "Agent của hội thoại không hợp lệ",
+    });
   }
 
   // Gọi agent trước khi mở stream để lỗi kết nối trả về JSON rõ ràng.
@@ -99,7 +116,10 @@ aiRoutes.post("/conversations/:conversationId/messages", async (c) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         messages: [{ role: "user", content }],
-        memory: { thread: conversation.threadId ?? conversationId, resource: identity.identityId },
+        memory: {
+          thread: conversation.threadId ?? conversationId,
+          resource: identity.identityId,
+        },
       }),
     });
   } catch (error) {
@@ -124,7 +144,11 @@ aiRoutes.post("/conversations/:conversationId/messages", async (c) => {
     identityId: identity.identityId,
     agentId,
   });
-  const runId = await startRun({ conversationId, agentId, identityId: identity.identityId });
+  const runId = await startRun({
+    conversationId,
+    agentId,
+    identityId: identity.identityId,
+  });
   await writeAudit({
     identityId: identity.identityId,
     action: "ai.message.send",
@@ -203,7 +227,8 @@ aiRoutes.post("/conversations/:conversationId/messages", async (c) => {
           errorText: agentError,
         });
 
-        if (failed) send("error", { message: agentError ?? "Agent không trả lời." });
+        if (failed)
+          send("error", { message: agentError ?? "Agent không trả lời." });
         else send("done", { messageId, runId, latencyMs });
       } catch (error) {
         send("error", {

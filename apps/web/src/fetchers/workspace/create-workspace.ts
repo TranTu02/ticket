@@ -3,6 +3,7 @@ import {
   createUniqueWorkspaceSlug,
   isWorkspaceSlugCollisionError,
 } from "@/lib/utils/create-workspace-slug";
+import { i18n } from "@/lib/i18n";
 
 export type CreateWorkspaceRequest = {
   name: string;
@@ -41,7 +42,7 @@ const createWorkspace = async ({
     }
 
     const createError = new Error(
-      error.message || "Failed to create workspace",
+      error.message || i18n.t("workspace:createFailed"),
     );
 
     if (slug || !isWorkspaceSlugCollisionError(createError)) {
@@ -54,7 +55,7 @@ const createWorkspace = async ({
     ]);
   }
 
-  throw new Error("Failed to create workspace");
+  throw new Error(i18n.t("workspace:createFailed"));
 };
 
 export default createWorkspace;

@@ -20,20 +20,6 @@ import {
 import useImportTasks from "@/hooks/mutations/task/use-import-tasks";
 import { toast } from "@/lib/toast";
 
-const EXAMPLE_FORMAT = `{
-  "tasks": [
-    {
-      "title": "Task title",
-      "description": "Description text",
-      "status": "to-do",
-      "priority": "low",
-      "startDate": "2025-04-18T00:00:00.000Z",
-      "dueDate": "2025-04-20T00:00:00.000Z",
-      "userId": "user@example.com"
-    }
-  ]
-}`;
-
 type ImportTasksDialogProps = {
   projectId: string;
   open: boolean;
@@ -46,6 +32,19 @@ export function ImportTasksDialog({
   onOpenChange,
 }: ImportTasksDialogProps) {
   const { t } = useTranslation();
+  const exampleFormat = `{
+  "tasks": [
+    {
+      "title": "${t("settings:tasksImportExport.exampleTitle")}",
+      "description": "${t("settings:tasksImportExport.exampleDescription")}",
+      "status": "to-do",
+      "priority": "low",
+      "startDate": "2025-04-18T00:00:00.000Z",
+      "dueDate": "2025-04-20T00:00:00.000Z",
+      "userId": "user@example.com"
+    }
+  ]
+}`;
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { mutateAsync: importTasks, isPending } = useImportTasks();
@@ -128,7 +127,7 @@ export function ImportTasksDialog({
               {t("settings:tasksImportExport.expectedFormat")}
             </p>
             <pre className="max-h-32 overflow-auto rounded-lg border border-border bg-muted/50 p-3 font-mono text-xs">
-              {EXAMPLE_FORMAT}
+              {exampleFormat}
             </pre>
           </div>
           <div

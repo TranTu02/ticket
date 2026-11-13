@@ -36,7 +36,7 @@ function useInviteWorkspaceUser() {
         throw new Error(t("settings:invitationEmailFailed"));
       }
       if (error) {
-        throw new Error(error.message || "Failed to invite workspace member");
+        throw new Error(error.message || t("team:invitations.inviteFailed"));
       }
 
       return data;

@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { authClient } from "@/lib/auth-client";
 
 type UpdateWorkspaceRoleRequest = {
@@ -9,6 +10,7 @@ type UpdateWorkspaceRoleRequest = {
 
 function useUpdateWorkspaceRole() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async ({
       workspaceId,
@@ -20,7 +22,8 @@ function useUpdateWorkspaceRole() {
         roleName,
         data: { permission },
       });
-      if (error) throw new Error(error.message || "Failed to update role");
+      if (error)
+        throw new Error(error.message || t("workspace:roles.updateFailed"));
       return data;
     },
     onSuccess: (_data, variables) => {

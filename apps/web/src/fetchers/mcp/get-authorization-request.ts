@@ -1,4 +1,5 @@
 import { getApiUrl } from "@/fetchers/get-api-url";
+import { i18n } from "@/lib/i18n";
 
 export type McpAuthorizationRequest = {
   clientName: string;
@@ -13,7 +14,7 @@ export async function getMcpAuthorizationRequest(
     { credentials: "include" },
   );
   if (!response.ok) {
-    throw new Error("This authorization request is invalid or has expired.");
+    throw new Error(i18n.t("auth:mcp.authorizationInvalidOrExpired"));
   }
 
   const body = (await response.json()) as {

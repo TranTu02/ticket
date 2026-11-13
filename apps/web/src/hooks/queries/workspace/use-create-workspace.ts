@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { authClient } from "@/lib/auth-client";
 import {
   createUniqueWorkspaceSlug,
@@ -15,6 +16,7 @@ type CreateWorkspaceRequest = {
 };
 
 function useCreateWorkspace() {
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async ({
       name,
@@ -50,7 +52,7 @@ function useCreateWorkspace() {
         }
 
         const createError = new Error(
-          error.message || "Failed to create workspace",
+          error.message || t("workspace:createFailed"),
         );
 
         if (slug || !isWorkspaceSlugCollisionError(createError)) {
@@ -63,7 +65,7 @@ function useCreateWorkspace() {
         ]);
       }
 
-      throw new Error("Failed to create workspace");
+      throw new Error(t("workspace:createFailed"));
     },
   });
 }

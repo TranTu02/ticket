@@ -1,5 +1,6 @@
 import { client } from "@kaneo/libs";
 import { HttpError } from "@/lib/http-error";
+import { i18n } from "@/lib/i18n";
 
 type DescriptionPage = {
   content: string;
@@ -18,12 +19,12 @@ export async function loadDescriptionPages(
     signal?.throwIfAborted();
     const page = await load(offset, version);
     if (version !== undefined && page.version !== version)
-      throw new Error("Description changed while loading");
+      throw new Error(i18n.t("tasks:description.changedWhileLoading"));
     version = page.version;
     chunks.push(page.content);
     if (page.nextOffset === null) break;
     if (page.nextOffset <= offset)
-      throw new Error("Description page did not advance");
+      throw new Error(i18n.t("tasks:description.pageDidNotAdvance"));
     offset = page.nextOffset;
   }
   signal?.throwIfAborted();
@@ -46,7 +47,10 @@ export async function getPublicTaskDescription(
       { init: { signal } },
     );
     if (!response.ok)
-      throw new HttpError(response.status, "Failed to load description");
+      throw new HttpError(
+        response.status,
+        i18n.t("tasks:description.loadFailed"),
+      );
     return response.json();
   }, signal);
 }
@@ -63,7 +67,7 @@ export async function getPublicProjectDescription(
     if (!response.ok)
       throw new HttpError(
         response.status,
-        "Failed to load project description",
+        i18n.t("tasks:description.projectLoadFailed"),
       );
     return response.json();
   }, signal);

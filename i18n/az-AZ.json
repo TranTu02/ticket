@@ -13,7 +13,8 @@
 			"filter": "Süzgəc"
 		},
 		"a11y": {
-			"toggleSidebar": "Yan paneli aç/bağla"
+			"toggleSidebar": "Yan paneli aç/bağla",
+			"checkmark": "Check"
 		},
 		"sidebar": {
 			"title": "Yan panel",
@@ -44,7 +45,8 @@
 			"dutch": "Holland",
 			"korean": "Koreya",
 			"chinese": "Çin",
-			"italian": "İtalyan"
+			"italian": "İtalyan",
+			"updateFailed": "Failed to update locale"
 		},
 		"people": {
 			"someone": "Kimsə",
@@ -62,7 +64,8 @@
 				"network": "Şəbəkə xətası. İnternetə qoşulmanızı yoxlayıb yenidən cəhd edin.",
 				"auth": "Kimlik doğrulaması alınmadı. Yenidən daxil olun.",
 				"server": "Server xətası. Daha sonra yenidən cəhd edin.",
-				"unknown": "Gözlənilməz xəta baş verdi."
+				"unknown": "Gözlənilməz xəta baş verdi.",
+				"instanceStatusFailed": "Failed to fetch instance status: {{message}}"
 			},
 			"troubleshootingSteps": {
 				"cors": {
@@ -182,7 +185,8 @@
 				"account_not_linked": "Bu kimliyi mövcud hesabla əlaqələndirmək mümkün olmadı. Hesabı təsdiqləmək üçün e-poçtla daxil olun, sonra SSO ilə yenidən cəhd edin. E-poçtla giriş mümkün deyilsə, inzibatçınızla əlaqə saxlayın.",
 				"oauth_code_verification_failed": "OAuth doğrulaması alınmadı. Yenidən cəhd edin.",
 				"registration_is_currently_disabled_you_need_a_valid_invitation_to_create_an_account_": "Qeydiyyat hazırda söndürülüb. Hesab yaratmaq üçün etibarlı dəvətiniz olmalıdır.",
-				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Daimi e-poçt ünvanından istifadə edin. Birdəfəlik ünvanlarla hesab yaratmaq olmur."
+				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Daimi e-poçt ünvanından istifadə edin. Birdəfəlik ünvanlarla hesab yaratmaq olmur.",
+				"unknown": "Sign-in failed. Please try again."
 			},
 			"instanceStatusError": "Serverə çatmaq mümkün olmadı. Bir az sonra yenidən cəhd edin.",
 			"heading": "Kaneo-ya daxil olun",
@@ -560,8 +564,11 @@
 				"title": "Bu klientə icazə vermək üçün daxil olun",
 				"description": "Yoxlamaq üçün dərhal bura qayıdacaqsınız.",
 				"submit": "Daxil ol"
-			}
-		}
+			},
+			"authorizationInvalidOrExpired": "This authorization request is invalid or has expired.",
+			"authorizationCompleteFailed": "Could not complete the authorization request."
+		},
+		"passwordChangeFailed": "Failed to change password"
 	},
 	"settings": {
 		"advancedSettings": "Ətraflı parametrlər",
@@ -592,7 +599,11 @@
 				"updateError": "Profil şəklini yeniləmək alınmadı",
 				"removeSuccess": "Profil şəkli çıxarıldı",
 				"removeError": "Profil şəklini çıxarmaq alınmadı",
-				"upload": "Yüklə"
+				"upload": "Yüklə",
+				"readError": "The image could not be read.",
+				"chooseFile": "Choose an image file.",
+				"tooLarge": "Choose an image smaller than 10MB.",
+				"processError": "The image could not be processed."
 			},
 			"deleteAccount": {
 				"sectionTitle": "Təhlükəli bölmə",
@@ -910,7 +921,8 @@
 				"member": "Members",
 				"invitation": "Invitations",
 				"team": "Teams",
-				"ac": "Roles and permissions"
+				"ac": "Roles and permissions",
+				"unknown": "Unknown resource"
 			},
 			"permissions": {
 				"project": {
@@ -1058,7 +1070,8 @@
 						"label": "Delete roles",
 						"description": "Delete custom workspace roles."
 					}
-				}
+				},
+				"unknownLabel": "Unknown permission"
 			},
 			"validation": {
 				"nameRequired": "Rolun adı tələb olunur",
@@ -1290,7 +1303,10 @@
 			"verifyNotInstalled": "Kaneo GitHub tətbiqi bu repozitoriyada quraşdırılmayıb.",
 			"verifyReady": "Kaneo GitHub tətbiqi lazımi icazələrlə quraşdırılıb.",
 			"workflowHint": "Birləşdirmə sorğuları açıldıqda və ya birləşdirildikdə tapşırıqların köçürülməsini burada tənzimləyin:",
-			"workflowLink": "İş axını"
+			"workflowLink": "İş axını",
+			"verification": {
+				"missingRepository": "Missing repository"
+			}
 		},
 		"giteaIntegration": {
 			"validation": {
@@ -1323,7 +1339,10 @@
 			"browseNeedsCredentials": "Baxmaq üçün Gitea URL-ini və giriş nişanını daxil edin.",
 			"browseEmpty": "Bu giriş nişanı heç bir repozitoriyanı görmür.",
 			"chooseRepositoryDescription": "Repozitoriyanı owner/name kimi yazın və ya siyahıdan seçin.",
-			"webhookEvents": "Göndərmə (push), birləşdirmə sorğusu, məsələ, məsələ şərhi və yaratma (create) hadisələrini aktivləşdirin."
+			"webhookEvents": "Göndərmə (push), birləşdirmə sorğusu, məsələ, məsələ şərhi və yaratma (create) hadisələrini aktivləşdirin.",
+			"verification": {
+				"missingAccess": "Missing Gitea access"
+			}
 		},
 		"slackIntegration": {
 			"validation": {
@@ -1492,7 +1511,9 @@
 			"export": "İxrac et",
 			"exportDescription": "Bu layihədəki bütün tapşırıqları fayl kimi endirin.",
 			"import": "İdxal et",
-			"importDescription": "Əvvəllər ixrac etdiyiniz fayldan tapşırıqlar əlavə edin."
+			"importDescription": "Əvvəllər ixrac etdiyiniz fayldan tapşırıqlar əlavə edin.",
+			"exampleTitle": "Task title",
+			"exampleDescription": "Description text"
 		},
 		"workflowEditor": {
 			"toastError": "Qaydanı yeniləmək alınmadı",
@@ -1836,7 +1857,10 @@
 			"chooseProjectDescription": "Layihənin yolunu yazın və ya siyahıdan seçin.",
 			"noSearchMatchTitle": "Uyğun layihə yoxdur",
 			"useProject": "Layihədən istifadə et",
-			"webhookEvents": "Göndərmə (push), məsələ, şərh və birləşdirmə sorğusu hadisələrini aktivləşdirin."
+			"webhookEvents": "Göndərmə (push), məsələ, şərh və birləşdirmə sorğusu hadisələrini aktivləşdirin.",
+			"verification": {
+				"missingAccess": "Missing GitLab access"
+			}
 		},
 		"calendarFeeds": {
 			"title": "Calendar feeds",
@@ -1974,7 +1998,10 @@
 			"checkoutSuccess": {
 				"title": "Abunə olduğunuz üçün təşəkkürlər",
 				"description": "Ödəniş alındı. Aşağıdakı plan təsdiqləndikdən sonra yenilənəcək."
-			}
+			},
+			"checkoutStartFailed": "Could not start checkout",
+			"portalOpenFailed": "Could not open billing portal",
+			"unknownPlan": "Unknown billing plan: {{plan}}"
 		},
 		"syncRules": {
 			"addLabel": "Add label",
@@ -2837,7 +2864,8 @@
 			"title": "Webhooks",
 			"url": "URL",
 			"save": "Save"
-		}
+		},
+		"profileUpdateFailed": "Failed to update user profile"
 	},
 	"navigation": {
 		"commandPalette": {
@@ -3231,7 +3259,8 @@
 			"importedBy": "Imported by {{name}}",
 			"commentedOnForge": "{{forge}}-da şərh yazdı"
 		},
-		"movedFromOtherProject": "moved task from another project to \"{{to}}\""
+		"movedFromOtherProject": "moved task from another project to \"{{to}}\"",
+		"unknownType": "Activity: {{type}}"
 	},
 	"tasks": {
 		"dateFilter": {
@@ -3397,7 +3426,10 @@
 				"saving": "Saving…",
 				"saveFailed": "Changes could not be saved",
 				"retrySave": "Retry"
-			}
+			},
+			"noTaskSelected": "No task selected",
+			"uploadEmptyFile": "Only non-empty file uploads are supported.",
+			"uploadFailed": "Failed to upload file to storage."
 		},
 		"entity": {
 			"task": "Tapşırıq"
@@ -3769,7 +3801,8 @@
 			"loadErrorTitle": "Bu lövhə yüklənmədi",
 			"loadErrorDescription": "Tapşırıqlar alınarkən xəta baş verdi. Bağlantınızı yoxlayın və yenidən cəhd edin.",
 			"refreshError": "Lövhəni yeniləmək mümkün olmadı, ona görə köhnə ola bilər.",
-			"tryAgain": "Yenidən cəhd et"
+			"tryAgain": "Yenidən cəhd et",
+			"loadFailed": "Failed to fetch tasks"
 		},
 		"recurrence": {
 			"daily_one": "Hər gün",
@@ -3843,6 +3876,53 @@
 			"startsOn": "Başlayır: {{date}}",
 			"beforeStart": "{{date}} başlama tarixindən əvvəldir",
 			"afterDue": "{{date}} son tarixdən sonradır"
+		},
+		"share": {
+			"membersCount": "{{count}} members",
+			"recipientsUpdated": "Sharing recipients updated",
+			"updateError": "Could not update sharing.",
+			"loadError": "Could not load sharing details.",
+			"retry": "Retry",
+			"addPeople": "Add people",
+			"addGroups": "Add groups",
+			"searchPeople": "Search people",
+			"searchGroups": "Search groups",
+			"noPeopleFound": "No people found",
+			"noGroupsFound": "No groups found",
+			"selectedCount": "{{count}} selected",
+			"save": "Save",
+			"visibility": "Visibility",
+			"users": "Users",
+			"groups": "Groups",
+			"creatorRetainsAccess": "Creator and assignees always retain access",
+			"public": "Public",
+			"publicDescription": "Workspace members can view this ticket. Selected users and groups are additional shares.",
+			"private": "Private",
+			"privateDescription": "Only the creator, assignees and selected users or groups can view this ticket.",
+			"currentAccess": "Current access",
+			"currentAccessPublic": "All workspace members can view this ticket. Selected people and groups are also listed below.",
+			"currentAccessPrivate": "Only selected people and groups, the creator, and assignees can view this ticket.",
+			"sharedWithGroups": "Shared with groups",
+			"noGroupsSelected": "No groups selected",
+			"sharedWithPeople": "Shared with people",
+			"noPeopleSelected": "No people selected"
+		},
+		"filter": {
+			"booleanTrue": "True",
+			"booleanFalse": "False"
+		},
+		"create": {
+			"noProjectSelected": "No project selected for task creation"
+		},
+		"descriptionSearch": {
+			"failed": "Failed to search descriptions",
+			"didNotAdvance": "Description search did not advance"
+		},
+		"description": {
+			"changedWhileLoading": "Description changed while loading",
+			"pageDidNotAdvance": "Description page did not advance",
+			"loadFailed": "Failed to load description",
+			"projectLoadFailed": "Failed to load project description"
 		}
 	},
 	"invitations": {
@@ -4004,7 +4084,19 @@
 			"manage": "Manage workspaces",
 			"otherWorkspaces": "Go to workspaces",
 			"title": "Workspace archived"
-		}
+		},
+		"roles": {
+			"createFailed": "Failed to create role",
+			"deleteFailed": "Failed to delete role",
+			"updateFailed": "Failed to update role"
+		},
+		"deleteFailed": "Failed to delete workspace",
+		"ownershipPromoteFailed": "Failed to promote new owner",
+		"ownershipDemoteFailed": "Failed to demote previous owner",
+		"updateFailed": "Failed to update workspace",
+		"createFailed": "Failed to create workspace",
+		"loadFailed": "Failed to get full workspace",
+		"listFailed": "Failed to fetch workspaces"
 	},
 	"team": {
 		"roles": {
@@ -4016,7 +4108,15 @@
 		"members": {
 			"pageTitle": "Üzvlər",
 			"inviteMember": "Üzv dəvət et",
-			"you": "Siz"
+			"you": "Siz",
+			"users": "Users",
+			"groups": "Groups",
+			"members": "Members",
+			"noMembersInGroup": "No members in this group",
+			"removeFailed": "Failed to remove workspace member",
+			"updateRoleFailed": "Failed to update workspace member role",
+			"loadActiveFailed": "Failed to get active workspace user",
+			"loadFailed": "Failed to get workspace users"
 		},
 		"invitations": {
 			"pendingBadge": "Gözləyir",
@@ -4024,7 +4124,15 @@
 			"linkLabel": "Dəvət keçidi",
 			"copyLink": "Keçidi kopyala",
 			"linkCopied": "Dəvət keçidi kopyalandı",
-			"copyFailed": "Avtomatik kopyalamaq mümkün olmadı. Keçidi seçin və Ctrl+C düymələrini basın."
+			"copyFailed": "Avtomatik kopyalamaq mümkün olmadı. Keçidi seçin və Ctrl+C düymələrini basın.",
+			"acceptFailed": "Failed to accept invitation",
+			"cancelFailed": "Failed to cancel invitation",
+			"inviteFailed": "Failed to invite workspace member",
+			"rejectFailed": "Failed to reject invitation",
+			"loadFailed": "Failed to get invitation",
+			"loadUserInvitationsFailed": "Failed to get user invitations",
+			"loadWorkspaceInvitesFailed": "Failed to get workspace invites",
+			"pendingLoadFailed": "Failed to get pending invitations"
 		},
 		"inviteModal": {
 			"title": "Komanda üzvü dəvət et",

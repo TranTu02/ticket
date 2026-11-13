@@ -6,7 +6,8 @@ export const AI_AGENTS = [
   {
     id: "coordinator-agent",
     name: "Điều phối viên",
-    description: "Nhận yêu cầu, giao việc cho agent chuyên môn rồi tổng hợp kết quả.",
+    description:
+      "Nhận yêu cầu, giao việc cho agent chuyên môn rồi tổng hợp kết quả.",
   },
   {
     id: "research-agent",

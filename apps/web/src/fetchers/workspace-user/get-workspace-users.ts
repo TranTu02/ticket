@@ -1,4 +1,5 @@
 import { authClient } from "@/lib/auth-client";
+import { i18n } from "@/lib/i18n";
 
 export type GetWorkspaceUsersRequest = {
   workspaceId: string;
@@ -26,7 +27,7 @@ async function getWorkspaceUsers({
   });
 
   if (error) {
-    throw new Error(error.message || "Failed to fetch workspace users");
+    throw new Error(error.message || i18n.t("team:members.loadFailed"));
   }
 
   return data || [];

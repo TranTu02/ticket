@@ -41,18 +41,28 @@ async function parseError(response: Response, fallback: string) {
 }
 
 export async function fetchAiAgents(): Promise<AiAgentOption[]> {
-  const response = await fetch(getApiUrl("/ai/agents"), { credentials: "include" });
-  if (!response.ok) throw new Error(await parseError(response, "Không tải được danh sách agent."));
+  const response = await fetch(getApiUrl("/ai/agents"), {
+    credentials: "include",
+  });
+  if (!response.ok)
+    throw new Error(
+      await parseError(response, "Không tải được danh sách agent."),
+    );
   const body = (await response.json()) as { agents: AiAgentOption[] };
   return body.agents ?? [];
 }
 
-export async function fetchAiConversations(workspaceId: string): Promise<AiConversation[]> {
+export async function fetchAiConversations(
+  workspaceId: string,
+): Promise<AiConversation[]> {
   const response = await fetch(
-    getApiUrl(`/ai/conversations?workspaceId=${encodeURIComponent(workspaceId)}`),
+    getApiUrl(
+      `/ai/conversations?workspaceId=${encodeURIComponent(workspaceId)}`,
+    ),
     { credentials: "include" },
   );
-  if (!response.ok) throw new Error(await parseError(response, "Không tải được hội thoại."));
+  if (!response.ok)
+    throw new Error(await parseError(response, "Không tải được hội thoại."));
   const body = (await response.json()) as { conversations: AiConversation[] };
   return body.conversations ?? [];
 }
@@ -69,17 +79,23 @@ export async function createAiConversation(input: {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   });
-  if (!response.ok) throw new Error(await parseError(response, "Không tạo được hội thoại."));
+  if (!response.ok)
+    throw new Error(await parseError(response, "Không tạo được hội thoại."));
   const body = (await response.json()) as { conversation: AiConversation };
   return body.conversation;
 }
 
-export async function fetchAiMessages(conversationId: string): Promise<AiMessage[]> {
+export async function fetchAiMessages(
+  conversationId: string,
+): Promise<AiMessage[]> {
   const response = await fetch(
-    getApiUrl(`/ai/conversations/${encodeURIComponent(conversationId)}/messages`),
+    getApiUrl(
+      `/ai/conversations/${encodeURIComponent(conversationId)}/messages`,
+    ),
     { credentials: "include" },
   );
-  if (!response.ok) throw new Error(await parseError(response, "Không tải được tin nhắn."));
+  if (!response.ok)
+    throw new Error(await parseError(response, "Không tải được tin nhắn."));
   const body = (await response.json()) as { messages: AiMessage[] };
   return body.messages ?? [];
 }
@@ -101,7 +117,9 @@ export async function streamAiMessage(input: {
   onEvent: (event: AiStreamEvent) => void;
 }): Promise<void> {
   const response = await fetch(
-    getApiUrl(`/ai/conversations/${encodeURIComponent(input.conversationId)}/messages`),
+    getApiUrl(
+      `/ai/conversations/${encodeURIComponent(input.conversationId)}/messages`,
+    ),
     {
       method: "POST",
       credentials: "include",

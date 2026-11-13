@@ -13,7 +13,8 @@
 			"filter": "Lọc"
 		},
 		"a11y": {
-			"toggleSidebar": "Bật/tắt thanh bên"
+			"toggleSidebar": "Bật/tắt thanh bên",
+			"checkmark": "Đã chọn"
 		},
 		"sidebar": {
 			"title": "Thanh bên",
@@ -44,7 +45,8 @@
 			"dutch": "Tiếng Hà Lan",
 			"korean": "Tiếng Hàn",
 			"chinese": "Tiếng Trung",
-			"italian": "Tiếng Ý"
+			"italian": "Tiếng Ý",
+			"updateFailed": "Đổi ngôn ngữ thất bại"
 		},
 		"people": {
 			"someone": "Ai đó",
@@ -62,7 +64,8 @@
 				"network": "Lỗi mạng. Vui lòng kiểm tra kết nối internet và thử lại.",
 				"auth": "Xác thực thất bại. Vui lòng đăng nhập lại.",
 				"server": "Lỗi máy chủ. Vui lòng thử lại sau.",
-				"unknown": "Đã xảy ra lỗi không mong muốn."
+				"unknown": "Đã xảy ra lỗi không mong muốn.",
+				"instanceStatusFailed": "Không tải được trạng thái hệ thống: {{message}}"
 			},
 			"troubleshootingSteps": {
 				"cors": {
@@ -182,7 +185,8 @@
 				"account_not_linked": "Không thể liên kết danh tính này với tài khoản hiện có. Hãy đăng nhập bằng email để xác minh tài khoản, sau đó thử SSO lại. Nếu không thể đăng nhập bằng email, hãy liên hệ quản trị viên của bạn.",
 				"oauth_code_verification_failed": "Xác minh OAuth thất bại. Vui lòng thử lại.",
 				"registration_is_currently_disabled_you_need_a_valid_invitation_to_create_an_account_": "Đăng ký hiện đang bị tắt. Bạn cần có lời mời hợp lệ để tạo tài khoản.",
-				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Hãy dùng địa chỉ email cố định. Không thể tạo tài khoản bằng địa chỉ email dùng một lần."
+				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Hãy dùng địa chỉ email cố định. Không thể tạo tài khoản bằng địa chỉ email dùng một lần.",
+				"unknown": "Đăng nhập thất bại. Vui lòng thử lại."
 			},
 			"instanceStatusError": "Không thể kết nối đến máy chủ. Vui lòng thử lại sau giây lát.",
 			"heading": "Đăng nhập vào Kaneo",
@@ -560,8 +564,11 @@
 				"title": "Đăng nhập để cấp quyền cho ứng dụng này",
 				"description": "Bạn sẽ quay lại đây ngay để xem xét.",
 				"submit": "Đăng nhập"
-			}
-		}
+			},
+			"authorizationInvalidOrExpired": "Yêu cầu ủy quyền này không hợp lệ hoặc đã hết hạn.",
+			"authorizationCompleteFailed": "Không thể hoàn tất yêu cầu ủy quyền."
+		},
+		"passwordChangeFailed": "Đổi mật khẩu thất bại"
 	},
 	"settings": {
 		"advancedSettings": "Cài đặt nâng cao",
@@ -1021,7 +1028,11 @@
 				"updateError": "Không thể cập nhật ảnh đại diện",
 				"removeSuccess": "Đã gỡ ảnh đại diện",
 				"removeError": "Không thể gỡ ảnh đại diện",
-				"upload": "Tải lên"
+				"upload": "Tải lên",
+				"readError": "Không đọc được ảnh.",
+				"chooseFile": "Hãy chọn một tệp ảnh.",
+				"tooLarge": "Hãy chọn ảnh nhỏ hơn 10MB.",
+				"processError": "Không xử lý được ảnh."
 			},
 			"deleteAccount": {
 				"sectionTitle": "Vùng nguy hiểm",
@@ -1339,7 +1350,8 @@
 				"member": "Thành viên",
 				"invitation": "Lời mời",
 				"team": "Nhóm",
-				"ac": "Vai trò và quyền"
+				"ac": "Vai trò và quyền",
+				"unknown": "Tài nguyên không xác định"
 			},
 			"permissions": {
 				"project": {
@@ -1487,7 +1499,8 @@
 						"label": "Xóa vai trò",
 						"description": "Xóa vai trò không gian làm việc tùy chỉnh."
 					}
-				}
+				},
+				"unknownLabel": "Quyền không xác định"
 			},
 			"validation": {
 				"nameRequired": "Cần có tên vai trò",
@@ -2050,7 +2063,10 @@
 			"verifyNotInstalled": "Kaneo GitHub App chưa được cài đặt trên kho lưu trữ này.",
 			"verifyReady": "Kaneo GitHub App đã được cài đặt với các quyền cần thiết.",
 			"workflowHint": "Di chuyển công việc khi pull request được mở hoặc gộp trong",
-			"workflowLink": "Quy trình làm việc"
+			"workflowLink": "Quy trình làm việc",
+			"verification": {
+				"missingRepository": "Thiếu kho (repository)"
+			}
 		},
 		"giteaIntegration": {
 			"validation": {
@@ -2083,7 +2099,10 @@
 			"browseNeedsCredentials": "Nhập URL Gitea và token để duyệt.",
 			"browseEmpty": "Token này không thấy kho lưu trữ nào.",
 			"chooseRepositoryDescription": "Nhập owner/name hoặc chọn từ danh sách.",
-			"webhookEvents": "Bật các sự kiện push, pull request, issue, issue comment và create."
+			"webhookEvents": "Bật các sự kiện push, pull request, issue, issue comment và create.",
+			"verification": {
+				"missingAccess": "Thiếu thông tin truy cập Gitea"
+			}
 		},
 		"gitlabIntegration": {
 			"validation": {
@@ -2126,7 +2145,10 @@
 			"chooseProjectDescription": "Nhập đường dẫn hoặc chọn từ danh sách.",
 			"noSearchMatchTitle": "Không có dự án phù hợp",
 			"useProject": "Dùng dự án này",
-			"webhookEvents": "Bật các sự kiện push, issue, comment và merge request."
+			"webhookEvents": "Bật các sự kiện push, issue, comment và merge request.",
+			"verification": {
+				"missingAccess": "Thiếu thông tin truy cập GitLab"
+			}
 		},
 		"slackIntegration": {
 			"validation": {
@@ -2295,7 +2317,9 @@
 			"exportDescription": "Tải xuống mọi công việc trong dự án này dưới dạng file.",
 			"export": "Xuất",
 			"importDescription": "Thêm công việc từ một file bạn đã xuất trước đó.",
-			"import": "Nhập"
+			"import": "Nhập",
+			"exampleTitle": "Tiêu đề ticket",
+			"exampleDescription": "Nội dung mô tả"
 		},
 		"workflowEditor": {
 			"toastError": "Không thể cập nhật quy tắc",
@@ -2504,7 +2528,10 @@
 			"checkoutSuccess": {
 				"title": "Cảm ơn bạn đã đăng ký",
 				"description": "Đã nhận thanh toán. Gói bên dưới sẽ được cập nhật ngay khi thanh toán được xác nhận."
-			}
+			},
+			"checkoutStartFailed": "Không thể bắt đầu thanh toán",
+			"portalOpenFailed": "Không thể mở cổng thanh toán",
+			"unknownPlan": "Gói thanh toán không xác định: {{plan}}"
 		},
 		"chatIntegrations": {
 			"optional": "Không bắt buộc",
@@ -2837,7 +2864,8 @@
 				"response": "Phản hồi không hợp lệ"
 			},
 			"save": "Lưu"
-		}
+		},
+		"profileUpdateFailed": "Cập nhật hồ sơ người dùng thất bại"
 	},
 	"navigation": {
 		"commandPalette": {
@@ -3231,7 +3259,8 @@
 			},
 			"importedFrom": "Được nhập từ {{source}}",
 			"importedBy": "Được nhập bởi {{name}}"
-		}
+		},
+		"unknownType": "Hoạt động: {{type}}"
 	},
 	"tasks": {
 		"checklistProgress": "Đã hoàn thành {{completed}} trên {{total}} mục trong danh sách kiểm tra",
@@ -3384,7 +3413,10 @@
 				"saving": "Đang lưu…",
 				"saveFailed": "Không thể lưu thay đổi",
 				"retrySave": "Thử lại"
-			}
+			},
+			"noTaskSelected": "Chưa chọn ticket nào",
+			"uploadEmptyFile": "Chỉ hỗ trợ tải lên tệp không rỗng.",
+			"uploadFailed": "Tải tệp lên bộ nhớ thất bại."
 		},
 		"entity": {
 			"task": "Công việc"
@@ -3766,7 +3798,8 @@
 			"loadErrorTitle": "Không tải được bảng này",
 			"loadErrorDescription": "Đã xảy ra lỗi khi lấy công việc. Hãy kiểm tra kết nối và thử lại.",
 			"refreshError": "Không thể làm mới bảng này nên có thể chưa được cập nhật.",
-			"tryAgain": "Thử lại"
+			"tryAgain": "Thử lại",
+			"loadFailed": "Không tải được danh sách ticket"
 		},
 		"toolbar": {
 			"search": "Tìm công việc",
@@ -3843,6 +3876,53 @@
 			"beforeValue": "Trước {{date}}",
 			"afterValue": "Sau {{date}}",
 			"rangeValue": "{{date}} – {{end}}"
+		},
+		"share": {
+			"membersCount": "{{count}} thành viên",
+			"recipientsUpdated": "Đã cập nhật người nhận chia sẻ",
+			"updateError": "Không thể cập nhật chia sẻ.",
+			"loadError": "Không thể tải chi tiết chia sẻ.",
+			"retry": "Thử lại",
+			"addPeople": "Thêm người",
+			"addGroups": "Thêm nhóm",
+			"searchPeople": "Tìm người",
+			"searchGroups": "Tìm nhóm",
+			"noPeopleFound": "Không tìm thấy người nào",
+			"noGroupsFound": "Không tìm thấy nhóm nào",
+			"selectedCount": "{{count}} đã chọn",
+			"save": "Lưu",
+			"visibility": "Quyền truy cập",
+			"users": "Người dùng",
+			"groups": "Nhóm",
+			"creatorRetainsAccess": "Người tạo và người được giao luôn giữ quyền truy cập",
+			"public": "Công khai",
+			"publicDescription": "Thành viên workspace có thể xem ticket này. Người dùng và nhóm được chọn là các chia sẻ bổ sung.",
+			"private": "Riêng tư",
+			"privateDescription": "Chỉ người tạo, người được giao và người dùng hoặc nhóm được chọn mới có thể xem ticket này.",
+			"currentAccess": "Quyền truy cập hiện tại",
+			"currentAccessPublic": "Tất cả thành viên workspace đều có thể xem ticket này. Những người và nhóm được chọn cũng được liệt kê bên dưới.",
+			"currentAccessPrivate": "Chỉ những người và nhóm được chọn, người tạo và người được giao mới có thể xem ticket này.",
+			"sharedWithGroups": "Đã chia sẻ với nhóm",
+			"noGroupsSelected": "Chưa chọn nhóm nào",
+			"sharedWithPeople": "Đã chia sẻ với người",
+			"noPeopleSelected": "Chưa chọn người nào"
+		},
+		"filter": {
+			"booleanTrue": "Đúng",
+			"booleanFalse": "Sai"
+		},
+		"create": {
+			"noProjectSelected": "Chưa chọn dự án để tạo ticket"
+		},
+		"descriptionSearch": {
+			"failed": "Tìm kiếm trong mô tả thất bại",
+			"didNotAdvance": "Tìm kiếm trong mô tả không tiếp tục được"
+		},
+		"description": {
+			"changedWhileLoading": "Mô tả đã thay đổi trong lúc đang tải",
+			"pageDidNotAdvance": "Không tải được trang mô tả tiếp theo",
+			"loadFailed": "Không tải được mô tả",
+			"projectLoadFailed": "Không tải được mô tả dự án"
 		}
 	},
 	"invitations": {
@@ -4004,7 +4084,19 @@
 			"description": "Liên hệ quản trị viên để khôi phục quyền truy cập.",
 			"otherWorkspaces": "Đi đến các không gian làm việc",
 			"manage": "Quản lý không gian làm việc"
-		}
+		},
+		"roles": {
+			"createFailed": "Tạo vai trò thất bại",
+			"deleteFailed": "Xóa vai trò thất bại",
+			"updateFailed": "Cập nhật vai trò thất bại"
+		},
+		"deleteFailed": "Xóa không gian làm việc thất bại",
+		"ownershipPromoteFailed": "Chuyển quyền sở hữu cho chủ mới thất bại",
+		"ownershipDemoteFailed": "Hạ quyền chủ cũ thất bại",
+		"updateFailed": "Cập nhật không gian làm việc thất bại",
+		"createFailed": "Tạo không gian làm việc thất bại",
+		"loadFailed": "Không tải được đầy đủ thông tin không gian làm việc",
+		"listFailed": "Không tải được danh sách không gian làm việc"
 	},
 	"team": {
 		"roles": {
@@ -4016,7 +4108,15 @@
 		"members": {
 			"pageTitle": "Thành viên",
 			"inviteMember": "Mời thành viên",
-			"you": "Bạn"
+			"you": "Bạn",
+			"users": "Người dùng",
+			"groups": "Nhóm",
+			"members": "Thành viên",
+			"noMembersInGroup": "Chưa có thành viên trong nhóm này",
+			"removeFailed": "Xóa thành viên khỏi không gian làm việc thất bại",
+			"updateRoleFailed": "Cập nhật vai trò thành viên thất bại",
+			"loadActiveFailed": "Không tải được thông tin thành viên hiện tại",
+			"loadFailed": "Không tải được danh sách thành viên"
 		},
 		"invitations": {
 			"pendingBadge": "đang chờ",
@@ -4024,7 +4124,15 @@
 			"linkLabel": "Liên kết lời mời",
 			"copyLink": "Sao chép liên kết",
 			"linkCopied": "Đã sao chép liên kết lời mời",
-			"copyFailed": "Không thể sao chép tự động. Hãy chọn liên kết và nhấn Ctrl+C."
+			"copyFailed": "Không thể sao chép tự động. Hãy chọn liên kết và nhấn Ctrl+C.",
+			"acceptFailed": "Chấp nhận lời mời thất bại",
+			"cancelFailed": "Hủy lời mời thất bại",
+			"inviteFailed": "Mời thành viên vào không gian làm việc thất bại",
+			"rejectFailed": "Từ chối lời mời thất bại",
+			"loadFailed": "Không tải được lời mời",
+			"loadUserInvitationsFailed": "Không tải được lời mời của người dùng",
+			"loadWorkspaceInvitesFailed": "Không tải được lời mời của không gian làm việc",
+			"pendingLoadFailed": "Không tải được lời mời đang chờ"
 		},
 		"inviteModal": {
 			"title": "Mời thành viên nhóm",
@@ -5190,36 +5298,36 @@
 		}
 	},
 	"ai": {
-		"createError": "Could not create a conversation.",
-		"defaultAgent": "Assistant",
-		"emptyDescription": "The chat runs on the AI platform (Mastra) and is saved to the service schema for operations and audit.",
-		"emptyTitle": "Ask the AI platform agents",
-		"footerHint": "Runs on AI platform :4111 · conversations are stored in schema service",
-		"loadError": "Could not load the AI chat.",
-		"loading": "Loading…",
-		"newChat": "New chat",
-		"newChatTitle": "New chat",
-		"noConversations": "No conversations yet.",
-		"pageTitle": "AI assistant",
-		"placeholder": "Message the assistant… (Enter to send, Shift+Enter for a new line)",
-		"send": "Send",
-		"sendError": "Could not send the message.",
-		"stop": "Stop",
-		"thinking": "Thinking…",
-		"untitled": "Untitled",
-		"you": "You"
+		"createError": "Không tạo được cuộc trò chuyện.",
+		"defaultAgent": "Trợ lý",
+		"emptyDescription": "Chat chạy trên AI Platform (Mastra) và được lưu vào schema service để vận hành và kiểm tra.",
+		"emptyTitle": "Hỏi các agent của AI Platform",
+		"footerHint": "Chạy trên AI Platform :4111 · cuộc trò chuyện được lưu trong schema service",
+		"loadError": "Không tải được chat AI.",
+		"loading": "Đang tải…",
+		"newChat": "Đoạn chat mới",
+		"newChatTitle": "Đoạn chat mới",
+		"noConversations": "Chưa có cuộc trò chuyện nào.",
+		"pageTitle": "Trợ lý AI",
+		"placeholder": "Nhắn cho trợ lý… (Enter để gửi, Shift+Enter để xuống dòng)",
+		"send": "Gửi",
+		"sendError": "Không gửi được tin nhắn.",
+		"stop": "Dừng",
+		"thinking": "Đang suy nghĩ…",
+		"untitled": "Chưa đặt tên",
+		"you": "Bạn"
 	},
 	"devAuth": {
-		"empty": "No matching users.",
-		"footerHint": "A dev session is created automatically; no password screen.",
-		"inactive": "Inactive",
-		"loadError": "Could not load users.",
-		"loading": "Loading users…",
-		"loginError": "Dev sign-in failed.",
-		"pageTitle": "Dev sign-in",
-		"searchPlaceholder": "Search by name or email",
-		"signInInstead": "Use sign-in instead",
-		"subtitle": "Dev mode: pick an identity from LIMS-DEV and enter without going through sign-in.",
-		"title": "Choose a user"
+		"empty": "Không có người dùng phù hợp.",
+		"footerHint": "Phiên dev được tạo tự động, không có màn hình mật khẩu.",
+		"inactive": "Không hoạt động",
+		"loadError": "Không tải được người dùng.",
+		"loading": "Đang tải người dùng…",
+		"loginError": "Đăng nhập dev thất bại.",
+		"pageTitle": "Đăng nhập dev",
+		"searchPlaceholder": "Tìm theo tên hoặc email",
+		"signInInstead": "Dùng đăng nhập thay thế",
+		"subtitle": "Chế độ dev: chọn một tài khoản từ LIMS-DEV để vào thẳng, không cần đăng nhập.",
+		"title": "Chọn người dùng"
 	}
 }

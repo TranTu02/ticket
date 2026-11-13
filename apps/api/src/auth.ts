@@ -564,7 +564,8 @@ export const auth = betterAuth({
         beforeCreateOrganization: async () => {
           throw new APIError("FORBIDDEN", {
             code: "WORKSPACE_CREATION_DISABLED",
-            message: "Workspace creation is disabled. Application is locked to IRDOP workspace.",
+            message:
+              "Workspace creation is disabled. Application is locked to IRDOP workspace.",
           });
         },
         afterCreateOrganization: async ({ organization, user }) => {

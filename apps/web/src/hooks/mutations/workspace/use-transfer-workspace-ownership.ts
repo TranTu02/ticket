@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { authClient } from "@/lib/auth-client";
 
 type TransferOwnershipRequest = {
@@ -20,6 +21,7 @@ type TransferOwnershipRequest = {
 // which is recoverable by re-running the demote.
 function useTransferWorkspaceOwnership() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
   return useMutation({
     mutationFn: async ({
       workspaceId,
@@ -32,7 +34,9 @@ function useTransferWorkspaceOwnership() {
         role: "owner",
       });
       if (promote.error) {
-        throw new Error(promote.error.message || "Failed to promote new owner");
+        throw new Error(
+          promote.error.message || t("workspace:ownershipPromoteFailed"),
+        );
       }
 
       const demote = await authClient.organization.updateMemberRole({
@@ -42,7 +46,7 @@ function useTransferWorkspaceOwnership() {
       });
       if (demote.error) {
         throw new Error(
-          demote.error.message || "Failed to demote previous owner",
+          demote.error.message || t("workspace:ownershipDemoteFailed"),
         );
       }
 

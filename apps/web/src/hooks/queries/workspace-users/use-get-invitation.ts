@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { authClient } from "@/lib/auth-client";
 
 type GetInvitationRequest = {
@@ -6,6 +7,7 @@ type GetInvitationRequest = {
 };
 
 function useGetInvitation({ invitationId }: GetInvitationRequest) {
+  const { t } = useTranslation();
   return useQuery({
     queryKey: ["invitation", invitationId],
     enabled: !!invitationId,
@@ -17,7 +19,7 @@ function useGetInvitation({ invitationId }: GetInvitationRequest) {
       });
 
       if (error) {
-        throw new Error(error.message || "Failed to get invitation");
+        throw new Error(error.message || t("team:invitations.loadFailed"));
       }
 
       return data;

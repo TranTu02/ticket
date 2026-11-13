@@ -1,7 +1,24 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vite-plus/test";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vite-plus/test";
 import { ProjectSharePanel } from "./project-share-panel";
-import type { ActiveGroup, ActiveUser, ProjectShareConfig } from "@/types/project-share";
+import type {
+  ActiveGroup,
+  ActiveUser,
+  ProjectShareConfig,
+} from "@/types/project-share";
 
 const mockUpdateProjectShare = vi.fn();
 const mockToastSuccess = vi.fn();
@@ -20,8 +37,18 @@ const mockGroups: ActiveGroup[] = [
 ];
 
 const mockUsers: ActiveUser[] = [
-  { id: "usr-1", name: "Alice Adams", email: "alice@example.com", groupName: "Engineering Team" },
-  { id: "usr-2", name: "Bob Brown", email: "bob@example.com", groupName: "Design Team" },
+  {
+    id: "usr-1",
+    name: "Alice Adams",
+    email: "alice@example.com",
+    groupName: "Engineering Team",
+  },
+  {
+    id: "usr-2",
+    name: "Bob Brown",
+    email: "bob@example.com",
+    groupName: "Design Team",
+  },
 ];
 
 let mockCurrentShare: ProjectShareConfig = {
@@ -98,7 +125,9 @@ describe("ProjectSharePanel", () => {
     fireEvent.click(screen.getByText("Engineering Team"));
 
     // Click Save
-    const saveButton = screen.getByRole("button", { name: /Lưu quyền truy cập/i });
+    const saveButton = screen.getByRole("button", {
+      name: /Lưu quyền truy cập/i,
+    });
     fireEvent.click(saveButton);
 
     await waitFor(() => {
@@ -126,7 +155,9 @@ describe("ProjectSharePanel", () => {
     fireEvent.click(screen.getByText("Alice Adams"));
 
     // Click Save
-    const saveButton = screen.getByRole("button", { name: /Lưu quyền truy cập/i });
+    const saveButton = screen.getByRole("button", {
+      name: /Lưu quyền truy cập/i,
+    });
     fireEvent.click(saveButton);
 
     await waitFor(() => {

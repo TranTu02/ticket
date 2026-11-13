@@ -1,5 +1,6 @@
 import { resolveApiBaseUrl } from "@kaneo/libs";
 import { HttpError } from "@/lib/http-error";
+import { i18n } from "@/lib/i18n";
 
 export type InstanceStatus = {
   hasUsers: boolean;
@@ -17,7 +18,9 @@ export async function getInstanceStatus(): Promise<InstanceStatus> {
     const error = await HttpError.fromResponse(response);
     throw new HttpError(
       response.status,
-      `Failed to fetch instance status: ${error.message}`,
+      i18n.t("common:error.messages.instanceStatusFailed", {
+        message: error.message,
+      }),
       error,
     );
   }

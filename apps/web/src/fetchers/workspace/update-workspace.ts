@@ -1,4 +1,5 @@
 import { authClient } from "@/lib/auth-client";
+import { i18n } from "@/lib/i18n";
 
 type UpdateWorkspaceRequest = {
   id: string;
@@ -28,7 +29,7 @@ const updateWorkspace = async ({
   });
 
   if (error) {
-    throw new Error(error.message || "Failed to update workspace");
+    throw new Error(error.message || i18n.t("workspace:updateFailed"));
   }
 
   return data;
